@@ -3,61 +3,103 @@
         <h1>Auction bid</h1>
         <hr/>
         <h2>Contract</h2>
-        <drizzle-contract
+        <div v-if="isDrizzleInitialized">
+            <drizzle-contract
+                    contractName="TwistedAuctionMock"
+                    method="currentRound"
+                    label="Current Round"
+            />
+            <drizzle-contract
+                    contractName="TwistedAuctionMock"
+                    method="highestBidFromRound"
+                    label="Highest bid"
+                    :methodArgs="roundArgs"
+            />
+            <div><strong>Highest bid:</strong> {{ highestBidInETH }} <strong>(ETH)</strong> </div>
+            <drizzle-contract
+                    contractName="TwistedAuctionMock"
+                    method="highestBidderFromRound"
+                    label="Highest bidder"
+                    :methodArgs="roundArgs"
+            />
+            <drizzle-contract
+                    contractName="TwistedAuctionMock"
+                    method="winningRoundParameter"
+                    label="Current Parameter"
+                    :methodArgs="roundArgs"
+            />
+        </div>
+        <div v-else>Loading...</div>
+        <br/>
+        <hr/>
+        <ContractFormV2
                 contractName="TwistedAuctionMock"
-                method="currentRound"
-                label="Current Round"
+                method="bid"
+                :placeholders="['Geo Parameter']"
+                :value="bidInWei"
         />
-        <drizzle-contract
-                contractName="TwistedAuctionMock"
-                method="highestBidFromRound"
-                label="Highest bid"
-                :methodArgs="highestBidFromRoundArgs"
-        />
-        <drizzle-contract
-                contractName="TwistedAuctionMock"
-                method="highestBidderFromRound"
-                label="Highest bidder"
-                :methodArgs="highestBidFromRoundArgs"
-        />
-        <drizzle-contract
-                contractName="TwistedAuctionMock"
-                method="winningRoundParameter"
-                label="Current Selected Parameter"
-                :methodArgs="highestBidFromRoundArgs"
-        />
-        <form>
-            <div>
-                <label for="parameter-input">
-                    Parameter:
-                    <input id="parameter-input" type="number" v-model="parameter"/>
-                </label>
-            </div>
-            <div>
-                <label for="bid-amount-input">
-                    Bid amount:
-                    <input id="bid-amount-input" type="number" v-model="bid"/>
-                </label>
-            </div>
-            <input type="submit"/>
-        </form>
+        <div>
+            <label for="bid-amount-input">
+                Bid amount (ETH):
+                <input id="bid-amount-input" type="number" v-model="bid"/>
+            </label>
+        </div>
+        <p>
+            Current bid in Wei: {{ bidInWei }}
+        </p>
     </div>
 </template>
 
 <script lang="ts">
     import Vue from 'vue';
-    import {mapGetters} from 'vuex'
+    import { mapGetters } from 'vuex';
+    import { Component } from 'vue-property-decorator';
+    import ContractFormV2 from './ContractFormV2.vue';
 
-    export default Vue.extend({
-        name: 'Bid',
-        data: () => {
-            return {
-                parameter: 0,
-                bid: 0,
-                highestBidFromRoundArgs: [1]
-            };
-        }, computed: mapGetters('drizzle', ['isDrizzleInitialized'])
-    });
+    @Component({
+        computed: {
+            ...mapGetters('drizzle', ['drizzleInstance', 'isDrizzleInitialized']),
+            ...mapGetters('contracts', ['getContractData', 'contractInstances'])
+        },
+        components: {ContractFormV2}
+    })
+    export default class Bid extends Vue {
+        bid: number = 0;
+        roundArgs: number[] = [1];
+
+        contractName: string = "TwistedAuctionMock";
+
+        drizzleInstance: any;
+        isDrizzleInitialized!: boolean;
+        getContractData: any;
+
+        get bidInWei(): number {
+            if(this.isDrizzleInitialized) {
+                const utils = this.drizzleInstance.web3.utils;
+                const bid: string = this.bid.toString();
+                return bid !== '' ? utils.toWei(this.bid.toString(), 'ether') : -1;
+            }
+            return -1;
+        }
+
+        get highestBidInETH(): number {
+            if(this.isDrizzleInitialized) {
+                const arg = {
+                    contract: this.contractName,
+                    method: 'highestBidFromRound'
+                };
+                const highestBidFromRound: string = this.getContractData(arg);
+
+                if(highestBidFromRound !== 'loading') {
+                    const utils = this.drizzleInstance.web3.utils;
+                    return utils.fromWei(highestBidFromRound, 'ether');
+                } else {
+                    return -1;
+                }
+            }
+            return -1;
+        }
+    }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
