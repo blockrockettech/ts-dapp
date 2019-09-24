@@ -12,9 +12,8 @@
 </template>
 
 <script lang="ts">
-    import Vue from 'vue';
     import { mapGetters } from 'vuex';
-    import { Component, Prop } from 'vue-property-decorator';
+    import { Component, Prop, Vue } from 'vue-property-decorator';
 
     @Component({
         computed: {...mapGetters('drizzle', ['drizzleInstance', 'isDrizzleInitialized'])}

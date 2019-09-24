@@ -11,6 +11,10 @@ import drizzleOptions from './drizzle-options';
 
 Vue.use(drizzleVuePlugin, { store, drizzleOptions });
 
+import BootstrapVue from 'bootstrap-vue';
+
+Vue.use(BootstrapVue);
+
 new Vue({
   router,
   store,
