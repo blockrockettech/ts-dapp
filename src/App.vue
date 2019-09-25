@@ -15,6 +15,33 @@
     </div>
 </template>
 
+<script lang="ts">
+    import { mapGetters } from 'vuex';
+    import { Component, Vue, Watch } from 'vue-property-decorator';
+
+    @Component({
+        computed: {
+            ...mapGetters('drizzle', ['drizzleInstance', 'isDrizzleInitialized']),
+            ...mapGetters('contracts', ['getContractData', 'contractInstances']),
+            ...mapGetters(['contractName'])
+        }
+    })
+    export default class App extends Vue {
+        contractName!: string;
+
+        @Watch('isDrizzleInitialized')
+        onIsDrizzleInitializedChange(newValue: boolean) {
+            if (newValue) {
+                this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
+                    contractName: this.contractName,
+                    method: 'currentRound',
+                    methodArgs: []
+                });
+            }
+        }
+    }
+</script>
+
 <style lang="scss">
     @import '../node_modules/bootstrap/scss/bootstrap';
 

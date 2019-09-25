@@ -6,9 +6,9 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
-        currentRound: 3,
+        currentRound: 1,
         totalRounds: 21,
-        auctionStartTime: 1569225600
+        auctionStartTime: 1569413510
     },
     mutations: {},
     actions: {},
@@ -16,7 +16,13 @@ export default new Vuex.Store({
         contractName: () => {
             return 'TwistedAuctionMock';
         },
-        currentRound: (state) => {
+        currentRound: (state, getters) => {
+            if(getters.drizzle && getters.drizzle.isDrizzleInitialized) {
+                if (getters.contracts && getters.contracts.getContractData) {
+                    console.log('In here!!');
+                }
+            }
+
             return state.currentRound;
         },
         totalRounds: (state) => {
