@@ -8,7 +8,7 @@
             <router-link to="/">Auction</router-link>&nbsp;
             <router-link to="/about">About</router-link>
         </div>
-        <router-view auctionContractName="TwistedAuctionMock" />
+        <router-view />
     </div>
 </template>
 

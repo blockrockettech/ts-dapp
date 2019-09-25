@@ -83,23 +83,18 @@
 
 <script lang="ts">
     import { mapGetters } from 'vuex';
-    import { Component, Prop, Vue } from 'vue-property-decorator';
+    import { Component, Vue } from 'vue-property-decorator';
     import ContractFormV2 from './ContractFormV2.vue';
 
     @Component({
         computed: {
             ...mapGetters('drizzle', ['drizzleInstance', 'isDrizzleInitialized']),
-            ...mapGetters('contracts', ['getContractData', 'contractInstances'])
+            ...mapGetters('contracts', ['getContractData', 'contractInstances']),
+            ...mapGetters(['contractName', 'currentRound'])
         },
         components: {ContractFormV2}
     })
     export default class AuctionBid extends Vue {
-        @Prop({ required: true })
-        currentRound!: number;
-
-        @Prop({ required: true })
-        auctionContractName!: string;
-
         parameter: number = 0;
 
         minBid: number = 0.01;
@@ -108,6 +103,7 @@
         drizzleInstance: any;
         isDrizzleInitialized!: boolean;
         getContractData: any;
+        contractName!: string;
 
         decreaseBid() {
             this.bid -= 0.005;
@@ -132,7 +128,7 @@
         get highestBidInETH(): number {
             if(this.isDrizzleInitialized) {
                 const arg = {
-                    contract: this.auctionContractName,
+                    contract: this.contractName,
                     method: 'highestBidFromRound'
                 };
                 const highestBidFromRound: string = this.getContractData(arg);

@@ -45,13 +45,13 @@
 </template>
 
 <script lang="ts">
+    import { mapGetters } from 'vuex';
     import { Component, Prop, Vue } from 'vue-property-decorator';
 
-    @Component({})
+    @Component({
+        computed: mapGetters(['contractName'])
+    })
     export default class PreviousAuction extends Vue {
-        @Prop({ required: true })
-        auctionContractName!: string;
-
         @Prop({ required: true })
         roundNo!: number;
     }

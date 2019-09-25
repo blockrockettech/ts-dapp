@@ -33,16 +33,11 @@
     @Component({
         computed: {
             ...mapGetters('drizzle', ['drizzleInstance', 'isDrizzleInitialized']),
-            ...mapGetters('contracts', ['getContractData', 'contractInstances'])
+            ...mapGetters('contracts', ['getContractData', 'contractInstances']),
+            ...mapGetters(['contractName', 'currentRound'])
         }
     })
     export default class BidHistory extends Vue {
-        @Prop({ required: true })
-        currentRound!: number;
-
-        @Prop({ required: true })
-        auctionContractName!: string;
-
         drizzleInstance: any;
         isDrizzleInitialized!: boolean;
         getContractData: any;

@@ -1,8 +1,9 @@
 <template>
     <div>
-        <CurrentAuction :auctionContractName="auctionContractName"/>
-        <PreviousAuction :auctionContractName="auctionContractName"
-                    v-for="roundNo in remainingRoundNums" :roundNo="roundNo"/>
+        <CurrentAuction />
+        <PreviousAuction v-for="roundNo in remainingRoundNums"
+                         :roundNo="roundNo"
+                         :key="roundNo" />
     </div>
 </template>
 
@@ -13,7 +14,6 @@
 
     export default Vue.extend({
         name: 'auction',
-        props: ['auctionContractName'],
         components: {
             CurrentAuction,
             PreviousAuction
