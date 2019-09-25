@@ -9,9 +9,9 @@
                     <span>Highest Bid</span>
                 </div>
                 <div class="highest-bid-row row">
-                    <span class="col">{{highestBid.elapsedTime}}</span>
-                    <span class="col-6">{{highestBid.address}}</span>
-                    <span class="col">{{highestBid.amount}} ETH</span>
+                    <span class="col">{{highestBidData.elapsedTime}}</span>
+                    <span class="col-6">{{highestBidData.address}}</span>
+                    <span class="col">{{highestBidData.amount}} ETH</span>
                 </div>
             </div>
             <div v-if="previousBids.length !== 0">
@@ -55,40 +55,43 @@
 
         get events() {
             if (this.isDrizzleInitialized) {
-                return this.contractInstances[this.contractName].events || [];
+                const events = this.contractInstances[this.contractName].events || [];
+                return events.reverse();
             }
             return [];
         }
 
         get anyBidReceived() {
-            return false;
+            return this.events.filter((el: any) => {
+                return el.event === 'BidAccepted'
+            }).length > 0;
         }
 
-        get highestBid(): any {
+        get highestBidData(): any {
+            if (this.events.length > 0) {
+                return {
+                    elapsedTime: 'Loading...',
+                    address: 'Loading...',
+                    amount: 'Loading...'
+                };
+            }
+
             return {
-                elapsedTime: '15 seconds ago',
-                address: '0xd12cd8a37f074e7eafae618c986ff8256661ffca',
-                amount: '0.55'
+                elapsedTime: 'Loading...',
+                address: 'Loading...',
+                amount: 'Loading...'
             };
         }
 
         get previousBids(): any[] {
-            return [
-                {elapsedTime: '20 seconds ago', address: '0xd12cd8a37f074e7eafae618c986ff825666198ba', amount: '0.50'},
-                {elapsedTime: '25 seconds ago', address: '0xd12cd8a37f074e7eafae618c986ff825666198bf', amount: '0.25'},
-                {elapsedTime: '29 seconds ago', address: '0xd12cd8a37f074e7eafae618c986ff825666198bc', amount: '0.01'},
-            ];
-        }
-
-        @Watch('isDrizzleInitialized')
-        onIsDrizzleInitializedChange(newValue: boolean) {
-            if(newValue) {
-                this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
-                    contractName: this.contractName,
-                    method: 'highestBidFromRound',
-                    methodArgs: [this.currentRound]
-                });
-            }
+            const utils = this.drizzleInstance.web3.utils;
+            return this.events.map((el: any) => {
+                return {
+                    elapsedTime: 'TODO',
+                    address: el.returnValues._bidder,
+                    amount: utils.fromWei(el.returnValues._amount, 'ether')
+                };
+            });
         }
     }
 </script>
