@@ -15,13 +15,13 @@
         </div>
 
         <AuctionBid />
-        <BidHistory />
+        <BidHistory :currentRound="currentRound" />
     </div>
 </template>
 
 <script lang="ts">
     import { mapGetters } from 'vuex';
-    import { Component, Vue } from 'vue-property-decorator';
+    import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
     import moment from 'moment';
 
     import AuctionBid from '@/components/AuctionBid.vue';
@@ -29,11 +29,27 @@
 
     @Component({
         components: {AuctionBid, BidHistory},
-        computed: {...mapGetters(['contractName', 'currentRound', 'totalRounds', 'roundEnd'])}
+        computed: {
+            ...mapGetters('contracts', ['getContractData']),
+            ...mapGetters(['contractName', 'roundEnd']),
+        }
     })
     export default class CurrentAuction extends Vue {
-        roundEnd: any;
+        @Prop({ required: true })
         currentRound!: number;
+
+        @Prop({ required: true })
+        auctionStartTime!: number;
+
+        @Prop({ required: true })
+        roundLengthInSeconds!: number;
+
+        @Prop({ required: true })
+        totalRounds!: number;
+
+        roundEnd: any;
+        getContractData: any;
+        contractName!: string;
 
         endingIn: string = '';
 
@@ -44,7 +60,7 @@
 
         updateEndingInTime() {
             const now = moment().utc(false);
-            const roundEnd = this.roundEnd(this.currentRound);
+            const roundEnd = this.roundEnd(this.currentRound, this.auctionStartTime, this.roundLengthInSeconds);
             const duration = moment.duration(roundEnd.diff(now));
             this.endingIn = `${Math.ceil(duration.get('hours'))}h ${Math.ceil(duration.get('minutes'))}m ${Math.ceil(duration.get('seconds'))}s`;
         }

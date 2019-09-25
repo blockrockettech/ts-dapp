@@ -5,34 +5,15 @@ import moment from 'moment';
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-    state: {
-        currentRound: 1,
-        totalRounds: 21,
-        auctionStartTime: 1569413510
-    },
+    state: {},
     mutations: {},
     actions: {},
     getters: {
         contractName: () => {
             return 'TwistedAuctionMock';
         },
-        currentRound: (state, getters) => {
-            if(getters.drizzle && getters.drizzle.isDrizzleInitialized) {
-                if (getters.contracts && getters.contracts.getContractData) {
-                    console.log('In here!!');
-                }
-            }
-
-            return state.currentRound;
-        },
-        totalRounds: (state) => {
-            return state.totalRounds;
-        },
-        roundLengthSeconds: () => {
-            return 43200;
-        },
-        roundStart: (state) => (round: number) => {
-            const result = moment.unix(state.auctionStartTime).utc(false);
+        roundStart: () => (round: number, auctionStartTime: number) => {
+            const result = moment.unix(auctionStartTime).utc(false);
 
             if (round > 1) {
                 const offset = round - 1;
@@ -41,9 +22,9 @@ export default new Vuex.Store({
 
             return result;
         },
-        roundEnd: (state, getters) => (round: number) => {
-            const result = moment(getters.roundStart(round));
-            result.add(getters.roundLengthSeconds, 'seconds');
+        roundEnd: (state, getters) => (round: number, auctionStartTime: number, roundLengthInSeconds: number) => {
+            const result = moment(getters.roundStart(round, auctionStartTime));
+            result.add(roundLengthInSeconds, 'seconds');
             return result;
         },
     }

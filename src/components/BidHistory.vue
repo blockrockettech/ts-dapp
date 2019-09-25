@@ -26,26 +26,39 @@
             </div>
         </div>
         <div v-else>
-            <p>No bids have been received yet...</p>
+            <!--<p>No bids have been received yet...</p>-->
+            <p v-for="event in events">{{event.event}}</p>
         </div>
     </div>
 </template>
 
 <script lang="ts">
     import { mapGetters } from 'vuex';
-    import { Component, Prop, Vue } from 'vue-property-decorator';
+    import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
 
     @Component({
         computed: {
             ...mapGetters('drizzle', ['drizzleInstance', 'isDrizzleInitialized']),
             ...mapGetters('contracts', ['getContractData', 'contractInstances']),
-            ...mapGetters(['contractName', 'currentRound'])
+            ...mapGetters(['contractName'])
         }
     })
     export default class BidHistory extends Vue {
+        @Prop({ required: true })
+        currentRound!: number;
+
         drizzleInstance: any;
         isDrizzleInitialized!: boolean;
         getContractData: any;
+        contractInstances: any;
+        contractName!: string;
+
+        get events() {
+            if (this.isDrizzleInitialized) {
+                return this.contractInstances[this.contractName].events || [];
+            }
+            return [];
+        }
 
         get anyBidReceived() {
             return false;
@@ -65,6 +78,17 @@
                 {elapsedTime: '25 seconds ago', address: '0xd12cd8a37f074e7eafae618c986ff825666198bf', amount: '0.25'},
                 {elapsedTime: '29 seconds ago', address: '0xd12cd8a37f074e7eafae618c986ff825666198bc', amount: '0.01'},
             ];
+        }
+
+        @Watch('isDrizzleInitialized')
+        onIsDrizzleInitializedChange(newValue: boolean) {
+            if(newValue) {
+                this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
+                    contractName: this.contractName,
+                    method: 'highestBidFromRound',
+                    methodArgs: [this.currentRound]
+                });
+            }
         }
     }
 </script>

@@ -34,7 +34,31 @@
             if (newValue) {
                 this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
                     contractName: this.contractName,
+                    method: 'auctionStartTime',
+                    methodArgs: []
+                });
+
+                this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
+                    contractName: this.contractName,
+                    method: 'minBid',
+                    methodArgs: []
+                });
+
+                this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
+                    contractName: this.contractName,
                     method: 'currentRound',
+                    methodArgs: []
+                });
+
+                this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
+                    contractName: this.contractName,
+                    method: 'numOfRounds',
+                    methodArgs: []
+                });
+
+                this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
+                    contractName: this.contractName,
+                    method: 'roundLengthInSeconds',
                     methodArgs: []
                 });
             }

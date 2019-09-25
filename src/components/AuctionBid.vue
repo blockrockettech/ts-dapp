@@ -1,52 +1,5 @@
 <template>
     <div class="auction-bid-container">
-        <!--<h1>Auction bid</h1>
-        <hr/>
-        <h2>Contract</h2>
-        <div v-if="isDrizzleInitialized">
-            <drizzle-contract
-                    contractName="TwistedAuctionMock"
-                    method="currentRound"
-                    label="Current Round"
-            />
-            <drizzle-contract
-                    contractName="TwistedAuctionMock"
-                    method="highestBidFromRound"
-                    label="Highest bid"
-                    :methodArgs="roundArgs"
-            />
-            <div><strong>Highest bid:</strong> {{ highestBidInETH }} <strong>(ETH)</strong> </div>
-            <drizzle-contract
-                    contractName="TwistedAuctionMock"
-                    method="highestBidderFromRound"
-                    label="Highest bidder"
-                    :methodArgs="roundArgs"
-            />
-            <drizzle-contract
-                    contractName="TwistedAuctionMock"
-                    method="winningRoundParameter"
-                    label="Current Parameter"
-                    :methodArgs="roundArgs"
-            />
-        </div>
-        <div v-else>Loading...</div>
-        <br/>
-        <hr/>
-        <ContractFormV2
-                contractName="TwistedAuctionMock"
-                method="bid"
-                :placeholders="['Geo Parameter']"
-                :value="bidInWei"
-        />
-        <div>
-            <label for="bid-amount-input">
-                Bid amount (ETH):
-                <input id="bid-amount-input" type="number" v-model="bid"/>
-            </label>
-        </div>
-        <p>
-            Current bid in Wei: {{ bidInWei }}
-        </p>-->
         <div class="img-container">
             <img src="http://twistedsister.root-lvl.com/contents/auction-03/03-63.jpg" alt=""/>
         </div>
@@ -66,17 +19,20 @@
             <div class="make-bid-input-group-container">
                 <b-input-group>
                     <b-input-group-prepend>
-                        <b-button variant="outline-info" class="adjust-btn-width" @click="decreaseBid()">-</b-button>
-                        <b-button variant="outline-info" class="adjust-btn-width" @click="increaseBid()">+</b-button>
+                        <b-button variant="outline-info" class="adjust-btn-width" @click="decreaseBid">-</b-button>
+                        <b-button variant="outline-info" class="adjust-btn-width" @click="increaseBid">+</b-button>
                     </b-input-group-prepend>
 
                     <b-form-input type="number" min="0.01" v-model="bid"></b-form-input>
 
                     <b-input-group-append>
-                        <b-button variant="success">BID</b-button>
+                        <b-button variant="success" @click="submitBid">BID</b-button>
                     </b-input-group-append>
                 </b-input-group>
             </div>
+            <span>
+                Min bid: {{minBid}} ETH
+            </span>
         </div>
     </div>
 </template>
@@ -90,15 +46,14 @@
         computed: {
             ...mapGetters('drizzle', ['drizzleInstance', 'isDrizzleInitialized']),
             ...mapGetters('contracts', ['getContractData', 'contractInstances']),
-            ...mapGetters(['contractName', 'currentRound'])
+            ...mapGetters(['contractName'])
         },
         components: {ContractFormV2}
     })
     export default class AuctionBid extends Vue {
         parameter: number = 0;
 
-        minBid: number = 0.01;
-        bid: number = this.minBid;
+        bid: number = 0;
 
         drizzleInstance: any;
         isDrizzleInitialized!: boolean;
@@ -116,13 +71,36 @@
             this.bid += 0.005;
         }
 
+        submitBid() {
+            if(this.isDrizzleInitialized) {
+                const bidContractMethod = this.drizzleInstance.contracts[this.contractName].methods['bid'];
+                bidContractMethod.cacheSend(this.parameter, { value: this.bidInWei });
+            } else {
+                alert("Drizzle doesn't seem to be initialised / ready");
+            }
+        }
+
+        get minBid() {
+            const min = this.getContractData({
+               contract: this.contractName,
+               method: 'minBid'
+            });
+
+            if (min !== 'loading' && this.isDrizzleInitialized) {
+                const utils = this.drizzleInstance.web3.utils;
+                return utils.fromWei(min, 'ether');
+            }
+
+            return 0.01;
+        }
+
         get bidInWei(): number {
             if(this.isDrizzleInitialized) {
                 const utils = this.drizzleInstance.web3.utils;
                 const bid: string = this.bid.toString();
-                return bid !== '' ? utils.toWei(this.bid.toString(), 'ether') : -1;
+                return bid !== '' ? utils.toWei(this.bid.toString(), 'ether') : 0;
             }
-            return -1;
+            return 0;
         }
 
         get highestBidInETH(): number {

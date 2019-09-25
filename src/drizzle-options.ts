@@ -1,6 +1,6 @@
 
 // @ts-ignore
-import TwistedAuction from "./truffleconf/auction/TwistedAuctionMock.json";
+import TwistedAuctionMock from "./truffleconf/auction/TwistedAuctionMock.json";
 
 const options = {
     web3: {
@@ -12,10 +12,10 @@ const options = {
     },
 
     // The contracts to monitor
-    contracts: [TwistedAuction],
+    contracts: [TwistedAuctionMock],
     events: {
         // monitor SimpleStorage.StorageSet events
-        TwistedAuction: ['BidAccepted', 'BidderRefunded', 'RoundFinalised']
+        TwistedAuctionMock: ['BidAccepted', 'BidderRefunded', 'RoundFinalised']
     },
     polls: {
         // check accounts ever 15 seconds
@@ -23,4 +23,4 @@ const options = {
     }
 };
 
-export default options
+export default options;

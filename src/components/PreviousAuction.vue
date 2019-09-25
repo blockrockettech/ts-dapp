@@ -49,11 +49,15 @@
     import { Component, Prop, Vue } from 'vue-property-decorator';
 
     @Component({
-        computed: mapGetters(['contractName', 'totalRounds', 'roundEnd'])
+        computed: mapGetters(['contractName', 'roundEnd'])
     })
     export default class PreviousAuction extends Vue {
         @Prop({ required: true })
         roundNo!: number;
+
+        @Prop({ required: true })
+        totalRounds!: number;
+
         roundEnd: any;
 
         get roundEndDay() {
