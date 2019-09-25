@@ -9,6 +9,9 @@
             <router-link to="/about">About</router-link>
         </div>
         <router-view />
+        <div class="footer">
+            <a href="https://twistedsister.io" target="_blank" class="footer-link">twistedsister.io</a>
+        </div>
     </div>
 </template>
 
@@ -48,5 +51,16 @@
 
     .img-header {
         width: 100%;
+    }
+
+    .footer {
+        border-top: 1px solid black;
+        margin-top: 2rem;
+        padding: 20px;
+    }
+
+    .footer-link {
+        text-decoration: none;
+        color: black;
     }
 </style>

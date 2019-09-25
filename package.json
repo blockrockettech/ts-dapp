@@ -11,6 +11,7 @@
     "@drizzle/vue-plugin": "git+https://github.com/trufflesuite/drizzle-vue-plugin.git",
     "bootstrap-vue": "^2.0.2",
     "core-js": "^2.6.5",
+    "moment": "^2.24.0",
     "vue": "^2.6.10",
     "vue-class-component": "^7.1.0",
     "vue-property-decorator": "^8.2.2",

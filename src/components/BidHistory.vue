@@ -3,25 +3,30 @@
         <h3 class="mb-3">
             BID HISTORY
         </h3>
-        <div class="highest-bid-container">
-            <div class="header">
-                <span>Highest Bid</span>
+        <div v-if="anyBidReceived">
+            <div class="highest-bid-container">
+                <div class="header">
+                    <span>Highest Bid</span>
+                </div>
+                <div class="highest-bid-row row">
+                    <span class="col">{{highestBid.elapsedTime}}</span>
+                    <span class="col-6">{{highestBid.address}}</span>
+                    <span class="col">{{highestBid.amount}} ETH</span>
+                </div>
             </div>
-            <div class="highest-bid-row row">
-                <span class="col">{{highestBid.elapsedTime}}</span>
-                <span class="col-6">{{highestBid.address}}</span>
-                <span class="col">{{highestBid.amount}} ETH</span>
+            <div v-if="previousBids.length !== 0">
+                <div class="header">
+                    <span>Previous Bids</span>
+                </div>
+                <div class="row" v-for="previousBid in previousBids">
+                    <span class="col">{{previousBid.elapsedTime}}</span>
+                    <span class="col-6">{{previousBid.address}}</span>
+                    <span class="col">{{previousBid.amount}} ETH</span>
+                </div>
             </div>
         </div>
-        <div>
-            <div class="header">
-                <span>Previous Bids</span>
-            </div>
-            <div class="row" v-for="previousBid in previousBids">
-                <span class="col">{{previousBid.elapsedTime}}</span>
-                <span class="col-6">{{previousBid.address}}</span>
-                <span class="col">{{previousBid.amount}} ETH</span>
-            </div>
+        <div v-else>
+            <p>No bids have been received yet...</p>
         </div>
     </div>
 </template>
@@ -41,6 +46,10 @@
         drizzleInstance: any;
         isDrizzleInitialized!: boolean;
         getContractData: any;
+
+        get anyBidReceived() {
+            return false;
+        }
 
         get highestBid(): any {
             return {
