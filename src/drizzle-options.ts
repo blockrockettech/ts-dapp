@@ -15,7 +15,16 @@ const options = {
     contracts: [TwistedAuctionMock],
     events: {
         // monitor SimpleStorage.StorageSet events
-        TwistedAuctionMock: ['BidAccepted', 'BidderRefunded', 'RoundFinalised']
+        TwistedAuctionMock: [
+            {
+                eventName: 'BidAccepted',
+                eventOptions: { fromBlock: 0 }
+            },
+            {
+                eventName: 'RoundFinalised',
+                eventOptions: { fromBlock: 0 }
+            }
+        ]
     },
     polls: {
         // check accounts ever 15 seconds
