@@ -1548,14 +1548,19 @@
     "version": "0.5.0+commit.1d4f565a.Emscripten.clang"
   },
   "networks": {
-    "5777": {
+    "3": {
       "events": {
-        "0x9a6c30aa52e2150f2003a14c3eb666c1ae3dcc8661c51e2ab48ca88eed07823c": {
+        "0x2951c447583280c9dae4144efd5412f37c967a855edd3466e1e1fcf672176826": {
           "anonymous": false,
           "inputs": [
             {
               "indexed": true,
               "name": "_round",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_timeStamp",
               "type": "uint256"
             },
             {
@@ -1576,7 +1581,7 @@
           ],
           "name": "BidAccepted",
           "type": "event",
-          "signature": "0x9a6c30aa52e2150f2003a14c3eb666c1ae3dcc8661c51e2ab48ca88eed07823c"
+          "signature": "0x2951c447583280c9dae4144efd5412f37c967a855edd3466e1e1fcf672176826"
         },
         "0xa6b0a214724be5be631af1800b1bfdef5dbf1ac9dc351d039e1b082d40c62f20": {
           "anonymous": false,
@@ -1623,48 +1628,15 @@
           "name": "RoundFinalised",
           "type": "event",
           "signature": "0xf7c765310707d3f0d55e555d8ac7d50aba0a10ec7f3567de4b06faf93df99497"
-        },
-        "0x2951c447583280c9dae4144efd5412f37c967a855edd3466e1e1fcf672176826": {
-          "anonymous": false,
-          "inputs": [
-            {
-              "indexed": true,
-              "name": "_round",
-              "type": "uint256"
-            },
-            {
-              "indexed": false,
-              "name": "_timeStamp",
-              "type": "uint256"
-            },
-            {
-              "indexed": false,
-              "name": "_param",
-              "type": "uint256"
-            },
-            {
-              "indexed": false,
-              "name": "_amount",
-              "type": "uint256"
-            },
-            {
-              "indexed": true,
-              "name": "_bidder",
-              "type": "address"
-            }
-          ],
-          "name": "BidAccepted",
-          "type": "event",
-          "signature": "0x2951c447583280c9dae4144efd5412f37c967a855edd3466e1e1fcf672176826"
         }
       },
       "links": {},
-      "address": "0xd1F4d2921eA1fF6a5A133B16548f489dF8264173",
-      "transactionHash": "0x5b7abc043bad18bedab4f9652bdceb9816b60130f42317f1bacdabd77912437f"
+      "address": "0xc84e7095E0cbFA40C578cDE882c51Bde3260397A",
+      "transactionHash": "0x98772ede67f39e9b097e78da685d901ced343104df9f70cfd5a3aafe54db6274"
     }
   },
   "schemaVersion": "3.0.16",
-  "updatedAt": "2019-09-26T09:01:12.193Z",
+  "updatedAt": "2019-09-26T12:32:45.529Z",
   "devdoc": {
     "methods": {}
   },

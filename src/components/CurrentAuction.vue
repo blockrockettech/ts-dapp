@@ -8,10 +8,13 @@
                 Current Auction
             </span>
         </div>
-        <div class="ending-container">
+        <div class="ending-container" v-if="open">
             <span class="ending-label">Ending in:</span>
             <br/>
             <span class="ending-time">{{endingIn}}</span>
+        </div>
+        <div class="not-started" v-else>
+            <span><strong>Auction hasn't started - bidding will fail</strong></span>
         </div>
 
         <AuctionBid />
@@ -31,7 +34,7 @@
         components: {AuctionBid, BidHistory},
         computed: {
             ...mapGetters('contracts', ['getContractData']),
-            ...mapGetters(['contractName', 'roundEnd']),
+            ...mapGetters(['contractName', 'roundStart', 'roundEnd']),
         }
     })
     export default class CurrentAuction extends Vue {
@@ -47,7 +50,10 @@
         @Prop({ required: true })
         totalRounds!: number;
 
+        open: boolean = true;
+
         roundEnd: any;
+        roundStart: any;
         getContractData: any;
         contractName!: string;
 
@@ -60,6 +66,10 @@
 
         updateEndingInTime() {
             const now = moment().utc(false);
+
+            const roundStart = this.roundStart(this.currentRound, this.auctionStartTime);
+            this.open = now > roundStart;
+
             const roundEnd = this.roundEnd(this.currentRound, this.auctionStartTime, this.roundLengthInSeconds);
             const duration = moment.duration(roundEnd.diff(now));
             this.endingIn = `${Math.ceil(duration.get('hours'))}h ${Math.ceil(duration.get('minutes'))}m ${Math.ceil(duration.get('seconds'))}s`;
@@ -92,6 +102,11 @@
     }
 
     .ending-container {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .not-started {
         text-align: center;
         margin-bottom: 3rem;
     }
