@@ -23,7 +23,7 @@
                         <b-button variant="outline-info" class="adjust-btn-width" @click="increaseBid">+</b-button>
                     </b-input-group-prepend>
 
-                    <b-form-input type="number" min="0.01" v-model="bid"></b-form-input>
+                    <b-form-input type="number" min="0.01" v-model="bid" class="bid-input"></b-form-input>
 
                     <b-input-group-append>
                         <b-button variant="success" @click="submitBid">BID</b-button>
@@ -53,7 +53,7 @@
     export default class AuctionBid extends Vue {
         parameter: number = 0;
 
-        bid: number = 0;
+        bid: number = 0.01;
 
         drizzleInstance: any;
         isDrizzleInitialized!: boolean;
@@ -167,5 +167,9 @@
 
     .adjust-btn-width {
         width: 35px;
+    }
+
+    .bid-input {
+        text-align: right;
     }
 </style>

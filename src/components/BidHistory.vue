@@ -26,13 +26,13 @@
             </div>
         </div>
         <div v-else>
-            <!--<p>No bids have been received yet...</p>-->
-            <p v-for="event in events">{{event.event}}</p>
+            <p>No bids have been received yet...</p>
         </div>
     </div>
 </template>
 
 <script lang="ts">
+    import moment from 'moment';
     import { mapGetters } from 'vuex';
     import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
 
@@ -53,26 +53,47 @@
         contractInstances: any;
         contractName!: string;
 
+        humanisedTimeFromUnixTimestamp(timestamp: number) {
+            const now = moment().utc(false);
+            const _timestamp = moment.unix(timestamp).utc(false);
+            const duration = moment.duration(now.diff(_timestamp));
+            return duration.humanize() + ' ago';
+        }
+
+        etherFromWei(wei: string): number {
+            if (this.isDrizzleInitialized && wei !== 'loading') {
+                const utils = this.drizzleInstance.web3.utils;
+                return utils.fromWei(wei, 'ether');
+            }
+
+            return 0;
+        }
+
         get events() {
             if (this.isDrizzleInitialized) {
-                const events = this.contractInstances[this.contractName].events || [];
-                return events.reverse();
+                const allEvents = (this.contractInstances[this.contractName].events || []);
+                return allEvents.filter((event: any) => {
+                   return event.event === 'BidAccepted';
+                }).filter((event: any, index: number, self: any) => {
+                    return index == self.findIndex((obj: any) => {
+                        return JSON.stringify(obj) === JSON.stringify(event);
+                    });
+                }).reverse();
             }
             return [];
         }
 
         get anyBidReceived() {
-            return this.events.filter((el: any) => {
-                return el.event === 'BidAccepted'
-            }).length > 0;
+            return this.events.length > 0;
         }
 
         get highestBidData(): any {
             if (this.events.length > 0) {
+                const event = this.events[0];
                 return {
-                    elapsedTime: 'Loading...',
-                    address: 'Loading...',
-                    amount: 'Loading...'
+                    elapsedTime: this.humanisedTimeFromUnixTimestamp(event.returnValues._timeStamp),
+                    address: event.returnValues._bidder,
+                    amount: this.etherFromWei(event.returnValues._amount)
                 };
             }
 
@@ -84,14 +105,27 @@
         }
 
         get previousBids(): any[] {
-            const utils = this.drizzleInstance.web3.utils;
-            return this.events.map((el: any) => {
+            return this.events.map((event: any) => {
                 return {
-                    elapsedTime: 'TODO',
-                    address: el.returnValues._bidder,
-                    amount: utils.fromWei(el.returnValues._amount, 'ether')
+                    elapsedTime: this.humanisedTimeFromUnixTimestamp(event.returnValues._timeStamp),
+                    address: event.returnValues._bidder,
+                    amount: this.etherFromWei(event.returnValues._amount)
                 };
             });
+        }
+
+        @Watch('events')
+        onNewEvents(newValue: any[], oldValue: any[]) {
+            if ((newValue.length - oldValue.length) === 1) {
+                const event = newValue[0];
+                const msg: string =
+                    `${this.etherFromWei(event.returnValues._amount)} ETH bid from ${event.returnValues._bidder}`;
+                this.$bvToast.toast(msg, {
+                    title: 'New bid accepted',
+                    autoHideDelay: 5000,
+                    appendToast: true
+                })
+            }
         }
     }
 </script>

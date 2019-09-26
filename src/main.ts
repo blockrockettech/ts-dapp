@@ -11,9 +11,15 @@ import drizzleOptions from './drizzle-options';
 
 Vue.use(drizzleVuePlugin, { store, drizzleOptions });
 
+import PortalVue from 'portal-vue';
+
+Vue.use(PortalVue);
+
 import BootstrapVue from 'bootstrap-vue';
+import { ToastPlugin } from 'bootstrap-vue';
 
 Vue.use(BootstrapVue);
+Vue.use(ToastPlugin);
 
 new Vue({
   router,
