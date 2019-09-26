@@ -12,6 +12,9 @@ export default new Vuex.Store({
         contractName: () => {
             return 'TwistedAuctionMock';
         },
+        tokenContractAddress: () => {
+            return '0xdb131507405b6520fb3d54b927a9549953ea7e4e';
+        },
         roundStart: () => (round: number, auctionStartTime: number) => {
             const result = moment.unix(auctionStartTime).utc(false);
 

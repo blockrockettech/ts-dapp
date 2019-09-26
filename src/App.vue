@@ -29,39 +29,36 @@
     export default class App extends Vue {
         contractName!: string;
 
-        @Watch('isDrizzleInitialized')
-        onIsDrizzleInitializedChange(newValue: boolean) {
-            if (newValue) {
-                this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
-                    contractName: this.contractName,
-                    method: 'auctionStartTime',
-                    methodArgs: []
-                });
+        created() {
+            this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
+                contractName: this.contractName,
+                method: 'auctionStartTime',
+                methodArgs: []
+            });
 
-                this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
-                    contractName: this.contractName,
-                    method: 'minBid',
-                    methodArgs: []
-                });
+            this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
+                contractName: this.contractName,
+                method: 'minBid',
+                methodArgs: []
+            });
 
-                this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
-                    contractName: this.contractName,
-                    method: 'currentRound',
-                    methodArgs: []
-                });
+            this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
+                contractName: this.contractName,
+                method: 'currentRound',
+                methodArgs: []
+            });
 
-                this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
-                    contractName: this.contractName,
-                    method: 'numOfRounds',
-                    methodArgs: []
-                });
+            this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
+                contractName: this.contractName,
+                method: 'numOfRounds',
+                methodArgs: []
+            });
 
-                this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
-                    contractName: this.contractName,
-                    method: 'roundLengthInSeconds',
-                    methodArgs: []
-                });
-            }
+            this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
+                contractName: this.contractName,
+                method: 'roundLengthInSeconds',
+                methodArgs: []
+            });
         }
     }
 </script>

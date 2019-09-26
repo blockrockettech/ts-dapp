@@ -45,11 +45,16 @@
 </template>
 
 <script lang="ts">
+    import { Moment } from 'moment';
     import { mapGetters } from 'vuex';
-    import { Component, Prop, Vue } from 'vue-property-decorator';
+    import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
 
     @Component({
-        computed: mapGetters(['contractName', 'roundEnd'])
+        computed: {
+            ...mapGetters('drizzle', ['drizzleInstance', 'isDrizzleInitialized']),
+            ...mapGetters('contracts', ['getContractData', 'contractInstances']),
+            ...mapGetters(['contractName', 'tokenContractAddress', 'roundEnd']),
+        }
     })
     export default class PreviousAuction extends Vue {
         @Prop({ required: true })
@@ -58,26 +63,82 @@
         @Prop({ required: true })
         totalRounds!: number;
 
-        roundEnd: any;
+        @Prop({ required: true })
+        auctionStartTime!: number;
+
+        @Prop({ required: true })
+        roundLengthInSeconds!: number;
+
+        roundEnd!: (round: number, auctionStartTime: number, roundLengthInSeconds: number) => Moment;
+        isDrizzleInitialized!: boolean;
+        contractName!: string;
+        tokenContractAddress!: string;
+        drizzleInstance: any;
+        getContractData: any;
+
+        etherFromWei(wei: string): number {
+            if (this.isDrizzleInitialized && wei !== 'loading') {
+                const utils = this.drizzleInstance.web3.utils;
+                return utils.fromWei(wei, 'ether');
+            }
+
+            return 0;
+        }
 
         get roundEndDay() {
-            return this.roundEnd(this.roundNo).format('DD MMMM YYYY');
+            return this.roundEnd(this.roundNo, this.auctionStartTime, this.roundLengthInSeconds).format('DD MMMM YYYY');
         }
 
         get roundEndTime() {
-            return this.roundEnd(this.roundNo).format('hh:mma');
+            return this.roundEnd(this.roundNo, this.auctionStartTime, this.roundLengthInSeconds).format('hh:mma');
         }
 
         get highestBidder() {
-            return '0xdffcd8a37f074e7eafae618c986ff825666198bd'
+            if(this.isDrizzleInitialized) {
+                const bidder = this.getContractData({
+                    contract: this.contractName,
+                    method: 'highestBidderFromRound'
+                });
+
+                if (bidder !== 'loading') {
+                    return bidder;
+                }
+            }
+
+            return 'loading...';
         }
 
         get highestBid() {
-            return '0.05';
+            if(this.isDrizzleInitialized) {
+                const bid = this.getContractData({
+                    contract: this.contractName,
+                    method: 'highestBidFromRound'
+                });
+
+                if (bid !== 'loading') {
+                    return this.etherFromWei(bid);
+                }
+            }
+
+            return 'loading...';
         }
 
         get etherscanTokenUrl() {
-            return 'https://etherscan.io/token/0xbc5370374fe08d699cf7fcd2e625a93bf393ccc4?a=909';
+            return `https://etherscan.io/token/${this.tokenContractAddress}?a=${this.roundNo}`;
+        }
+
+        created() {
+            this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
+                contractName: this.contractName,
+                method: 'highestBidFromRound',
+                methodArgs: [this.roundNo]
+            });
+
+            this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
+                contractName: this.contractName,
+                method: 'highestBidderFromRound',
+                methodArgs: [this.roundNo]
+            });
         }
     }
 </script>

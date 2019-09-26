@@ -71,6 +71,7 @@
 
         get events() {
             if (this.isDrizzleInitialized) {
+                const currentRound = this.currentRound;
                 const allEvents = (this.contractInstances[this.contractName].events || []);
                 return allEvents.filter((event: any) => {
                    return event.event === 'BidAccepted';
@@ -78,6 +79,8 @@
                     return index == self.findIndex((obj: any) => {
                         return JSON.stringify(obj) === JSON.stringify(event);
                     });
+                }).filter((event: any) => {
+                    return event.returnValues._round === currentRound;
                 }).reverse();
             }
             return [];
@@ -116,7 +119,7 @@
 
         @Watch('events')
         onNewEvents(newValue: any[], oldValue: any[]) {
-            if ((newValue.length - oldValue.length) === 1) {
+            if ((newValue.length - oldValue.length) === 1 && oldValue.length !== 0) {
                 const event = newValue[0];
                 const msg: string =
                     `${this.etherFromWei(event.returnValues._amount)} ETH bid accepted from ${event.returnValues._bidder}`;

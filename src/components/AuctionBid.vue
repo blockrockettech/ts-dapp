@@ -102,24 +102,6 @@
             }
             return 0;
         }
-
-        get highestBidInETH(): number {
-            if(this.isDrizzleInitialized) {
-                const arg = {
-                    contract: this.contractName,
-                    method: 'highestBidFromRound'
-                };
-                const highestBidFromRound: string = this.getContractData(arg);
-
-                if(highestBidFromRound !== 'loading') {
-                    const utils = this.drizzleInstance.web3.utils;
-                    return utils.fromWei(highestBidFromRound, 'ether');
-                } else {
-                    return -1;
-                }
-            }
-            return -1;
-        }
     }
 </script>
 

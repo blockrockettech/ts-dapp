@@ -7,6 +7,8 @@
         <PreviousAuction v-for="roundNo in previousRoundNums"
                          :roundNo="roundNo"
                          :totalRounds="totalRounds"
+                         :auctionStartTime="auctionStartTime"
+                         :roundLengthInSeconds="roundLengthInSeconds"
                          :key="roundNo" />
     </div>
 </template>
