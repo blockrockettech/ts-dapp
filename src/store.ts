@@ -5,9 +5,19 @@ import moment from 'moment';
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-    state: {},
-    mutations: {},
-    actions: {},
+    state: {
+        highestBidInEth: 0
+    },
+    mutations: {
+        updateHighestBidInEth(state, {highestBidInEth}) {
+            Vue.set(state, 'highestBidInEth', highestBidInEth);
+        }
+    },
+    actions: {
+        updateHighestBidInEth({ commit }, highestBidInEth) {
+            commit('updateHighestBidInEth', {highestBidInEth});
+        }
+    },
     getters: {
         contractName: () => {
             return 'TwistedAuctionMock';
@@ -29,6 +39,9 @@ export default new Vuex.Store({
             const result = moment(getters.roundStart(round, auctionStartTime));
             result.add(roundLengthInSeconds, 'seconds');
             return result;
+        },
+        highestBidInEth: (state) => {
+            return state.highestBidInEth;
         },
     }
 })

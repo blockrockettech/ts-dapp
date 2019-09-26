@@ -18,12 +18,12 @@
             </span>
             <div class="make-bid-input-group-container">
                 <b-input-group>
-                    <b-input-group-prepend>
+                    <!--<b-input-group-prepend>
                         <b-button variant="outline-info" class="adjust-btn-width" @click="decreaseBid">-</b-button>
                         <b-button variant="outline-info" class="adjust-btn-width" @click="increaseBid">+</b-button>
-                    </b-input-group-prepend>
+                    </b-input-group-prepend>-->
 
-                    <b-form-input type="number" min="0.01" v-model="bid" class="bid-input"></b-form-input>
+                    <b-form-input type="number" :min="minBid" step="0.01" v-model="bid" class="bid-input"></b-form-input>
 
                     <b-input-group-append>
                         <b-button variant="success" @click="submitBid">BID</b-button>
@@ -46,7 +46,7 @@
         computed: {
             ...mapGetters('drizzle', ['drizzleInstance', 'isDrizzleInitialized']),
             ...mapGetters('contracts', ['getContractData', 'contractInstances']),
-            ...mapGetters(['contractName'])
+            ...mapGetters(['contractName', 'highestBidInEth'])
         },
         components: {ContractFormV2}
     })
@@ -54,22 +54,12 @@
         parameter: number = 0;
 
         bid: number = 0.01;
+        highestBidInEth!: number;
 
         drizzleInstance: any;
         isDrizzleInitialized!: boolean;
         getContractData: any;
         contractName!: string;
-
-        decreaseBid() {
-            this.bid -= 0.005;
-            if(this.bid < this.minBid) {
-                this.bid = this.minBid;
-            }
-        }
-
-        increaseBid() {
-            this.bid += 0.005;
-        }
 
         submitBid() {
             if(this.isDrizzleInitialized) {
@@ -80,7 +70,16 @@
             }
         }
 
-        get minBid() {
+        get minBid(): number {
+            if (this.highestBidInEth > 0.01) {
+                //todo: get something like this working and do tests
+                /*if(this.highestBidInEth > this.bid) {
+                    this.bid = this.highestBidInEth;
+                }*/
+
+                return this.highestBidInEth;
+            }
+
             const min = this.getContractData({
                contract: this.contractName,
                method: 'minBid'
@@ -88,7 +87,7 @@
 
             if (min !== 'loading' && this.isDrizzleInitialized) {
                 const utils = this.drizzleInstance.web3.utils;
-                return utils.fromWei(min, 'ether');
+                return Number(utils.fromWei(min, 'ether'));
             }
 
             return 0.01;

@@ -93,10 +93,12 @@
         get highestBidData(): any {
             if (this.events.length > 0) {
                 const event = this.events[0];
+                const highestBid = this.etherFromWei(event.returnValues._amount);
+                this.$store.dispatch('updateHighestBidInEth', Number(highestBid));
                 return {
                     elapsedTime: this.humanisedTimeFromUnixTimestamp(event.returnValues._timeStamp),
                     address: event.returnValues._bidder,
-                    amount: this.etherFromWei(event.returnValues._amount)
+                    amount: highestBid
                 };
             }
 
