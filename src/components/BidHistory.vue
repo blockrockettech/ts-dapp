@@ -119,12 +119,16 @@
             if ((newValue.length - oldValue.length) === 1) {
                 const event = newValue[0];
                 const msg: string =
-                    `${this.etherFromWei(event.returnValues._amount)} ETH bid from ${event.returnValues._bidder}`;
-                this.$bvToast.toast(msg, {
-                    title: 'New bid accepted',
-                    autoHideDelay: 5000,
-                    appendToast: true
-                })
+                    `${this.etherFromWei(event.returnValues._amount)} ETH bid accepted from ${event.returnValues._bidder}`;
+                this.$toasted.show(msg, {
+                    action : {
+                        text : 'Close',
+                        onClick : (e, toastObject) => {
+                            toastObject.goAway(0);
+                        }
+                    },
+                    duration: 15000
+                });
             }
         }
     }
