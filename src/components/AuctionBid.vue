@@ -1,7 +1,7 @@
 <template>
     <div class="auction-bid-container">
         <div class="img-container">
-            <img src="http://twistedsister.root-lvl.com/contents/auction-03/03-63.jpg" alt=""/>
+            <img :src="paramImgUrl" alt=""/>
         </div>
         <div class="slider-container">
             <label class="slider-label" for="slider-input">
@@ -68,6 +68,10 @@
             } else {
                 alert("Drizzle doesn't seem to be initialised / ready");
             }
+        }
+
+        get paramImgUrl() {
+            return `https://robohash.org/${this.parameter}/image`;
         }
 
         get minBid(): number {

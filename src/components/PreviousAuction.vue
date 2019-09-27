@@ -10,7 +10,7 @@
         </div>
         <div class="content-container">
             <div class="img-container">
-                <img src="http://twistedsister.root-lvl.com/contents/auction-03/03-63.jpg" alt=""/>
+                <img :src="paramImgUrl" alt=""/>
             </div>
             <div class="details-container">
                 <div class="details-container-row">
@@ -134,6 +134,14 @@
             }
 
             return 'loading...';
+        }
+
+        get paramImgUrl() {
+            if (this.events.length === 1) {
+                const event = this.events[0];
+                return `https://robohash.org/${event.returnValues._param}/image`;
+            }
+            return '';
         }
 
         get etherscanTokenUrl() {
