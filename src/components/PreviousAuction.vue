@@ -46,6 +46,7 @@
 
 <script lang="ts">
     import { Moment } from 'moment';
+    import moment from 'moment';
     import { mapGetters } from 'vuex';
     import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
 
@@ -75,6 +76,7 @@
         tokenContractAddress!: string;
         drizzleInstance: any;
         getContractData: any;
+        contractInstances: any;
 
         etherFromWei(wei: string): number {
             if (this.isDrizzleInitialized && wei !== 'loading') {
@@ -85,60 +87,58 @@
             return 0;
         }
 
+        get events() {
+            if (this.isDrizzleInitialized) {
+                const currentRound = this.roundNo;
+                const allEvents = (this.contractInstances[this.contractName].events || []);
+                return allEvents.filter((event: any) => {
+                    return event.event === 'RoundFinalised';
+                }).filter((event: any, index: number, self: any) => {
+                    return index == self.findIndex((obj: any) => {
+                        return JSON.stringify(obj) === JSON.stringify(event);
+                    });
+                }).filter((event: any) => {
+                    return event.returnValues._round === currentRound.toString();
+                }).reverse();
+            }
+            return [];
+        }
+
         get roundEndDay() {
-            return this.roundEnd(this.roundNo, this.auctionStartTime, this.roundLengthInSeconds).format('DD MMMM YYYY');
+            if (this.events.length === 1) {
+                const event = this.events[0];
+                return moment.unix(event.returnValues._timestamp).utc(false).format('DD MMMM YYYY');
+            }
+            return 'loading...';
         }
 
         get roundEndTime() {
-            return this.roundEnd(this.roundNo, this.auctionStartTime, this.roundLengthInSeconds).format('hh:mma');
+            if (this.events.length === 1) {
+                const event = this.events[0];
+                return moment.unix(event.returnValues._timestamp).utc(false).format('hh:mma');
+            }
+            return 'loading...';
         }
 
         get highestBidder() {
-            if(this.isDrizzleInitialized) {
-                const bidder = this.getContractData({
-                    contract: this.contractName,
-                    method: 'highestBidderFromRound'
-                });
-
-                if (bidder !== 'loading') {
-                    return bidder;
-                }
+            if(this.events.length === 1) {
+                return this.events[0].returnValues._highestBidder;
             }
 
             return 'loading...';
         }
 
         get highestBid() {
-            if(this.isDrizzleInitialized) {
-                const bid = this.getContractData({
-                    contract: this.contractName,
-                    method: 'highestBidFromRound'
-                });
-
-                if (bid !== 'loading') {
-                    return this.etherFromWei(bid);
-                }
+            if(this.events.length === 1) {
+                return this.etherFromWei(this.events[0].returnValues._highestBid);
             }
 
             return 'loading...';
         }
 
         get etherscanTokenUrl() {
-            return `https://etherscan.io/token/${this.tokenContractAddress}?a=${this.roundNo}`;
-        }
-
-        created() {
-            this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
-                contractName: this.contractName,
-                method: 'highestBidFromRound',
-                methodArgs: [this.roundNo]
-            });
-
-            this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
-                contractName: this.contractName,
-                method: 'highestBidderFromRound',
-                methodArgs: [this.roundNo]
-            });
+            //todo: fix network using drizzle utils package
+            return `https://ropsten.etherscan.io/token/${this.tokenContractAddress}?a=${this.roundNo}`;
         }
     }
 </script>
