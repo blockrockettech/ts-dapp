@@ -10,11 +10,16 @@
         </div>
         <router-view />
         <div class="footer">
-            <a href="https://twistedsister.io" target="_blank" class="footer-link">twistedsister.io</a>
             <div class="row mt-2 mb-2">
-                <div class="col text-center small">
+                <span class="col small">
+                    <a href="https://twistedsister.io" target="_blank" class="footer-link">twistedsister.io</a>
+                </span>
+                <span class="col text-center small">
                     Built by: <a href="https://blockrocket.tech" target="_blank">BlockRocket</a>
-                </div>
+                </span>
+                <span class="col text-center small">
+                    Current Ethereum Network: {{currentNetwork}}
+                </span>
             </div>
         </div>
     </div>
@@ -22,7 +27,9 @@
 
 <script lang="ts">
     import { mapGetters } from 'vuex';
-    import { Component, Vue, Watch } from 'vue-property-decorator';
+    import { Component, Vue } from 'vue-property-decorator';
+
+    import { getNetworkName } from '@/utils/drizzle/drizzle-utils';
 
     @Component({
         computed: {
@@ -33,6 +40,8 @@
     })
     export default class App extends Vue {
         contractName!: string;
+        isDrizzleInitialized!: boolean;
+        drizzleInstance: any;
 
         created() {
             this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
@@ -64,6 +73,14 @@
                 method: 'roundLengthInSeconds',
                 methodArgs: []
             });
+        }
+
+        get currentNetwork() {
+            if (this.isDrizzleInitialized) {
+                return getNetworkName(this.drizzleInstance);
+            }
+
+            return null;
         }
     }
 </script>

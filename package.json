@@ -9,8 +9,10 @@
   },
   "dependencies": {
     "@drizzle/vue-plugin": "git+https://github.com/trufflesuite/drizzle-vue-plugin.git",
+    "@types/lodash": "^4.14.140",
     "bootstrap-vue": "^2.0.2",
     "core-js": "^2.6.5",
+    "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "portal-vue": "^2.1.6",
     "vue": "^2.6.10",

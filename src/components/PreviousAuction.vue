@@ -50,6 +50,8 @@
     import { mapGetters } from 'vuex';
     import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
 
+    import { getEtherscanBaseUrl } from '@/utils/drizzle/drizzle-utils';
+
     @Component({
         computed: {
             ...mapGetters('drizzle', ['drizzleInstance', 'isDrizzleInitialized']),
@@ -145,8 +147,10 @@
         }
 
         get etherscanTokenUrl() {
-            //todo: fix network using drizzle utils package
-            return `https://ropsten.etherscan.io/token/${this.tokenContractAddress}?a=${this.roundNo}`;
+            if(this.isDrizzleInitialized) {
+                return `${getEtherscanBaseUrl(this.drizzleInstance)}/token/${this.tokenContractAddress}?a=${this.roundNo}`;
+            }
+            return '';
         }
     }
 </script>
