@@ -11,6 +11,11 @@
         <router-view />
         <div class="footer">
             <a href="https://twistedsister.io" target="_blank" class="footer-link">twistedsister.io</a>
+            <div class="row mt-2 mb-2">
+                <div class="col text-center small">
+                    Built by: <a href="https://blockrocket.tech" target="_blank">BlockRocket</a>
+                </div>
+            </div>
         </div>
     </div>
 </template>

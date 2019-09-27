@@ -27,8 +27,8 @@ const options = {
         ]
     },
     polls: {
-        // check accounts ever 15 seconds
-        accounts: 15000
+        // check accounts every 5 seconds
+        accounts: 5000
     }
 };
 
