@@ -14,7 +14,7 @@
             <span class="ending-time">{{endingIn}}</span>
         </div>
         <div class="not-started" v-else>
-            <span><strong>Auction hasn't started - bidding will fail</strong></span>
+            <span><strong>The current round's bidding window is not open. Attempts to bid will fail!</strong></span>
         </div>
 
         <AuctionBid />
@@ -68,9 +68,10 @@
             const now = moment().utc(false);
 
             const roundStart = this.roundStart(this.currentRound, this.auctionStartTime);
-            this.open = now > roundStart;
-
             const roundEnd = this.roundEnd(this.currentRound, this.auctionStartTime, this.roundLengthInSeconds);
+
+            this.open = now >= roundStart && now <= roundEnd;
+
             const duration = moment.duration(roundEnd.diff(now));
             this.endingIn = `${Math.ceil(duration.get('hours'))}h ${Math.ceil(duration.get('minutes'))}m ${Math.ceil(duration.get('seconds'))}s`;
         }
@@ -109,6 +110,8 @@
     .not-started {
         text-align: center;
         margin-bottom: 3rem;
+        color: dodgerblue;
+        font-size: 1.75rem;
     }
 
     .ending-label {

@@ -30,7 +30,7 @@
                     </b-input-group-append>
                 </b-input-group>
             </div>
-            <span>
+            <span v-bind:class="{ 'error-txt': bid < minBid }">
                 Min bid: {{minBid}} ETH
             </span>
         </div>
@@ -72,10 +72,9 @@
 
         get minBid(): number {
             if (this.highestBidInEth > 0.01) {
-                //todo: get something like this working and do tests
-                /*if(this.highestBidInEth > this.bid) {
+                if(this.highestBidInEth > this.bid) {
                     this.bid = this.highestBidInEth;
-                }*/
+                }
 
                 return this.highestBidInEth;
             }
@@ -146,8 +145,8 @@
         margin-top: 1rem;
     }
 
-    .adjust-btn-width {
-        width: 35px;
+    .error-txt {
+        color: red;
     }
 
     .bid-input {
