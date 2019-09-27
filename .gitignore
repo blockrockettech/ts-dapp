@@ -2,6 +2,10 @@
 node_modules
 /dist
 
+.firebase
+.firebase/*
+.firebase/hosting.ZGlzdA.cache
+
 # local env files
 .env.local
 .env.*.local
