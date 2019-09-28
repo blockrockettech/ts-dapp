@@ -1,6 +1,4 @@
-
-// @ts-ignore
-import TwistedAuctionMock from "./truffleconf/auction/TwistedAuctionMock.json";
+import TwistedAuctionMock from "@/truffleconf/auction/TwistedAuctionMock.json";
 
 const options = {
     web3: {

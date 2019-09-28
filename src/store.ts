@@ -2,6 +2,9 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import moment from 'moment';
 
+import { getContractAddressFromTruffleConf } from '@/utils/drizzle/drizzle-utils';
+import TwistedSisterToken from '@/truffleconf/token/TwistedSisterToken.json';
+
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -22,8 +25,8 @@ export default new Vuex.Store({
         contractName: () => {
             return 'TwistedAuctionMock';
         },
-        tokenContractAddress: () => {
-            return '0xdb131507405b6520fb3d54b927a9549953ea7e4e';
+        tokenContractAddress: () => (drizzleInstance: any) => {
+            return getContractAddressFromTruffleConf(drizzleInstance, TwistedSisterToken);
         },
         roundStart: () => (round: number, auctionStartTime: number) => {
             const result = moment.unix(auctionStartTime).utc(false);

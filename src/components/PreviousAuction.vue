@@ -75,7 +75,7 @@
         roundEnd!: (round: number, auctionStartTime: number, roundLengthInSeconds: number) => Moment;
         isDrizzleInitialized!: boolean;
         contractName!: string;
-        tokenContractAddress!: string;
+        tokenContractAddress: any;
         drizzleInstance: any;
         getContractData: any;
         contractInstances: any;
@@ -148,7 +148,8 @@
 
         get etherscanTokenUrl() {
             if(this.isDrizzleInitialized) {
-                return `${getEtherscanBaseUrl(this.drizzleInstance)}/token/${this.tokenContractAddress}?a=${this.roundNo}`;
+                const tokenAddress = this.tokenContractAddress(this.drizzleInstance);
+                return `${getEtherscanBaseUrl(this.drizzleInstance)}/token/${tokenAddress}?a=${this.roundNo}`;
             }
             return '';
         }

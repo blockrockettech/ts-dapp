@@ -77,7 +77,7 @@
 
         get currentNetwork() {
             if (this.isDrizzleInitialized) {
-                return getNetworkName(this.drizzleInstance);
+                return getNetworkName(this.drizzleInstance).toUpperCase();
             }
 
             return null;
