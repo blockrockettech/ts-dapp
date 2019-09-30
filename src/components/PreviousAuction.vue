@@ -50,7 +50,7 @@
     import { mapGetters } from 'vuex';
     import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
 
-    import { getEtherscanBaseUrl } from '@/utils/drizzle/drizzle-utils';
+    import { getEtherscanBaseUrl, getEventsByName, etherFromWei } from '@/utils/drizzle/drizzle-utils';
 
     @Component({
         computed: {
@@ -80,28 +80,13 @@
         getContractData: any;
         contractInstances: any;
 
-        etherFromWei(wei: string): number {
-            if (this.isDrizzleInitialized && wei !== 'loading') {
-                const utils = this.drizzleInstance.web3.utils;
-                return utils.fromWei(wei, 'ether');
-            }
-
-            return 0;
-        }
-
         get events() {
             if (this.isDrizzleInitialized) {
                 const currentRound = this.roundNo;
-                const allEvents = (this.contractInstances[this.contractName].events || []);
-                return allEvents.filter((event: any) => {
-                    return event.event === 'RoundFinalised';
-                }).filter((event: any, index: number, self: any) => {
-                    return index == self.findIndex((obj: any) => {
-                        return JSON.stringify(obj) === JSON.stringify(event);
-                    });
-                }).filter((event: any) => {
-                    return event.returnValues._round === currentRound.toString();
-                }).reverse();
+                return getEventsByName(this.contractInstances, this.contractName, 'RoundFinalised')
+                    .filter((event: any) => {
+                        return event.returnValues._round === currentRound.toString();
+                    }).reverse();
             }
             return [];
         }
@@ -132,7 +117,7 @@
 
         get highestBid() {
             if(this.events.length === 1) {
-                return this.etherFromWei(this.events[0].returnValues._highestBid);
+                return etherFromWei(this.drizzleInstance, this.events[0].returnValues._highestBid);
             }
 
             return 'loading...';

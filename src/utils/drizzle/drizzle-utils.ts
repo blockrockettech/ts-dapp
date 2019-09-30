@@ -1,6 +1,7 @@
 import _ from 'lodash';
 
-function networkVersion(currentProvider: any) {
+function networkVersion(drizzleInstance: any) {
+    const { currentProvider } = drizzleInstance.web3;
     if(currentProvider && currentProvider.networkVersion) {
         return currentProvider.networkVersion;
     }
@@ -9,10 +10,8 @@ function networkVersion(currentProvider: any) {
 
 // todo: need a drizzleInstance type interface
 export function getNetworkName(drizzleInstance: any): string {
-    const { currentProvider } = drizzleInstance.web3;
-
     // todo: replace with blockrocket utils
-    switch (networkVersion(currentProvider)) {
+    switch (networkVersion(drizzleInstance)) {
         case 1:
         case '1':
         case 'mainnet':
@@ -41,12 +40,32 @@ export function getEtherscanBaseUrl(drizzleInstance: any): string {
 }
 
 export function getContractAddressFromTruffleConf(drizzleInstance: any, truffleConf: any): string {
-    const { currentProvider } = drizzleInstance.web3;
-    const currentNetworkVersion = Number(networkVersion(currentProvider));
-    const networksTruffleConf = truffleConf.networks;
-    if (networksTruffleConf[currentNetworkVersion]) {
-        const { address } = networksTruffleConf[currentNetworkVersion];
+    const currentNetworkVersion = Number(networkVersion(drizzleInstance));
+    const { networks } = truffleConf;
+    if (networks[currentNetworkVersion]) {
+        const { address } = networks[currentNetworkVersion];
         return address;
     }
     return '';
+}
+
+export function getEventsByName(contractInstances: any, contractName: string, eventName: string): any[] {
+    const allEvents = (contractInstances[contractName].events || []);
+    return allEvents.filter((event: any) => {
+        return event.event === eventName;
+    }).filter((event: any, index: number, self: any) => {
+        // remove any duplicates
+        return index == self.findIndex((obj: any) => {
+            return JSON.stringify(obj) === JSON.stringify(event);
+        });
+    });
+}
+
+export function etherFromWei(drizzleInstance: any, wei: string): number {
+    if (drizzleInstance && wei !== 'loading') {
+        const utils = drizzleInstance.web3.utils;
+        return utils.fromWei(wei, 'ether');
+    }
+
+    return 0;
 }

@@ -36,6 +36,8 @@
     import { mapGetters } from 'vuex';
     import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
 
+    import { getEventsByName, etherFromWei } from '@/utils/drizzle/drizzle-utils';
+
     @Component({
         computed: {
             ...mapGetters('drizzle', ['drizzleInstance', 'isDrizzleInitialized']),
@@ -60,28 +62,13 @@
             return duration.humanize() + ' ago';
         }
 
-        etherFromWei(wei: string): number {
-            if (this.isDrizzleInitialized && wei !== 'loading') {
-                const utils = this.drizzleInstance.web3.utils;
-                return utils.fromWei(wei, 'ether');
-            }
-
-            return 0;
-        }
-
         get events() {
             if (this.isDrizzleInitialized) {
                 const currentRound = this.currentRound;
-                const allEvents = (this.contractInstances[this.contractName].events || []);
-                return allEvents.filter((event: any) => {
-                   return event.event === 'BidAccepted';
-                }).filter((event: any, index: number, self: any) => {
-                    return index == self.findIndex((obj: any) => {
-                        return JSON.stringify(obj) === JSON.stringify(event);
-                    });
-                }).filter((event: any) => {
-                    return event.returnValues._round === currentRound;
-                }).reverse();
+                return getEventsByName(this.contractInstances, this.contractName, 'BidAcepted')
+                    .filter((event: any) => {
+                        return event.returnValues._round === currentRound;
+                    }).reverse();
             }
             return [];
         }
@@ -93,7 +80,7 @@
         get highestBidData(): any {
             if (this.events.length > 0) {
                 const event = this.events[0];
-                const highestBid = this.etherFromWei(event.returnValues._amount);
+                const highestBid = etherFromWei(this.drizzleInstance, event.returnValues._amount);
                 this.$store.dispatch('updateHighestBidInEth', Number(highestBid));
                 return {
                     elapsedTime: this.humanisedTimeFromUnixTimestamp(event.returnValues._timeStamp),
@@ -114,7 +101,7 @@
                 return {
                     elapsedTime: this.humanisedTimeFromUnixTimestamp(event.returnValues._timeStamp),
                     address: event.returnValues._bidder,
-                    amount: this.etherFromWei(event.returnValues._amount)
+                    amount: etherFromWei(this.drizzleInstance, event.returnValues._amount)
                 };
             });
         }
@@ -124,7 +111,7 @@
             if ((newValue.length - oldValue.length) === 1 && oldValue.length !== 0) {
                 const event = newValue[0];
                 const msg: string =
-                    `${this.etherFromWei(event.returnValues._amount)} ETH bid accepted from ${event.returnValues._bidder}`;
+                    `${etherFromWei(this.drizzleInstance, event.returnValues._amount)} ETH bid accepted from ${event.returnValues._bidder}`;
                 this.$toasted.show(msg, {
                     action : {
                         text : 'Close',
