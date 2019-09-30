@@ -46,7 +46,7 @@
         computed: {
             ...mapGetters('drizzle', ['drizzleInstance', 'isDrizzleInitialized']),
             ...mapGetters('contracts', ['getContractData', 'contractInstances']),
-            ...mapGetters(['contractName', 'highestBidInEth'])
+            ...mapGetters(['contractName', 'highestBidInEth', 'paramFromHighestBidder'])
         },
         components: {ContractFormV2}
     })
@@ -55,6 +55,7 @@
 
         bid: number = 0.01;
         highestBidInEth!: number;
+        paramFromHighestBidder!: number;
 
         drizzleInstance: any;
         isDrizzleInitialized!: boolean;
@@ -78,6 +79,10 @@
             if (this.highestBidInEth > 0.01) {
                 if(this.highestBidInEth > this.bid) {
                     this.bid = this.highestBidInEth;
+
+                    if (this.parameter !== this.paramFromHighestBidder) {
+                        this.parameter = this.paramFromHighestBidder;
+                    }
                 }
 
                 return this.highestBidInEth;

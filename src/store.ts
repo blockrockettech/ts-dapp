@@ -9,16 +9,23 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
-        highestBidInEth: 0
+        highestBidInEth: 0,
+        paramFromHighestBidder: 0
     },
     mutations: {
         updateHighestBidInEth(state, {highestBidInEth}) {
             Vue.set(state, 'highestBidInEth', highestBidInEth);
+        },
+        updateParamFromHighestBidder(state, {param}) {
+            Vue.set(state, 'paramFromHighestBidder', param);
         }
     },
     actions: {
         updateHighestBidInEth({ commit }, highestBidInEth) {
             commit('updateHighestBidInEth', {highestBidInEth});
+        },
+        updateParamFromHighestBidder({ commit }, param) {
+            commit('updateParamFromHighestBidder', { param });
         }
     },
     getters: {
@@ -46,5 +53,8 @@ export default new Vuex.Store({
         highestBidInEth: (state) => {
             return state.highestBidInEth;
         },
+        paramFromHighestBidder: (state) => {
+            return state.paramFromHighestBidder;
+        }
     }
 })

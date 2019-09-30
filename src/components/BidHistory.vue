@@ -65,7 +65,7 @@
         get events() {
             if (this.isDrizzleInitialized) {
                 const currentRound = this.currentRound;
-                return getEventsByName(this.contractInstances, this.contractName, 'BidAcepted')
+                return getEventsByName(this.contractInstances, this.contractName, 'BidAccepted')
                     .filter((event: any) => {
                         return event.returnValues._round === currentRound;
                     }).reverse();
@@ -82,6 +82,7 @@
                 const event = this.events[0];
                 const highestBid = etherFromWei(this.drizzleInstance, event.returnValues._amount);
                 this.$store.dispatch('updateHighestBidInEth', Number(highestBid));
+                this.$store.dispatch('updateParamFromHighestBidder', Number(event.returnValues._param));
                 return {
                     elapsedTime: this.humanisedTimeFromUnixTimestamp(event.returnValues._timeStamp),
                     address: event.returnValues._bidder,
