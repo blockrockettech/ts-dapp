@@ -86,7 +86,7 @@ export function addWeiToEther(drizzleInstance: any, wei: string, ether: string):
     if (drizzleInstance) {
         const etherConvertedToWei: number = weiFromEther(drizzleInstance, ether);
         const newTotalInWei: number = amountValid(wei) ? Number(etherConvertedToWei) + Number(wei) : etherConvertedToWei;
-        return etherFromWei(drizzleInstance, newTotalInWei.toString());
+        return Number(etherFromWei(drizzleInstance, newTotalInWei.toString()));
     }
     return Number(ether);
 }

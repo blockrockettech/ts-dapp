@@ -31,7 +31,7 @@
 
                     <b-form-input type="number"
                                   :min="minBid"
-                                  step="0.01"
+                                  step="0.02"
                                   v-model="bid"
                                   @change="inputReceived"
                                   class="bid-input" />
@@ -50,7 +50,7 @@
 
 <script lang="ts">
     import { mapGetters } from 'vuex';
-    import { Component, Vue } from 'vue-property-decorator';
+    import { Component, Watch, Vue } from 'vue-property-decorator';
 
     import { etherFromWei, weiFromEther, addWeiToEther } from '@/utils/drizzle/drizzle-utils';
 
@@ -129,6 +129,8 @@
                         this.highestBidInEth.toString()
                     );
 
+                    minInEther = Number(Number(minInEther).toFixed(6));
+
                     if (!this.receivedInput) {
                         this.bid = minInEther;
                     }
@@ -142,6 +144,15 @@
 
         get bidInWei(): number {
             return weiFromEther(this.drizzleInstance, this.bid.toString());
+        }
+
+        // -----------------
+        // Watched Props
+        // -----------------
+
+        @Watch('bid')
+        onBidChanged(newVal: number) {
+            this.bid = Number(Number(newVal).toFixed(6));
         }
     }
 </script>
