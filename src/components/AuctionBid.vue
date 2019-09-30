@@ -7,7 +7,13 @@
             <label class="slider-label" for="slider-input">
                 Adjust the settings to your slider
             </label>
-            <b-form-input id="slider-input" type="range" min="0" max="63" v-model="parameter" class="slider-input"></b-form-input>
+            <b-form-input id="slider-input"
+                          class="slider-input"
+                          type="range"
+                          min="0"
+                          max="63"
+                          @change="inputReceived"
+                          v-model="parameter" />
             <span class="reset-label">
                 + RESET TO HIGHEST BID
             </span>
@@ -23,7 +29,12 @@
                         <b-button variant="outline-info" class="adjust-btn-width" @click="increaseBid">+</b-button>
                     </b-input-group-prepend>-->
 
-                    <b-form-input type="number" :min="minBid" step="0.01" v-model="bid" class="bid-input"></b-form-input>
+                    <b-form-input type="number"
+                                  :min="minBid"
+                                  step="0.01"
+                                  v-model="bid"
+                                  @change="inputReceived"
+                                  class="bid-input" />
 
                     <b-input-group-append>
                         <b-button variant="success" @click="submitBid">BID</b-button>
@@ -40,27 +51,42 @@
 <script lang="ts">
     import { mapGetters } from 'vuex';
     import { Component, Vue } from 'vue-property-decorator';
-    import ContractFormV2 from './ContractFormV2.vue';
+
+    import { etherFromWei, weiFromEther, addWeiToEther } from '@/utils/drizzle/drizzle-utils';
+
+    const DEFAULT_MIN_BID: number = 0.01;
+    const DEFAULT_MIN_INCREMENT_IN_WEI: number = 20000000000000000;
 
     @Component({
         computed: {
             ...mapGetters('drizzle', ['drizzleInstance', 'isDrizzleInitialized']),
-            ...mapGetters('contracts', ['getContractData', 'contractInstances']),
+            ...mapGetters('contracts', ['getContractData']),
             ...mapGetters(['contractName', 'highestBidInEth', 'paramFromHighestBidder'])
-        },
-        components: {ContractFormV2}
+        }
     })
     export default class AuctionBid extends Vue {
+        // State
         parameter: number = 0;
-
         bid: number = 0.01;
+        receivedInput: boolean = false;
+
+        // Custom mapped getters
+        contractName!: string;
         highestBidInEth!: number;
         paramFromHighestBidder!: number;
 
+        // Drizzle mapped getters
         drizzleInstance: any;
         isDrizzleInitialized!: boolean;
         getContractData: any;
-        contractName!: string;
+
+        // -----------------
+        // Component Methods
+        // -----------------
+
+        inputReceived() {
+            this.receivedInput = true;
+        }
 
         submitBid() {
             if(this.isDrizzleInitialized) {
@@ -71,43 +97,51 @@
             }
         }
 
+        // -----------------
+        // Computed Props
+        // -----------------
+
+        get paramForImg() {
+            if (!this.receivedInput && this.parameter !== this.paramFromHighestBidder) {
+                this.parameter = this.paramFromHighestBidder;
+            }
+
+            return this.parameter;
+        }
+
         get paramImgUrl() {
-            return `https://robohash.org/${this.parameter}/image`;
+            return `https://robohash.org/${this.paramForImg}/image`;
         }
 
         get minBid(): number {
-            if (this.highestBidInEth > 0.01) {
-                if(this.highestBidInEth > this.bid) {
-                    this.bid = this.highestBidInEth;
+            if (this.isDrizzleInitialized) {
+                const min = this.getContractData({
+                    contract: this.contractName,
+                    method: 'minBid'
+                });
 
-                    if (this.parameter !== this.paramFromHighestBidder) {
-                        this.parameter = this.paramFromHighestBidder;
+                let minInEther: number = etherFromWei(this.drizzleInstance, min, DEFAULT_MIN_BID);
+
+                if (this.highestBidInEth > minInEther) {
+                    minInEther = addWeiToEther(
+                        this.drizzleInstance,
+                        DEFAULT_MIN_INCREMENT_IN_WEI.toString(),
+                        this.highestBidInEth.toString()
+                    );
+
+                    if (!this.receivedInput) {
+                        this.bid = minInEther;
                     }
                 }
 
-                return this.highestBidInEth;
+                return minInEther;
             }
 
-            const min = this.getContractData({
-               contract: this.contractName,
-               method: 'minBid'
-            });
-
-            if (min !== 'loading' && this.isDrizzleInitialized) {
-                const utils = this.drizzleInstance.web3.utils;
-                return Number(utils.fromWei(min, 'ether'));
-            }
-
-            return 0.01;
+            return DEFAULT_MIN_BID;
         }
 
         get bidInWei(): number {
-            if(this.isDrizzleInitialized) {
-                const utils = this.drizzleInstance.web3.utils;
-                const bid: string = this.bid.toString();
-                return bid !== '' ? utils.toWei(this.bid.toString(), 'ether') : 0;
-            }
-            return 0;
+            return weiFromEther(this.drizzleInstance, this.bid.toString());
         }
     }
 </script>

@@ -79,13 +79,15 @@
 
         get highestBidData(): any {
             if (this.events.length > 0) {
-                const event = this.events[0];
-                const highestBid = etherFromWei(this.drizzleInstance, event.returnValues._amount);
+                const bidEvent = this.events[0];
+                const highestBid = etherFromWei(this.drizzleInstance, bidEvent.returnValues._amount);
+
                 this.$store.dispatch('updateHighestBidInEth', Number(highestBid));
-                this.$store.dispatch('updateParamFromHighestBidder', Number(event.returnValues._param));
+                this.$store.dispatch('updateParamFromHighestBidder', Number(bidEvent.returnValues._param));
+
                 return {
-                    elapsedTime: this.humanisedTimeFromUnixTimestamp(event.returnValues._timeStamp),
-                    address: event.returnValues._bidder,
+                    elapsedTime: this.humanisedTimeFromUnixTimestamp(bidEvent.returnValues._timeStamp),
+                    address: bidEvent.returnValues._bidder,
                     amount: highestBid
                 };
             }

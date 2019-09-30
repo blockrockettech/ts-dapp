@@ -1,5 +1,9 @@
 import _ from 'lodash';
 
+function amountValid(amount: string): boolean {
+    return amount !== '' && amount !== 'loading' && !isNaN(Number(amount));
+}
+
 function networkVersion(drizzleInstance: any) {
     const { currentProvider } = drizzleInstance.web3;
     if(currentProvider && currentProvider.networkVersion) {
@@ -61,11 +65,28 @@ export function getEventsByName(contractInstances: any, contractName: string, ev
     });
 }
 
-export function etherFromWei(drizzleInstance: any, wei: string): number {
-    if (drizzleInstance && wei !== 'loading') {
+export function etherFromWei(drizzleInstance: any, wei: string, defaultTo?: number): number {
+    if (drizzleInstance && amountValid(wei)) {
         const utils = drizzleInstance.web3.utils;
         return utils.fromWei(wei, 'ether');
     }
 
-    return 0;
+    return defaultTo ? defaultTo : 0;
+}
+
+export function weiFromEther(drizzleInstance: any, ether: string, defaultTo?: number): number {
+    if (drizzleInstance && amountValid(ether)) {
+        const utils = drizzleInstance.web3.utils;
+        return utils.toWei(ether, 'ether');
+    }
+    return defaultTo ? defaultTo : 0;
+}
+
+export function addWeiToEther(drizzleInstance: any, wei: string, ether: string): number {
+    if (drizzleInstance) {
+        const etherConvertedToWei: number = weiFromEther(drizzleInstance, ether);
+        const newTotalInWei: number = amountValid(wei) ? Number(etherConvertedToWei) + Number(wei) : etherConvertedToWei;
+        return etherFromWei(drizzleInstance, newTotalInWei.toString());
+    }
+    return Number(ether);
 }
