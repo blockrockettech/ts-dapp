@@ -36,7 +36,7 @@
     import { mapGetters } from 'vuex';
     import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
 
-    import { getEventsByName, etherFromWei } from '@/utils/drizzle/drizzle-utils';
+    import { getEventsByName, etherFromWei } from '@blockrocket/vue-drizzle-utils';
 
     @Component({
         computed: {

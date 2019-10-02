@@ -29,7 +29,7 @@
     import { mapGetters } from 'vuex';
     import { Component, Vue } from 'vue-property-decorator';
 
-    import { getNetworkName } from '@/utils/drizzle/drizzle-utils';
+    import { getNetworkName } from '@blockrocket/vue-drizzle-utils';
 
     @Component({
         computed: {

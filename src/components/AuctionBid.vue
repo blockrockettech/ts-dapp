@@ -52,7 +52,7 @@
     import { mapGetters } from 'vuex';
     import { Component, Watch, Vue } from 'vue-property-decorator';
 
-    import { etherFromWei, weiFromEther, addWeiToEther } from '@/utils/drizzle/drizzle-utils';
+    import { etherFromWei, weiFromEther, addWeiToEther } from '@blockrocket/vue-drizzle-utils';
 
     const DEFAULT_MIN_BID: number = 0.01;
     const DEFAULT_MIN_INCREMENT_IN_WEI: number = 20000000000000000;

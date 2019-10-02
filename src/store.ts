@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import moment from 'moment';
 
-import { getContractAddressFromTruffleConf } from '@/utils/drizzle/drizzle-utils';
+import { getContractAddressFromTruffleConf } from '@blockrocket/vue-drizzle-utils';
 import TwistedSisterToken from '@/truffleconf/token/TwistedSisterToken.json';
 
 Vue.use(Vuex);

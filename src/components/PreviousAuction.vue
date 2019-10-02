@@ -50,7 +50,7 @@
     import { mapGetters } from 'vuex';
     import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
 
-    import { getEtherscanBaseUrl, getEventsByName, etherFromWei } from '@/utils/drizzle/drizzle-utils';
+    import { getEtherscanBaseUrl, getEventsByName, etherFromWei } from '@blockrocket/vue-drizzle-utils';
 
     @Component({
         computed: {
