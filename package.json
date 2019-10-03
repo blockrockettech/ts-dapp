@@ -8,6 +8,7 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "@blockrocket/vue-drizzle-utils": "^1.0.6",
     "@drizzle/vue-plugin": "git+https://github.com/trufflesuite/drizzle-vue-plugin.git",
     "@types/lodash": "^4.14.140",
     "bootstrap-vue": "^2.0.2",
@@ -23,7 +24,6 @@
     "vuex": "^3.0.1"
   },
   "devDependencies": {
-    "@blockrocket/vue-drizzle-utils": "^1.0.3",
     "@types/jest": "^23.1.4",
     "@vue/cli-plugin-babel": "^3.11.0",
     "@vue/cli-plugin-typescript": "^3.11.0",
