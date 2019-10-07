@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@blockrocket/vue-drizzle-utils": "^1.0.6",
-    "@drizzle/vue-plugin": "git+https://github.com/trufflesuite/drizzle-vue-plugin.git",
+    "@drizzle/vue-plugin": "^0.1.0",
     "@types/lodash": "^4.14.140",
     "bootstrap-vue": "^2.0.2",
     "core-js": "^2.6.5",
