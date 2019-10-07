@@ -17,7 +17,7 @@
             <span><strong>The current round's bidding window is not open. Attempts to bid will fail!</strong></span>
         </div>
 
-        <AuctionBid />
+        <AuctionBid :currentRound="currentRound" />
         <BidHistory :currentRound="currentRound" />
     </div>
 </template>

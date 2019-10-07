@@ -9,8 +9,8 @@
             </span>
         </div>
         <div class="content-container">
-            <div class="img-container">
-                <img :src="paramImgUrl" alt=""/>
+            <div>
+                <img class="img-container" :src="paramImgUrl" alt=""/>
             </div>
             <div class="details-container">
                 <div class="details-container-row">
@@ -126,7 +126,19 @@
         get paramImgUrl() {
             if (this.events.length === 1) {
                 const event = this.events[0];
-                return `https://robohash.org/${event.returnValues._param}/image`;
+                const paramForImgStr = event.returnValues._param.toString();
+                const currentDayLetter = String.fromCharCode(64 + Number(this.roundNo));
+                const paramForImgLength = paramForImgStr.length;
+
+                let paddedParam = '';
+                for (let i = 0; i < 4 - paramForImgLength; i += 1) {
+                    paddedParam += '0';
+                }
+                paddedParam += paramForImgStr;
+
+                const fileName = currentDayLetter + paddedParam + '.png';
+
+                return `/images/${currentDayLetter}/${fileName}`;
             }
             return '';
         }
@@ -187,5 +199,9 @@
     .row-value {
         font-size: 1.25rem;
         font-weight: 600;
+    }
+
+    .img-container {
+        height: 250px;
     }
 </style>
