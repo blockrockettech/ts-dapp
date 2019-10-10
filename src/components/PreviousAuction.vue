@@ -9,8 +9,8 @@
             </span>
         </div>
         <div class="mt-5">
-            <div class="img-container mb-5">
-                <img :src="paramImgUrl" alt="" class="d-block w-auto h-auto mx-auto"/>
+            <div class="mb-5">
+                <img :src="paramImgUrl" alt="" class="img-container d-block w-auto h-auto mx-auto"/>
             </div>
             <div class="details-container text-center">
                 <div class="mb-3">
@@ -126,7 +126,16 @@
         get paramImgUrl() {
             if (this.events.length === 1) {
                 const event = this.events[0];
-                return `https://robohash.org/${event.returnValues._param}/image`;
+                const paramForImgStr = event.returnValues._param.toString();
+                const currentDayLetter = String.fromCharCode(64 + Number(this.roundNo));
+                const paramForImgLength = paramForImgStr.length;
+                let paddedParam = '';
+                for (let i = 0; i < 4 - paramForImgLength; i += 1) {
+                    paddedParam += '0';
+                }
+                paddedParam += paramForImgStr;
+                const fileName = currentDayLetter + paddedParam + '.png';
+                return `/images/${currentDayLetter}/${fileName}`;
             }
             return '';
         }
@@ -142,5 +151,45 @@
 </script>
 
 <style scoped>
-    
+    .previous-auction-container {
+        margin-top: 9rem;
+    }
+    .header-container {
+        border-top: 1px solid #343a40;
+        margin-bottom: 3rem;
+    }
+    .content-container {
+        text-align: center;
+    }
+    .round-counter {
+        font-size: 4.5rem;
+        font-weight: 400;
+        line-height: 1.25;
+    }
+    .header {
+        position: absolute;
+        right: 0;
+        font-size: 2.5rem;
+        font-weight: 500;
+        line-height: 1.25;
+    }
+    .details-container {
+        margin: 3rem 0;
+    }
+    .details-container-row {
+        margin-bottom: 1rem;
+    }
+    .row-label {
+        text-transform: uppercase;
+        letter-spacing: .2em;
+        font-size: 80%;
+        font-weight: 500;
+    }
+    .row-value {
+        font-size: 1.25rem;
+        font-weight: 600;
+    }
+    .img-container {
+        max-height: 250px;
+    }
 </style>

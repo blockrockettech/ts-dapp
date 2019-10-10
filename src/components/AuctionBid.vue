@@ -2,11 +2,7 @@
     <div class="auction-bid-container">
         <div class="img-container position-relative mx-auto">
             <div class="param-image position-absolute" v-for="n in 64" >
-                <img 
-                  :src="'https://robohash.org/'+(n-1)+'/image'" 
-                  alt="" 
-                  v-bind:class="[ parameter == (n-1) ? 'active' : 'notactive', 'bg-light' ]"
-                  />
+                <img class="img-container" :src="paramImgUrl" alt="" v-bind:class="[ parameter == (n-1) ? 'active' : 'notactive', 'bg-light' ]"/>
             </div>
         </div>
         <div class="slider-container my-5 mx-auto">
@@ -58,7 +54,7 @@
 
 <script lang="ts">
     import { mapGetters } from 'vuex';
-    import { Component, Watch, Vue } from 'vue-property-decorator';
+    import {Component, Watch, Vue, Prop} from 'vue-property-decorator';
 
     import { etherFromWei, weiFromEther, addWeiToEther } from '@blockrocket/vue-drizzle-utils';
 
@@ -73,6 +69,10 @@
         }
     })
     export default class AuctionBid extends Vue {
+        // Props
+        @Prop({ required: true })
+        currentRound!: number;
+
         // State
         parameter: number = 0;
         bid: number = 0.01;
@@ -118,7 +118,16 @@
         }
 
         get paramImgUrl() {
-            return `https://robohash.org/${this.paramForImg}/image`;
+            const currentDayLetter = String.fromCharCode(64 + Number(this.currentRound));
+            const paramForImgStr = this.paramForImg.toString();
+            const paramForImgLength = paramForImgStr.length;
+            let paddedParam = '';
+            for (let i = 0; i < 4 - paramForImgLength; i += 1) {
+                paddedParam += '0';
+            }
+            paddedParam += paramForImgStr;
+            const fileName = currentDayLetter + paddedParam + '.png';
+            return `/images/${currentDayLetter}/${fileName}`;
         }
 
         get minBid(): number {
