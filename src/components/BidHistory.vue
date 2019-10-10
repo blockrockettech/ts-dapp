@@ -1,32 +1,34 @@
 <template>
-    <div class="bid-history-container">
-        <h3 class="mb-3">
+    <div class="bid-history-container mt-6">
+        <h3 class="mb-4 text-center">
             BID HISTORY
         </h3>
         <div v-if="anyBidReceived">
-            <div class="highest-bid-container">
-                <div class="header">
+            <div class="highest-bid-container mb-5 text-center text-lg-left">
+                <div class="small text-center pb-2 border-bottom">
                     <span>Highest Bid</span>
                 </div>
-                <div class="highest-bid-row row">
-                    <span class="col">{{highestBidData.elapsedTime}}</span>
-                    <span class="col-6">{{highestBidData.address}}</span>
-                    <span class="col">{{highestBidData.amount}} ETH</span>
+                <!-- only if its you -->
+                <div class="my-2 text-center text-success text-large">You made the highest offer!</div>
+                <div class="highest-bid-row text-center my-2">
+                    <span>{{highestBidData.elapsedTime}}</span><br/>
+                    <span>{{highestBidData.address}}</span><br/>
+                    <span>{{highestBidData.amount}} ETH</span><br/>
                 </div>
             </div>
-            <div v-if="previousBids.length !== 0">
-                <div class="header">
+            <div class="previouse-bids text-center text-lg-left " v-if="previousBids.length !== 0">
+                <div class="small text-center pb-2 border-bottom">
                     <span>Previous Bids</span>
                 </div>
-                <div class="row" v-for="previousBid in previousBids">
-                    <span class="col">{{previousBid.elapsedTime}}</span>
-                    <span class="col-6">{{previousBid.address}}</span>
-                    <span class="col">{{previousBid.amount}} ETH</span>
+                <div class="row my-2 small" v-for="previousBid in previousBids">
+                    <span class="col-12 col-lg-3">{{previousBid.elapsedTime}}</span>
+                    <span class="col-12 col-lg-6">{{previousBid.address}}</span>
+                    <span class="col-12 col-lg-3">{{previousBid.amount}} ETH</span>
                 </div>
             </div>
         </div>
         <div v-else>
-            <p>No bids have been received yet...</p>
+            <p class="text-center">No bids have been received yet... Be the first to bid!</p>
         </div>
     </div>
 </template>
@@ -131,21 +133,12 @@
 
 <style scoped>
     .bid-history-container {
-        margin-top: 6rem;
         padding-left: 15px;
     }
 
-    .header {
-        font-size: 80%;
-        font-weight: 500;
-        border-bottom: 1px solid #dee2e6;
-    }
-
     .highest-bid-container {
-        margin-bottom: 1.5rem;
     }
 
     .highest-bid-row {
-        color: green;
     }
 </style>
