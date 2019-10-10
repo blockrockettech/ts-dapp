@@ -1,11 +1,18 @@
 <template>
     <div class="auction-bid-container">
-        <div>
-            <img class="img-container" :src="paramImgUrl" alt=""/>
+        <div class="img-container position-relative mx-auto">
+            <div class="param-image position-absolute" v-for="n in 64" >
+                <img 
+                  :src="'https://robohash.org/'+(n-1)+'/image'" 
+                  alt="" 
+                  v-bind:class="[ parameter == (n-1) ? 'active' : 'notactive', 'bg-light' ]"
+                  />
+            </div>
         </div>
-        <div class="slider-container">
+        <div class="slider-container my-5 mx-auto">
             <label class="slider-label" for="slider-input">
-                Adjust the settings to your slider
+                <span><small>Step 1:</small></span><br/>
+                <span class="text-large">Adjust the settings to your slider:</span>
             </label>
             <b-form-input id="slider-input"
                           class="slider-input"
@@ -18,9 +25,10 @@
                 + RESET TO HIGHEST BID
             </span>
         </div>
-        <div class="make-bid-container">
+        <div class="make-bid-container my-5 mx-auto">
             <span class="make-bid-label">
-                Make your bid
+                <span><small>Step 2:</small></span><br/>
+                <span class="text-large">Make your bid:</span>
             </span>
             <div class="make-bid-input-group-container">
                 <b-input-group>
@@ -37,12 +45,12 @@
                                   class="bid-input" />
 
                     <b-input-group-append>
-                        <b-button variant="success" @click="submitBid">BID</b-button>
+                        <b-button variant="success" @click="submitBid">→ BID</b-button>
                     </b-input-group-append>
                 </b-input-group>
             </div>
             <span v-bind:class="{ 'error-txt': bid < minBid }">
-                Min bid: {{minBid}} ETH
+                <small>Min bid: {{minBid}} ETH</small>
             </span>
         </div>
     </div>
@@ -50,7 +58,7 @@
 
 <script lang="ts">
     import { mapGetters } from 'vuex';
-    import { Component, Watch, Prop, Vue } from 'vue-property-decorator';
+    import { Component, Watch, Vue } from 'vue-property-decorator';
 
     import { etherFromWei, weiFromEther, addWeiToEther } from '@blockrocket/vue-drizzle-utils';
 
@@ -65,10 +73,6 @@
         }
     })
     export default class AuctionBid extends Vue {
-        // Props
-        @Prop({ required: true })
-        currentRound!: number;
-
         // State
         parameter: number = 0;
         bid: number = 0.01;
@@ -114,19 +118,7 @@
         }
 
         get paramImgUrl() {
-            const currentDayLetter = String.fromCharCode(64 + Number(this.currentRound));
-            const paramForImgStr = this.paramForImg.toString();
-            const paramForImgLength = paramForImgStr.length;
-
-            let paddedParam = '';
-            for (let i = 0; i < 4 - paramForImgLength; i += 1) {
-                paddedParam += '0';
-            }
-            paddedParam += paramForImgStr;
-
-            const fileName = currentDayLetter + paddedParam + '.png';
-
-            return `/images/${currentDayLetter}/${fileName}`;
+            return `https://robohash.org/${this.paramForImg}/image`;
         }
 
         get minBid(): number {
@@ -175,21 +167,39 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+    .img-container{
+      height: 300px;
+      width: 300px;
+    }
+
+    .param-image{
+      top:0;
+      left:0;
+    }
+
+    .param-image img{
+      top:0;
+      left:0;
+      opacity: 0;
+    }
+
+    .param-image img.active{
+      opacity: 1;
+    }
+
     .auction-bid-container {
         text-align: center;
     }
 
     .slider-container {
-        margin: 3rem auto;
+        max-width: 600px;
+        width: 100%;
     }
 
     .slider-label {
-        font-size: 1.25rem;
-        font-weight: 600;
     }
 
     .slider-input {
-        width: 50%;
         display: block;
         margin: 10px auto;
     }
@@ -199,16 +209,15 @@
         letter-spacing: .2em;
         font-size: 80%;
         font-weight: 500;
+        margin-top: .5rem;
     }
 
     .make-bid-label {
-        font-size: 1.25rem;
-        font-weight: 600;
     }
 
     .make-bid-container {
-        width: 50%;
-        margin: 0 auto;
+        max-width: 600px;
+        width: 100%;
     }
 
     .make-bid-input-group-container {
@@ -221,9 +230,5 @@
 
     .bid-input {
         text-align: right;
-    }
-
-    .img-container {
-        height: 475px;
     }
 </style>

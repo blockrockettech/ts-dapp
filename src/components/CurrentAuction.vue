@@ -1,128 +1,106 @@
 <template>
-    <div class="current-auction-container">
-        <div class="header-container">
-            <span class="current-round-counter">
-                #{{currentRound}} / {{totalRounds}}
-            </span>
-            <span class="header">
-                Current Auction
-            </span>
-        </div>
-        <div class="ending-container" v-if="open">
-            <span class="ending-label">Ending in:</span>
-            <br/>
-            <span class="ending-time">{{endingIn}}</span>
-        </div>
-        <div class="not-started" v-else>
-            <span><strong>The current round's bidding window is not open. Attempts to bid will fail!</strong></span>
-        </div>
-
-        <AuctionBid :currentRound="currentRound" />
-        <BidHistory :currentRound="currentRound" />
-    </div>
+	<div class="current-auction-container container my-6 border-top border-dark">
+		<div class="row my-3">
+			<span class="current-round-counter col-12 col-md-6 display-4">
+				#{{currentRound}} / {{totalRounds}}
+			</span>
+			<span class="col-12 col-md-6 text-md-right">
+				Current Auction
+			</span>
+		</div>
+		<!-- <div class="container"> -->
+		<div class="container" v-if="open">
+			<div class="ending-container mb-6 mt-5 text-center ">
+				<div class="mb-5">
+					<span class="text-large">The current round's auction will be ending in:</span>
+					<br/>
+					<span class="display-4">{{ endingIn }}</span>
+				</div>
+			</div>
+			<AuctionBid />
+			<BidHistory :currentRound="currentRound" />
+		</div>
+		<!-- <div class="mb-6 mt-5 text-center"> -->
+		<div class="mb-6 mt-5 text-center" v-else>
+			<span>
+			  <small>The current round's bidding window is not open.</small>
+			</span>
+			<br/>
+			<span class="text-large">The next bidding window will be open in:</span>
+			<br/>
+			<span class="display-1">{{ startingIn }}</span>
+		</div>
+	</div>
 </template>
 
 <script lang="ts">
-    import { mapGetters } from 'vuex';
-    import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
-    import moment from 'moment';
+	import { mapGetters } from 'vuex';
+	import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
+	import moment from 'moment';
 
-    import AuctionBid from '@/components/AuctionBid.vue';
-    import BidHistory from '@/components/BidHistory.vue';
+	import AuctionBid from '@/components/AuctionBid.vue';
+	import BidHistory from '@/components/BidHistory.vue';
 
-    @Component({
-        components: {AuctionBid, BidHistory},
-        computed: {
-            ...mapGetters('contracts', ['getContractData']),
-            ...mapGetters(['contractName', 'roundStart', 'roundEnd']),
-        }
-    })
-    export default class CurrentAuction extends Vue {
-        @Prop({ required: true })
-        currentRound!: number;
+	@Component({
+		components: {AuctionBid, BidHistory},
+		computed: {
+			...mapGetters('contracts', ['getContractData']),
+			...mapGetters(['contractName', 'roundStart', 'roundEnd']),
+		}
+	})
+	export default class CurrentAuction extends Vue {
+		@Prop({ required: true })
+		currentRound!: number;
 
-        @Prop({ required: true })
-        auctionStartTime!: number;
+		@Prop({ required: true })
+		auctionStartTime!: number;
 
-        @Prop({ required: true })
-        roundLengthInSeconds!: number;
+		@Prop({ required: true })
+		roundLengthInSeconds!: number;
 
-        @Prop({ required: true })
-        totalRounds!: number;
+		@Prop({ required: true })
+		totalRounds!: number;
 
-        open: boolean = true;
+		open: boolean = true;
 
-        roundEnd: any;
-        roundStart: any;
-        getContractData: any;
-        contractName!: string;
+		roundEnd: any;
+		roundStart: any;
+		getContractData: any;
+		contractName!: string;
 
-        endingIn: string = '';
+		endingIn: string = '';
+		startingIn: string = '';
 
-        created() {
-            this.updateEndingInTime();
-            setInterval(this.updateEndingInTime, 1000);
-        }
+		created() {
+			this.updateTimes();
+			setInterval( this.updateTimes, 1000);
+		}
 
-        updateEndingInTime() {
-            const now = moment().utc(false);
+		updateTimes(){
+			this.updateEndingInTime();
+			this.updateStartingInTime();
+		}
+		
+		updateStartingInTime(){
+		  const now = moment().utc(false);
+		  const roundStart = this.roundStart(this.currentRound, this.auctionStartTime);
+		  const duration = moment.duration(roundStart.diff(now))
+		  this.startingIn = `${Math.ceil(duration.get('hours'))}h ${Math.ceil(duration.get('minutes'))}m`;
+		}
 
-            const roundStart = this.roundStart(this.currentRound, this.auctionStartTime);
-            const roundEnd = this.roundEnd(this.currentRound, this.auctionStartTime, this.roundLengthInSeconds);
+		updateEndingInTime() {
+			const now = moment().utc(false);
 
-            this.open = now >= roundStart && now <= roundEnd;
+			const roundStart = this.roundStart(this.currentRound, this.auctionStartTime);
+			const roundEnd = this.roundEnd(this.currentRound, this.auctionStartTime, this.roundLengthInSeconds);
 
-            const duration = moment.duration(roundEnd.diff(now));
-            this.endingIn = `${Math.ceil(duration.get('hours'))}h ${Math.ceil(duration.get('minutes'))}m ${Math.ceil(duration.get('seconds'))}s`;
-        }
-    };
+			this.open = now >= roundStart && now <= roundEnd;
+
+			const duration = moment.duration(roundEnd.diff(now));
+			this.endingIn = `${Math.ceil(duration.get('hours'))}h ${Math.ceil(duration.get('minutes'))}m ${Math.ceil(duration.get('seconds'))}s`;
+		}
+	};
 </script>
 
 <style scoped>
-    .current-auction-container {
-        margin-top: 6rem;
-        border-top: 1px solid #343a40;
-    }
-
-    .header-container {
-        margin-bottom: 3rem;
-    }
-
-    .current-round-counter {
-        font-size: 4.5rem;
-        font-weight: 400;
-        line-height: 1.25;
-    }
-
-    .header {
-        position: absolute;
-        right: 0;
-        font-size: 2.5rem;
-        font-weight: 500;
-        line-height: 1.25;
-    }
-
-    .ending-container {
-        text-align: center;
-        margin-bottom: 3rem;
-    }
-
-    .not-started {
-        text-align: center;
-        margin-bottom: 3rem;
-        color: dodgerblue;
-        font-size: 1.75rem;
-    }
-
-    .ending-label {
-        text-transform: uppercase;
-        letter-spacing: .2em;
-        font-size: 80%;
-        font-weight: 500;
-    }
-
-    .ending-time {
-        font-size: 1.25rem;
-        font-weight: 600;
-    }
 </style>
