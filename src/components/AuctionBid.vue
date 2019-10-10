@@ -10,16 +10,26 @@
                 <span><small>Step 1:</small></span><br/>
                 <span class="text-large">Adjust the settings to your slider:</span>
             </label>
-            <b-form-input id="slider-input"
-                          class="slider-input"
-                          type="range"
-                          min="0"
-                          max="63"
-                          @change="inputReceived"
-                          v-model="parameter" />
+            <div class="row">
+                <div class="col-9">
+                    <b-form-input id="slider-input"
+                                  class="slider-input"
+                                  type="range"
+                                  min="0"
+                                  max="63"
+                                  @change="inputReceived"
+                                  v-model="parameter" />
+                </div>
+                <div class="col-3">
+                    <span class="slider-value">{{ parameter }}</span>
+                </div>
+            </div>
+
+
             <span class="reset-label">
                 + RESET TO HIGHEST BID
             </span>
+
         </div>
         <div class="make-bid-container my-5 mx-auto">
             <span class="make-bid-label">
@@ -58,7 +68,7 @@
 
     import { etherFromWei, weiFromEther, addWeiToEther } from '@blockrocket/vue-drizzle-utils';
 
-    const DEFAULT_MIN_BID: number = 0.01;
+    const DEFAULT_MIN_BID: number = 0.02;
     const DEFAULT_MIN_INCREMENT_IN_WEI: number = 20000000000000000;
 
     @Component({
@@ -75,7 +85,7 @@
 
         // State
         parameter: number = 0;
-        bid: number = 0.01;
+        bid: number = DEFAULT_MIN_BID;
         receivedInput: boolean = false;
 
         // Custom mapped getters
@@ -206,6 +216,10 @@
     }
 
     .slider-label {
+    }
+
+    .slider-value {
+        font-size: 2rem;
     }
 
     .slider-input {
