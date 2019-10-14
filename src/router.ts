@@ -9,7 +9,7 @@ export default new Router({
   base: process.env.BASE_URL,
   routes: [
     {
-      path: '/',
+      path: '/auction',
       name: 'auction',
       component: Auction
     },
@@ -22,7 +22,7 @@ export default new Router({
       component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
     },
     {
-      path: '/concept',
+      path: '/',
       name: 'concept',
       // route level code-splitting
       // this generates a separate chunk (about.[hash].js) for this route

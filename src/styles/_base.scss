@@ -15,3 +15,11 @@ body{
     font-size: 1.5rem;
   }
 }
+
+
+.text-medium{
+  font-size: 1.25rem;
+  @include media-breakpoint-down(md){
+    font-size: 1.25rem;
+  }	
+}

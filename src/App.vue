@@ -1,13 +1,27 @@
 <template>
     <div id="app">
-        <div class="p-3">
-            <img src="./assets/Logo.svg" class="d-block w-100" alt=""/>
-        </div>
-        <div id="nav" class="mb-6 text-large">
-            <router-link to="/concept">Concept</router-link>&nbsp;
-            <router-link to="/" exact>Auction</router-link>&nbsp;
-            <router-link to="/about">About</router-link>
-        </div>
+    		<div class="container-fluid mb-6">
+    			<div class="row ">
+
+    				<div class="col-12 col-md-6 my-3 text-center text-md-left">
+			        <router-link to="/" exact>
+			        	<img src="./assets/Logo.svg" class="PageLogo" alt=""/>
+			        </router-link>&nbsp;
+    				</div>
+
+    				<div class="col-12 col-md-6 my-3 text-center text-md-right">
+				        <div id="nav" class="d-block ml-auto text-medium">
+				            <router-link to="/auction" exact>Auction</router-link>&nbsp;
+				            <router-link to="/faq">FAQ</router-link>
+				            <router-link to="/about">About</router-link>
+				        </div>
+    				</div>
+
+    			</div>
+    		</div>
+
+
+
         <router-view />
         <div class="footer container-fluid">
             <div class="row py-3 border-top border-dark small">
@@ -92,7 +106,7 @@
     }
 
     #nav {
-        text-align: center;
+    		line-height: .8;
         a {
           margin-left: 1rem;
           margin-right: 1rem;
@@ -101,7 +115,10 @@
           color: #000;
         }
     }
+    .PageLogo{
+    	max-width: 400px;
 
+    }
     .footer{
       margin-top: 8rem;
     }
