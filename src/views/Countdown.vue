@@ -14,7 +14,7 @@ const startingTime = moment("2019-11-02T11:00+00:00");
 @Component({
 })
 export default class MyComponent extends Vue {
-  startingIn: string = moment.now();
+  startingIn: string = "";
   created (): void {
    this.updateStartingTime();
    setInterval( this.updateStartingTime, 1000);
