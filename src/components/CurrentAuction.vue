@@ -1,35 +1,43 @@
 <template>
-	<div class="current-auction-container container my-6 border-top border-dark">
-		<div class="row my-3">
-			<span class="current-round-counter col-12 col-md-6 display-4">
-				#{{currentRound}} / {{totalRounds}}
-			</span>
-			<span class="col-12 col-md-6 text-md-right">
-				Current Auction
-			</span>
-		</div>
-		<!-- <div class="container"> -->
-		<div class="container" v-if="open">
-			<div class="ending-container mb-6 mt-5 text-center ">
-				<div class="mb-5">
-					<span class="text-large">The current round's auction will be ending in:</span>
-					<br/>
-					<span class="display-4">{{ endingIn }}</span>
+	<div class="current-auction-container">
+
+			
+			<div class="auction-header container mb-4">
+				<div class="row">
+					<span class="round-counter col h1 mb-0">
+						#{{currentRound}} / {{totalRounds}}
+					</span>
+					<span class="col text-right">
+						Current Auction
+					</span>
 				</div>
 			</div>
-			<AuctionBid :currentRound="currentRound" />
-			<BidHistory :currentRound="currentRound" />
-		</div>
-		<!-- <div class="mb-6 mt-5 text-center"> -->
-		<div class="mb-6 mt-5 text-center" v-else>
-			<span>
-			  <small>The current round's bidding window is not open.</small>
-			</span>
-			<br/>
-			<span class="text-large">The next bidding window will be open in:</span>
-			<br/>
-			<span class="display-1">{{ startingIn }}</span>
-		</div>
+
+
+			<div class="auction-container container pt-4" v-if="open">
+				<div class="ending-container text-center ">
+					<div class="mb-5">
+						<span class="text-large">The current round's auction will be ending in:</span>
+						<br/>
+						<span class="h1">{{ endingIn }}</span>
+					</div>
+				</div>
+				<AuctionBid :currentRound="currentRound" />
+				<BidHistory :currentRound="currentRound" />
+			</div>
+
+
+			<div class="auction-container next-auction container pt-4" v-else>
+				<span>
+				  <small>The current round's bidding window is not open.</small>
+				</span>
+				<br/>
+				<span class="text-large">The next bidding window will be open in:</span>
+				<br/>
+				<span class="h1">{{ startingIn }}</span>
+			</div>
+
+
 	</div>
 </template>
 
@@ -74,7 +82,7 @@
 			const now = moment().utc(false);
 			const roundStart = this.roundStart(this.currentRound, this.auctionStartTime);
 			const duration = moment.duration(roundStart.diff(now))
-			this.startingIn = `${Math.ceil(duration.get('hours'))}h ${Math.ceil(duration.get('minutes'))}m`;
+			this.startingIn = `${Math.ceil(duration.get('hours'))}h ${Math.ceil(duration.get('minutes'))}m ${Math.ceil(duration.get('seconds'))}s`;
 		}
 		updateEndingInTime() {
 			const now = moment().utc(false);
@@ -88,43 +96,26 @@
 </script>
 
 <style scoped>
-	.current-auction-container {
-		margin-top: 6rem;
-		border-top: 1px solid #343a40;
+
+
+	.current-auction-container{
+
 	}
-	.header-container {
-		margin-bottom: 3rem;
+	
+
+	.auction-container{
+		border-top: 1px solid #DDD;
 	}
-	.current-round-counter {
-		font-size: 4.5rem;
-		font-weight: 400;
-		line-height: 1.25;
+
+	.auction-header{
+		line-height: 1;
 	}
-	.header {
-		position: absolute;
-		right: 0;
-		font-size: 2.5rem;
-		font-weight: 500;
-		line-height: 1.25;
-	}
-	.ending-container {
+
+	.next-auction{
 		text-align: center;
-		margin-bottom: 3rem;
 	}
-	.not-started {
-		text-align: center;
-		margin-bottom: 3rem;
-		color: dodgerblue;
-		font-size: 1.75rem;
-	}
-	.ending-label {
-		text-transform: uppercase;
-		letter-spacing: .2em;
-		font-size: 80%;
-		font-weight: 500;
-	}
-	.ending-time {
-		font-size: 1.25rem;
-		font-weight: 600;
-	}
+
+
+
+
 </style>

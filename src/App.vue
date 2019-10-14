@@ -18,19 +18,19 @@
     		</div>
         <router-view />
         <div class="footer container-fluid">
-            <div class="row py-3 border-top border-dark small">
-                <span class="col-12 col-md-3 mb-3 text-center">
+            <div class="row py-3 small">
+            		<span class="col-12 col-md-4 text-center text-md-left">
                     <a href="https://twistedsister.io" target="_blank" class="footer-link">twistedsister.io</a>
-                </span>
-                <span class="col-12 col-md-3 mb-3 text-center">
-				            <router-link to="/disclaimer">Disclaimer and Terms</router-link>
-                </span>
-                <span class="col-12 col-md-3 mb-3 text-center">
-                    Built by: <a href="https://blockrocket.tech" target="_blank">BlockRocket</a>
-                </span>
-                <span class="col-12 col-md-3 mb-3 text-center">
-                    Current Ethereum Network: {{currentNetwork}}
-                </span>
+            		</span>
+
+            		<span class="col-12 col-md-8 text-center text-md-right">
+
+				            <span class="footer-link d-block d-md-inline"><router-link to="/disclaimer">Disclaimer</router-link></span>
+
+                    <span class="footer-link d-block d-md-inline">dApp built by: <a href="https://blockrocket.tech" target="_blank">BlockRocket</a></span>
+
+                    <span class="footer-link d-block d-md-inline">Current Ethereum Network: {{currentNetwork}}</span>
+                 </span>
             </div>
         </div>
     </div>
@@ -99,9 +99,6 @@
 <style lang="scss">
     @import './styles/_index.scss';
 
-    #app {
-    }
-
     #nav {
     		line-height: .8;
         a {
@@ -114,10 +111,14 @@
     }
     .PageLogo{
     	max-width: 400px;
-
     }
     .footer{
+    	border-top: 1px solid black;
       margin-top: 6rem;
+    }
+    .footer-link{
+    	margin-left: 1em;
+    	margin-right: 1em;
     }
 
 </style>

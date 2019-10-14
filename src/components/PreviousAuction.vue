@@ -1,38 +1,42 @@
 <template>
-    <div class="previous-auction-container container my-6 border-top border-dark">
-        <div class="row my-3">
-            <span class="current-round-counter col-12 col-md-6 display-4">
-                #{{roundNo}} / {{totalRounds}}
-            </span>
-            <span class="col-12 col-md-6 text-md-right">
-                Passed Auction
-            </span>
-        </div>
-        <div class="mt-5">
-            <div class="mb-5">
-                <img :src="paramImgUrl" alt="" class="img-container d-block w-auto h-auto mx-auto"/>
+    <div class="previous-auction-container">
+			
+			<div class="auction-header container mb-4">
+				<div class="row">
+					<span class="round-counter col h1 mb-0">
+						#{{roundNo}} / {{totalRounds}}
+					</span>
+					<span class="col text-right">
+						Previous Auction
+					</span>
+				</div>
+			</div>
+
+        <div class="auction-container container pt-4">
+            <div class="">
+                <img :src="paramImgUrl" alt="" class="img-container d-block w-auto mw-100 h-auto mx-auto"/>
             </div>
             <div class="details-container text-center">
                 <div class="mb-3">
                     <span class="small">ENDED</span>
                     <br/>
-                    <span class="text-large">
+                    <span class="text-medium">
                         {{roundEndDay}}
-                        <br/>
+                        ,
                         {{roundEndTime}}
                     </span>
                 </div>
                 <div class="mb-3">
                     <span class="small">OWNER</span>
                     <br/>
-                    <span class="text-large">
+                    <span class="text-medium">
                         {{highestBidder}}
                     </span>
                 </div>
                 <div class="mb-4">
                     <span class="small">BID</span>
                     <br/>
-                    <span class="text-large">
+                    <span class="text-medium">
                         {{highestBid}} ETH
                     </span>
                 </div>
@@ -151,45 +155,18 @@
 </script>
 
 <style scoped>
-    .previous-auction-container {
-        margin-top: 9rem;
-    }
-    .header-container {
-        border-top: 1px solid #343a40;
-        margin-bottom: 3rem;
-    }
-    .content-container {
-        text-align: center;
-    }
-    .round-counter {
-        font-size: 4.5rem;
-        font-weight: 400;
-        line-height: 1.25;
-    }
-    .header {
-        position: absolute;
-        right: 0;
-        font-size: 2.5rem;
-        font-weight: 500;
-        line-height: 1.25;
-    }
-    .details-container {
-        margin: 3rem 0;
-    }
-    .details-container-row {
-        margin-bottom: 1rem;
-    }
-    .row-label {
-        text-transform: uppercase;
-        letter-spacing: .2em;
-        font-size: 80%;
-        font-weight: 500;
-    }
-    .row-value {
-        font-size: 1.25rem;
-        font-weight: 600;
-    }
-    .img-container {
-        max-height: 250px;
-    }
+    
+
+	.previous-auction-container{
+	}
+
+	.auction-header{
+	}
+
+	.auction-container{
+		border-top: 1px solid #DDD;
+	}
+
+
+
 </style>

@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Auction from './views/Auction.vue'
+import Countdown from './views/Countdown.vue'
 import FAQ from './views/FAQ.vue'
+import Disclaimer from './views/Disclaimer.vue'
 
 Vue.use(Router);
 
@@ -20,12 +22,17 @@ export default new Router({
     {
       path: '/genesis-auction',
       name: 'genesis-auction',
-      component: Auction
+      component: Countdown
     },
     {
       path: '/faq',
       name: 'faq',
       component: FAQ
+    },
+    {
+      path: '/disclaimer',
+      name: 'disclaimer',
+      component: Disclaimer
     },
     {
       path: '/about',
