@@ -96,26 +96,15 @@
 </script>
 
 <style scoped>
-
-
 	.current-auction-container{
-
 	}
-	
-
 	.auction-container{
 		border-top: 1px solid #DDD;
 	}
-
 	.auction-header{
 		line-height: 1;
 	}
-
 	.next-auction{
 		text-align: center;
 	}
-
-
-
-
 </style>
