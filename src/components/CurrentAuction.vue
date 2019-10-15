@@ -1,7 +1,7 @@
 <template>
 	<div class="current-auction-container">
 
-			
+
 			<div class="auction-header container mb-4">
 				<div class="row">
 					<span class="round-counter col h1 mb-0">
@@ -81,8 +81,8 @@
 		updateStartingInTime(){
 			const now = moment().utc(false);
 			const roundStart = this.roundStart(this.currentRound, this.auctionStartTime);
-			const duration = moment.duration(roundStart.diff(now))
-			this.startingIn = `${Math.ceil(duration.get('hours'))}h ${Math.ceil(duration.get('minutes'))}m ${Math.ceil(duration.get('seconds'))}s`;
+			const duration = moment.duration(roundStart.diff(now));
+			this.startingIn = `${Math.ceil(duration.get('days'))}d ${Math.ceil(duration.get('hours'))}h ${Math.ceil(duration.get('minutes'))}m ${Math.ceil(duration.get('seconds'))}s`;
 		}
 		updateEndingInTime() {
 			const now = moment().utc(false);

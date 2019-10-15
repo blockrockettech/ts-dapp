@@ -1823,6 +1823,102 @@
       "links": {},
       "address": "0x5Dce08b458779f840FA17AAa3278082024C7D48F",
       "transactionHash": "0x18dc038f762cf9d8b18aae3b7d3fa99a6f6f10e7bd2aa499695bc70550bfd2a3"
+    },
+    "4": {
+      "events": {
+        "0x2951c447583280c9dae4144efd5412f37c967a855edd3466e1e1fcf672176826": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "_round",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_timeStamp",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_param",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_amount",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "name": "_bidder",
+              "type": "address"
+            }
+          ],
+          "name": "BidAccepted",
+          "type": "event",
+          "signature": "0x2951c447583280c9dae4144efd5412f37c967a855edd3466e1e1fcf672176826"
+        },
+        "0xa6b0a214724be5be631af1800b1bfdef5dbf1ac9dc351d039e1b082d40c62f20": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "_round",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_amount",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "name": "_bidder",
+              "type": "address"
+            }
+          ],
+          "name": "BidderRefunded",
+          "type": "event",
+          "signature": "0xa6b0a214724be5be631af1800b1bfdef5dbf1ac9dc351d039e1b082d40c62f20"
+        },
+        "0xee56ec262f5ecf24fa2dbfd0cf67c35cb1300e6ef1327dc2f91a4b9e03ef7ab4": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "_round",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_timestamp",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_param",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_highestBid",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_highestBidder",
+              "type": "address"
+            }
+          ],
+          "name": "RoundFinalised",
+          "type": "event",
+          "signature": "0xee56ec262f5ecf24fa2dbfd0cf67c35cb1300e6ef1327dc2f91a4b9e03ef7ab4"
+        }
+      },
+      "links": {},
+      "address": "0xD797f970B414BeE0C4be766aa2536909197e45b1",
+      "transactionHash": "0x90d80156536b25955a5ffccafd4ed30ddaf7afc581851dcc26de651e06503d75"
     }
   },
   "schemaVersion": "3.0.16",

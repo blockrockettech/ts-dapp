@@ -1,9 +1,10 @@
 <template>
     <div class="auction-bid-container">
         <div class="img-container mx-auto">
-            <div class="param-image position-absolute" v-for="n in 64" >
+            <!--<div class="param-image position-absolute" v-for="n in 64" >
                 <img class="img-container" :src="paramImgUrl" alt="" v-bind:class="[ parameter == (n-1) ? 'active' : 'notactive', 'bg-light' ]"/>
-            </div>
+            </div>-->
+            <img class="img-container" :src="paramImgUrl" alt="" />
         </div>
         <div class="slider-container my-5 mx-auto">
             <label class="slider-label" for="slider-input">
@@ -188,7 +189,6 @@
 <style scoped>
     .img-container{
       width: 80%;
-      padding-top: 100%;
     }
 
     .param-image{
