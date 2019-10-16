@@ -1,5 +1,6 @@
 <template>
-  <div class="about container">
+  <div class="about container text-center">
+  	<span class="text-large">The genesis auction will be starting in:</span><br/>
 		<span class="h1">{{startingIn}}</span>
   </div>
 </template>

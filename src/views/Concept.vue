@@ -1,7 +1,7 @@
 <template>
     <div class="container">
       <video 
-        src="https://s3.eu-central-1.amazonaws.com/twistedsister.io/Anitest_defintiv.mov" 
+        src="https://s3.eu-central-1.amazonaws.com/twistedsister.io/twistedsisterio-fysaveasguys.mov" 
         type="video/mp4" 
         autoplay
         loop
@@ -12,7 +12,7 @@
         Your browser does not support the video tag.
       </video>
       <p class="text-large">
-      	twistedsiter.io operates at the intersection of art, technology and economy. The project explores our self-portrayal in the network of social media relationships. Photography and film, 3D animation and 3D printing, blockchain and performance conflate into a complete work which gravitates around the human body as a malleable avatar.
+      	Merging visual thinking, game theory and value systems as elements of social interaction and collaborative creation practices, <a href="//twistedsister.io">twistedsister.io</a> explores the forces behind the phenomena of self-portrayal in the network of social media relationships. Digital 3D technologies, visual media, blockchain and performance conflate into an artistic work which gravitates around the human body as a malleable avatar.
       </p>
     </div>
 </template>
