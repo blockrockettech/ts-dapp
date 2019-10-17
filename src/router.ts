@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Auction from './views/Auction.vue'
-// import Countdown from './views/Countdown.vue'
+import Countdown from './views/Countdown.vue'
 import FAQ from './views/FAQ.vue'
 import Disclaimer from './views/Disclaimer.vue'
 
@@ -22,6 +22,7 @@ export default new Router({
     {
       path: '/genesis-auction',
       name: 'genesis-auction',
+      // component: Countdown
       component: Auction
     },
     {

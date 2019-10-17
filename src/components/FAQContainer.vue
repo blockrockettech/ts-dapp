@@ -26,7 +26,6 @@
 		margin-right: auto;
 	}
 	.faq-header{
-		font-weight: bold;
 		border-top: 1px solid #ddd;
 		padding-top: .5rem;
 		padding-bottom: .5rem;

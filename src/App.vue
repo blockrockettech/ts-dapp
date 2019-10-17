@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-    		<div class="container-fluid mb-6">
+    		<div class="container-fluid header">
     			<div class="row ">
     				<div class="col-12 col-md-6 mt-3 text-center text-md-left">
 			        <router-link to="/" exact>
@@ -99,6 +99,9 @@
 <style lang="scss">
     @import './styles/_index.scss';
 
+    .header{
+    	margin-bottom: 4rem;
+    }
     #nav {
     		line-height: .8;
         a {
@@ -114,7 +117,7 @@
     }
     .footer{
     	border-top: 1px solid black;
-      margin-top: 6rem;
+      margin-top: 4rem;
     }
     .footer-link{
     	margin-left: 1em;
