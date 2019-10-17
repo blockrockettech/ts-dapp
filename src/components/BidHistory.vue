@@ -9,7 +9,10 @@
                     <span>Highest Bid</span>
                 </div>
                 <!-- only if its you -->
-                <div class="my-2 text-center text-success text-large">You made the highest offer!</div>
+                <div class="my-2 text-center text-success text-large"
+                     v-if="highestBidData.address === activeAccount">
+                    You made the highest offer!
+                </div>
                 <div class="highest-bid-row text-center my-2">
                     <span>{{highestBidData.elapsedTime}}</span><br/>
                     <span>{{highestBidData.address}}</span><br/>
@@ -42,6 +45,7 @@
 
     @Component({
         computed: {
+            ...mapGetters('accounts', ['activeAccount', 'activeBalance']),
             ...mapGetters('drizzle', ['drizzleInstance', 'isDrizzleInitialized']),
             ...mapGetters('contracts', ['getContractData', 'contractInstances']),
             ...mapGetters(['contractName'])
@@ -56,6 +60,7 @@
         getContractData: any;
         contractInstances: any;
         contractName!: string;
+        activeAccount!: string;
 
         humanisedTimeFromUnixTimestamp(timestamp: number) {
             const now = moment().utc(false);
