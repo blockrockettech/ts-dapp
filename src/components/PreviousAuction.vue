@@ -1,6 +1,6 @@
 <template>
     <div class="previous-auction-container">
-			
+
 			<div class="auction-header container mb-4">
 				<div class="row">
 					<span class="round-counter col h1 mb-0">
@@ -41,7 +41,7 @@
                     </span>
                 </div>
                 <div class="small">
-                    <a :href="etherscanTokenUrl">→ view token on etherscan</a>
+                    <a :href="openSeaUrl" target="_blank">→ view token on OpenSea</a>
                 </div>
             </div>
         </div>
@@ -51,10 +51,11 @@
 <script lang="ts">
     import { Moment } from 'moment';
     import moment from 'moment';
+    import _ from 'lodash';
     import { mapGetters } from 'vuex';
     import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
 
-    import { getEtherscanBaseUrl, getEventsByName, etherFromWei } from '@blockrocket/vue-drizzle-utils';
+    import { getEtherscanBaseUrl, getEventsByName, etherFromWei, getNetworkName } from '@blockrocket/vue-drizzle-utils';
 
     @Component({
         computed: {
@@ -83,6 +84,14 @@
         drizzleInstance: any;
         getContractData: any;
         contractInstances: any;
+
+        get openSeaUrl(): string {
+            if(!this.isDrizzleInitialized) return '';
+            const network = getNetworkName(this.drizzleInstance);
+            const baseUrl = _.intersection([network], ['ropsten', 'rinkeby']).length > 0 ?
+                `https://${network}.opensea.io` : 'https://opensea.io';
+            return `${baseUrl}/assets/${this.tokenContractAddress(this.drizzleInstance)}/${this.roundNo}`;
+        }
 
         get events() {
             if (this.isDrizzleInitialized) {
@@ -155,7 +164,7 @@
 </script>
 
 <style scoped>
-    
+
 
 	.previous-auction-container{
 	}

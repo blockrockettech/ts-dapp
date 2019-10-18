@@ -16,8 +16,8 @@
                     <b-form-input id="slider-input"
                                   class="slider-input"
                                   type="range"
-                                  min="0"
-                                  max="63"
+                                  min="1"
+                                  max="64"
                                   @change="inputReceived"
                                   v-model="parameter" />
                 </div>
@@ -130,7 +130,7 @@
 
         get paramImgUrl() {
             const currentDayLetter = String.fromCharCode(64 + Number(this.currentRound));
-            const paramForImgStr = this.paramForImg.toString();
+            const paramForImgStr = (Number(this.paramForImg)-1).toString();
             const paramForImgLength = paramForImgStr.length;
             let paddedParam = '';
             for (let i = 0; i < 4 - paramForImgLength; i += 1) {
