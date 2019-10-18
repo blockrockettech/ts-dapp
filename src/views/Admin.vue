@@ -46,7 +46,7 @@
                     </code>
                 </pre>
             </div>
-            <p><kbd>-1</kbd> Signifies that a round is yet to be finalised</p>
+            <p><kbd>0</kbd> Signifies that a round is yet to be finalised</p>
         </div>
     </div>
 </template>
@@ -218,7 +218,7 @@
                     .map((event: any) => event.returnValues._param.toString());
                 if (params.length < 21) {
                     for (let i = 0; i < 21 - params.length; i += 1) {
-                        params.push('-1');
+                        params.push('0');
                     }
                 }
                 return params;
