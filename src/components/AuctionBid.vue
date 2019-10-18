@@ -150,7 +150,7 @@
 
                 let minInEther: number = etherFromWei(this.drizzleInstance, min, DEFAULT_MIN_BID);
 
-                if (this.highestBidInEth > minInEther) {
+                if (this.highestBidInEth >= minInEther) {
                     minInEther = addWeiToEther(
                         this.drizzleInstance,
                         DEFAULT_MIN_INCREMENT_IN_WEI.toString(),
