@@ -85,7 +85,7 @@
         currentRound!: number;
 
         // State
-        parameter: number = 0;
+        parameter: number = 1;
         bid: number = DEFAULT_MIN_BID;
         receivedInput: boolean = false;
 
