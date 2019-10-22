@@ -19,13 +19,12 @@
                                   min="1"
                                   max="64"
                                   @change="inputReceived"
-                                  v-model="parameter" />
+                                  v-model="bidParameter"/>
                 </div>
                 <div class="col-3">
-                    <span class="slider-value">{{ parameter }}</span>
+                    <span class="slider-value">{{ bidParameter }}</span>
                 </div>
             </div>
-
 
             <span class="reset-label">
                 + RESET TO HIGHEST BID
@@ -85,7 +84,7 @@
         currentRound!: number;
 
         // State
-        parameter: number = 1;
+        bidParameter: number = 1;
         bid: number = DEFAULT_MIN_BID;
         receivedInput: boolean = false;
 
@@ -110,7 +109,7 @@
         submitBid() {
             if(this.isDrizzleInitialized) {
                 const bidContractMethod = this.drizzleInstance.contracts[this.contractName].methods['bid'];
-                bidContractMethod.cacheSend(this.parameter, { value: this.bidInWei });
+                bidContractMethod.cacheSend(this.bidParameter, { value: this.bidInWei });
             } else {
                 alert("Drizzle doesn't seem to be initialised / ready");
             }
@@ -121,11 +120,11 @@
         // -----------------
 
         get paramForImg() {
-            if (!this.receivedInput && this.parameter !== this.paramFromHighestBidder) {
-                this.parameter = this.paramFromHighestBidder;
+            if (!this.receivedInput && this.bidParameter !== this.paramFromHighestBidder) {
+                this.bidParameter = this.paramFromHighestBidder;
             }
 
-            return this.parameter;
+            return this.bidParameter;
         }
 
         get paramImgUrl() {
