@@ -1,12 +1,10 @@
 <template>
     <div class="auction-bid-container">
-
     		<div class="range-img-container">
 	        <div class="img-container">
 	            <img v-for="n in 64" class="param-img" :src="constructImgUrl(n)" alt="" v-bind:class="[ paramImgUrl === constructImgUrl(n) ? 'active' : '' ]"/>
 	        </div>
 	      </div>
-
         <div class="slider-container my-5 mx-auto">
             <label class="slider-label" for="slider-input">
                 <span><small>Step 1:</small></span><br/>
@@ -20,7 +18,6 @@
                                   min="1"
                                   max="64"
                                   value="1"
-                                  step="any"
                                   @change="inputReceived"
                                   v-model="bidParameter"/>
                 </div>
@@ -28,7 +25,6 @@
                     <span class="slider-value">{{ bidParameter }}</span>
                 </div>
             </div>
-
         </div>
         <div class="make-bid-container my-5 mx-auto">
             <span class="make-bid-label">
