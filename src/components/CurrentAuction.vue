@@ -15,6 +15,7 @@
 
 
 			<div class="auction-container container pt-4" v-if="open">
+			<!-- <div class="auction-container container pt-4" v-if="true"> -->
 				<div class="ending-container text-center ">
 					<div class="mb-5">
 						<span class="text-large">The current auction will be ending in:</span>

@@ -19,7 +19,8 @@
                                   type="range"
                                   min="1"
                                   max="64"
-                                  value=""
+                                  value="1"
+                                  step="any"
                                   @change="inputReceived"
                                   v-model="bidParameter"/>
                 </div>
