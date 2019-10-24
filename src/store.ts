@@ -10,7 +10,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
     state: {
         highestBidInEth: 0,
-        paramFromHighestBidder: 0
+        paramFromHighestBidder: 1
     },
     mutations: {
         updateHighestBidInEth(state, {highestBidInEth}) {

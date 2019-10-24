@@ -4,8 +4,9 @@
         <div>
             <h2>Current Round</h2>
             <hr />
-            <p>Round #: {{currentRound}}</p>
-            <p>Param From Highest Bidder: {{paramFromHighestBidder}}</p>
+            <p><strong>Round #:</strong> {{currentRound}}</p>
+            <p><strong>Param From Highest Bidder:</strong> {{highestBidder.param}}</p>
+            <p><strong>Highest Bidder:</strong> {{highestBidder.address}}</p>
 
             <vue-dropzone
                     ref="myVueDropzone"
@@ -45,7 +46,7 @@
                     </code>
                 </pre>
             </div>
-            <p><kbd>-1</kbd> Signifies that a round is yet to be finalised</p>
+            <p><kbd>0</kbd> Signifies that a round is yet to be finalised</p>
         </div>
     </div>
 </template>
@@ -68,7 +69,7 @@
         computed: {
             ...mapGetters('drizzle', ['drizzleInstance', 'isDrizzleInitialized']),
             ...mapGetters('contracts', ['getContractData', 'contractInstances']),
-            ...mapGetters(['contractName', 'paramFromHighestBidder']),
+            ...mapGetters(['contractName']),
         },
         components: {
             SmallSpinner,
@@ -81,7 +82,6 @@
         drizzleInstance: any;
         contractInstances: any;
         getContractData: any;
-        paramFromHighestBidder!: number;
 
         ipfs = ipfsHttpClient('ipfs.infura.io', '5001', { protocol: 'https' });
 
@@ -154,7 +154,7 @@
                 image: imageIpfsUrl,
                 attributes: {
                     round_number: this.currentRound,
-                    parameter: this.paramFromHighestBidder.toString()
+                    parameter: this.highestBidder.param.toString()
                 },
             };
         }
@@ -188,13 +188,37 @@
             this.$refs.myVueDropzone.removeAllFiles();
         }
 
+        get highestBidder() {
+            const noBid = {
+                param: 0,
+                address: 'No bid address'
+            };
+
+            if (this.isDrizzleInitialized) {
+                const currentRound = this.currentRound;
+                const bidEvents = getEventsByName(this.contractInstances, this.contractName, 'BidAccepted')
+                    .filter((event: any) => {
+                        return event.returnValues._round === currentRound;
+                    }).reverse();
+
+                if (bidEvents.length === 0) return noBid;
+
+                const highestBidderEvent = bidEvents[0];
+                return {
+                    param: highestBidderEvent.returnValues._param,
+                    address: highestBidderEvent.returnValues._bidder
+                };
+            }
+            return noBid;
+        }
+
         get params() {
             if (this.isDrizzleInitialized) {
                 const params = getEventsByName(this.contractInstances, this.contractName, 'RoundFinalised')
                     .map((event: any) => event.returnValues._param.toString());
                 if (params.length < 21) {
                     for (let i = 0; i < 21 - params.length; i += 1) {
-                        params.push('-1');
+                        params.push('0');
                     }
                 }
                 return params;
