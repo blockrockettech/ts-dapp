@@ -27,7 +27,7 @@
 
 				            <span class="footer-link d-block d-md-inline"><router-link to="/disclaimer">Disclaimer</router-link></span>
 
-                    <span class="footer-link d-block d-md-inline">dApp built by: <a href="https://blockrocket.tech" target="_blank">BlockRocket</a></span>
+                    <span class="footer-link d-block d-md-inline">dApp by: <a href="https://blockrocket.tech" target="_blank">BlockRocket</a></span>
 
                     <span class="footer-link d-block d-md-inline">Current Ethereum Network: {{currentNetwork}}</span>
                  </span>
@@ -100,7 +100,7 @@
     @import './styles/_index.scss';
 
     .header{
-    	margin-bottom: 4rem;
+    	margin-bottom: 5rem;
     }
     #nav {
     		line-height: .8;

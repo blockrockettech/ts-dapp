@@ -1,18 +1,19 @@
 <template>
     <div class="auction-bid-container">
-        <div class="img-container mx-auto">
-            <!--<div class="param-image position-absolute" v-for="n in 64" >
-                <img class="img-container" :src="paramImgUrl" alt="" v-bind:class="[ parameter == (n-1) ? 'active' : 'notactive', 'bg-light' ]"/>
-            </div>-->
-            <img class="img-container" :src="paramImgUrl" alt="" />
-        </div>
+
+    		<div class="range-img-container">
+	        <div class="img-container">
+	            <img v-for="n in 64" class="param-img" :src="constructImgUrl(n)" alt="" v-bind:class="[ paramImgUrl === constructImgUrl(n) ? 'active' : '' ]"/>
+	        </div>
+	      </div>
+
         <div class="slider-container my-5 mx-auto">
             <label class="slider-label" for="slider-input">
                 <span><small>Step 1:</small></span><br/>
-                <span class="text-large">Adjust the settings to your slider:</span>
+                <span class="text-large">Adjust the setting on the slider:</span>
             </label>
             <div class="row">
-                <div class="col-9">
+                <div class="col-12">
                     <b-form-input id="slider-input"
                                   class="slider-input"
                                   type="range"
@@ -22,14 +23,10 @@
                                   @change="inputReceived"
                                   v-model="bidParameter"/>
                 </div>
-                <div class="col-3">
+                <div class="col-12 text-center">
                     <span class="slider-value">{{ bidParameter }}</span>
                 </div>
             </div>
-
-            <span class="reset-label">
-                + RESET TO HIGHEST BID
-            </span>
 
         </div>
         <div class="make-bid-container my-5 mx-auto">
@@ -39,11 +36,6 @@
             </span>
             <div class="make-bid-input-group-container">
                 <b-input-group>
-                    <!--<b-input-group-prepend>
-                        <b-button variant="outline-info" class="adjust-btn-width" @click="decreaseBid">-</b-button>
-                        <b-button variant="outline-info" class="adjust-btn-width" @click="increaseBid">+</b-button>
-                    </b-input-group-prepend>-->
-
                     <b-form-input type="number"
                                   :min="minBid"
                                   step="0.02"
@@ -52,7 +44,7 @@
                                   class="bid-input" />
 
                     <b-input-group-append>
-                        <b-button variant="success" @click="submitBid">→ BID</b-button>
+                        <b-button variant="dark" @click="submitBid">→ BID</b-button>
                     </b-input-group-append>
                 </b-input-group>
             </div>
@@ -129,8 +121,12 @@
         }
 
         get paramImgUrl() {
+            return this.constructImgUrl(this.paramForImg);
+        }
+
+       	constructImgUrl(_param) {
             const currentDayLetter = String.fromCharCode(64 + Number(this.currentRound));
-            const paramForImgStr = (Number(this.paramForImg)-1).toString();
+            const paramForImgStr = (Number(_param)-1).toString();
             const paramForImgLength = paramForImgStr.length;
             let paddedParam = '';
             for (let i = 0; i < 4 - paramForImgLength; i += 1) {
@@ -187,22 +183,35 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
+		.range-img-container{
+			padding: 0 1.5rem;
+			width: 100%;
+			max-width: 600px;
+			margin-left: auto;
+			margin-right: auto;
+		}
+
     .img-container{
-      width: 80%;
+      width: 100%;
+      padding-top: 100%;
+      position: relative;
+      position: relative;
     }
 
-    .param-image{
+    .param-img{
+    	position: absolute;
       top:0;
       left:0;
-    }
-
-    .param-image img{
-      top:0;
-      left:0;
+      width: 100%;
+      height: 100%;
+      display: block;
       opacity: 0;
+      display: none;
     }
 
-    .param-image img.active{
+    .param-img.active{
+    	display: block;
       opacity: 1;
     }
 

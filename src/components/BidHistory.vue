@@ -1,14 +1,13 @@
 <template>
-    <div class="bid-history-container mt-6">
+    <div class="bid-history-container my-6">
         <h3 class="mb-4 text-center">
-            BID HISTORY
+            Bid History
         </h3>
         <div v-if="anyBidReceived">
             <div class="highest-bid-container mb-5 text-center text-lg-left">
                 <div class="small text-center pb-2 border-bottom">
                     <span>Highest Bid</span>
                 </div>
-                <!-- only if its you -->
                 <div class="my-2 text-center text-success text-large"
                      v-if="highestBidData.address === activeAccount">
                     You made the highest offer!
@@ -25,8 +24,8 @@
                 </div>
                 <div class="row my-2 small" v-for="previousBid in previousBids">
                     <span class="col-12 col-lg-3">{{previousBid.elapsedTime}}</span>
-                    <span class="col-12 col-lg-6">{{previousBid.address}}</span>
-                    <span class="col-12 col-lg-3">{{previousBid.amount}} ETH</span>
+                    <span class="col-12 col-lg-6 text-lg-center">{{previousBid.address}}</span>
+                    <span class="col-12 col-lg-3 text-lg-right">{{previousBid.amount}} ETH</span>
                 </div>
             </div>
         </div>

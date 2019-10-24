@@ -14,10 +14,10 @@
 			</div>
 
 
-			<div class="auction-container container pt-4" v-if="true">
+			<div class="auction-container container pt-4" v-if="open">
 				<div class="ending-container text-center ">
 					<div class="mb-5">
-						<span class="text-large">The current round's auction will be ending in:</span>
+						<span class="text-large">The current auction will be ending in:</span>
 						<br/>
 						<span class="h1">{{ endingIn }}</span>
 					</div>
@@ -29,10 +29,10 @@
 
 			<div class="auction-container next-auction container pt-4" v-else>
 				<span>
-				  <small>The current round's bidding window is not open.</small>
+				  <small>twistedsister is in regeneration mode</small>
 				</span>
 				<br/>
-				<span class="text-large">The next bidding window will be open in:</span>
+				<span class="text-large">The bidding window will open in:</span>
 				<br/>
 				<span class="h1">{{ startingIn }}</span>
 			</div>
@@ -82,7 +82,7 @@
 			const now = moment().utc(false);
 			const roundStart = this.roundStart(this.currentRound, this.auctionStartTime);
 			const duration = moment.duration(roundStart.diff(now));
-			this.startingIn = `${Math.ceil(duration.get('days'))}d ${Math.ceil(duration.get('hours'))}h ${Math.ceil(duration.get('minutes'))}m ${Math.ceil(duration.get('seconds'))}s`;
+			this.startingIn = `${Math.ceil(duration.get('hours'))}h ${Math.ceil(duration.get('minutes'))}m ${Math.ceil(duration.get('seconds'))}s`;
 		}
 		updateEndingInTime() {
 			const now = moment().utc(false);
