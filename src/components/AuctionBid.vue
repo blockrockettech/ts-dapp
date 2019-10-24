@@ -16,9 +16,9 @@
                     <b-form-input id="slider-input"
                                   class="slider-input"
                                   type="range"
-                                  min="0"
-                                  max="63"
-                                  value="1"
+                                  min="1"
+                                  max="64"
+                                  value=""
                                   @change="inputReceived"
                                   v-model="bidParameter"/>
                 </div>
