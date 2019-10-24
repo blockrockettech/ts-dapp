@@ -118,10 +118,10 @@
         }
 
         get paramImgUrl() {
-            return this.constructImgUrl(this.paramForImg);
+            return this.constructImgUrl( this.paramForImg );
         }
 
-       	constructImgUrl(_param) {
+       	constructImgUrl( _param: number ) {
             const currentDayLetter = String.fromCharCode(64 + Number(this.currentRound));
             const paramForImgStr = (Number(_param)-1).toString();
             const paramForImgLength = paramForImgStr.length;
