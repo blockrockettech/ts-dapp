@@ -18,6 +18,7 @@
                                   type="range"
                                   min="0"
                                   max="63"
+                                  value="1"
                                   @change="inputReceived"
                                   v-model="parameter" />
                 </div>

@@ -22,8 +22,8 @@ export default new Router({
     {
       path: '/genesis-auction',
       name: 'genesis-auction',
-      // component: Countdown
-      component: Auction
+      component: Countdown
+      // component: Auction
     },
     {
       path: '/faq',
