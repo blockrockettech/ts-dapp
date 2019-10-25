@@ -13,7 +13,7 @@
     	</div>
 
     	<div class="col-12 col-md-3 text-center mb-2">
-    		<span><a href="https://twitter.com/TwistedsisterI" target="_blank" class="btn btn-secondary text-white w-100">Twitter</a></span>
+    		<span><a href="https://twitter.com/twistedsisterio" target="_blank" class="btn btn-secondary text-white w-100">Twitter</a></span>
     	</div>
 
     	<div class="col-12 col-md-3 text-center mb-2">

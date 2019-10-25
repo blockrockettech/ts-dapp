@@ -1,5 +1,5 @@
 <template>
-    <div class="previous-auction-container">
+    <div class="previous-auction-container mb-6">
 
 			<div class="auction-header container mb-4">
 				<div class="row">
@@ -13,28 +13,28 @@
 			</div>
 
         <div class="auction-container container pt-4">
-            <div class="">
+            <div class="mb-4">
                 <img :src="paramImgUrl" alt="" class="img-container d-block w-auto mw-100 h-auto mx-auto"/>
             </div>
             <div class="details-container text-center">
                 <div class="mb-3">
-                    <span class="small">ENDED</span>
+                    <span class="small">Token Minted</span>
                     <br/>
                     <span class="text-medium">
                         {{roundEndDay}}
                         ,
-                        {{roundEndTime}}
+                        {{roundEndTime}} (UTC)
                     </span>
                 </div>
                 <div class="mb-3">
-                    <span class="small">OWNER</span>
+                    <span class="small">Owner</span>
                     <br/>
                     <span class="text-medium">
                         {{highestBidder}}
                     </span>
                 </div>
                 <div class="mb-4">
-                    <span class="small">BID</span>
+                    <span class="small">Bid</span>
                     <br/>
                     <span class="text-medium">
                         {{highestBid}} ETH

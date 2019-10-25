@@ -10,7 +10,7 @@
     			What is this project about?
     		</template>
     		<template v-slot:body>
-    			<p><a href="//twistedsister.io">twistedsister.io</a> explores the forces behind the phenomena of self-portrayal in the network of social media relationships. The project aims to develop an artwork of interconnected tangible and intangible artefacts by leveraging digital technologies. The dApp allows users to participate in a coopetitive, economically and aesthetically incentivised experiment of generative art. </p>
+    			<p><a href="//twistedsister.io">twistedsister.io</a> explores the forces behind the phenomena of self-portrayal in the network of social media relationships. The project aims to develop an artwork of interconnected tangible and intangible artefacts by leveraging digital technologies. The <a href="//twistedsister.io">twistedsister.io</a> dApp allows users to participate in a coopetitive, economically and aesthetically incentivised experiment of generative art. </p>
     		</template>
     	</FAQContainer>
 
@@ -31,7 +31,7 @@
     			What am I bidding on?
     		</template>
     		<template v-slot:body>
-    			<p>During the genesis auction, users bid on the setting of a geometric parameter which will modify theappearance of twistedsister. The winning bidder will be awarded a unique blockchain token (ERC-721), cryptographically linked to the image file of the winning parameter setting. Each bidding round starts with a new adjustable parameter applied to the appearance of twistedsister from the previous round. There will be 21 bidding rounds.</p>
+    			<p>During the genesis auction, users bid on the setting of a geometric parameter which will modify theappearance of twistedsister. The winning bidder will be awarded a unique blockchain token (ERC-721), cryptographically linked to the image of the winning parameter setting. Each bidding round starts with a new adjustable parameter applied to the appearance of twistedsister from the previous round. There will be 21 bidding rounds.</p>
     		</template>
     	</FAQContainer>
 
@@ -42,7 +42,7 @@
     			What is the duration of the genesis auction?
     		</template>
     		<template v-slot:body>
-    			<p>The auction starts on 2 November 2019, 9:00 a.m. CET and ends on 22 November 2019, 9:00 p.m. CET. Auction rounds start each day at 9:00 a.m. CET and end at 9:00 p.m. CET the same day. During each bidding  window, twistedsister needs time to regenerate and recover from the inflicteddistortion pains/pleasures. Each day a unique adjustable geometric parameter will be auctioned. A total of 21 tokens will be issued, one per day.</p>
+    			<p>The auction starts on 2 November 2019, 9:00 a.m. CET and ends on 22 November 2019, 9:00 p.m. CET. Auction rounds start each day at 9:00 a.m. CET and end at 9:00 p.m. CET the same day. During each bidding  window, twistedsister needs time to regenerate and recover from the inflicted distortion pains/pleasures. Each day a unique adjustable geometric parameter will be auctioned. A total of 21 tokens will be issued, one per day.</p>
     		</template>
     	</FAQContainer>
 
@@ -75,7 +75,7 @@
     			What can I do with my tokens?
     		</template>
     		<template v-slot:body>
-    			<p>TWIST token holders can sell, trade and transfer their digital items with other users directly or on secondary marketplaces such as opensea.io. The TWIST3D token holder is the legitimate owner of the unique physical edition of twistedsister,while the TWIST token owners are its stakeholders. In order to maintain the link between the physical and the digital realm, it is the TWIST3D token holder’s responsibility to transact any IRL change of ownership of the statue (sell, trade, transfer) by using the smart contract address printed at the bottom of the statue’s base. The same responsibility applies to vice-versa transactions.</p>
+    			<p>TWIST token holders can sell, trade and transfer their digital items with other users directly or on secondary marketplaces such as <a href="//opensea.io" target="_blank">opensea.io</a>. The TWIST3D token holder is the legitimate owner of the unique physical edition of twistedsister, while the TWIST token owners are its stakeholders. In order to maintain the link between the physical and the digital realm, it is the TWIST3D token holder’s responsibility to transact any IRL change of ownership of the statue (sell, trade, transfer) by using the smart contract address integrated at the bottom of the statue’s base. The same responsibility applies to vice-versa transactions.</p>
     		</template>
     	</FAQContainer>
 
@@ -86,7 +86,7 @@
     			Do I need an Ethereum address to interact?
     		</template>
     		<template v-slot:body>
-    			<p>Yes, you do. We use smart contracts on the Ethereum blockchain to prove ownership, provenance and authenticity of each token as well as for automatic funds allocation. On a computer use Brave, Firefox or Chrome, install the free MetaMask wallet extension and load it with some Ether. MetaMask will take care of your bids and interactions with the blockchain. If you prefer smartphones, you can install Web3-enabled dApp browsers such as Trust wallet, Coinbase wallet, orRainbow wallet – all freely available for iOS and Android.</p>
+    			<p>Yes, you do. We use smart contracts on the Ethereum blockchain to prove ownership, provenance and authenticity of each token as well as for automatic funds allocation. On a computer use Brave, Firefox or Chrome, install the free <a href="https://metamask.io" target="_blank">MetaMask</a> wallet extension and load it with some Ether. MetaMask will take care of your bids and interactions with the blockchain. If you prefer smartphones, you can install Web3-enabled dApp browsers such as Trust wallet, Coinbase wallet, orRainbow wallet – all freely available for iOS and Android.</p>
     		</template>
     	</FAQContainer>
 
@@ -97,7 +97,7 @@
     			Automated funds distribution, say what?
     		</template>
     		<template v-slot:body>
-    			<p>Open blockchains facilitate permissionless, secure, near instant peer-to-peer value transactions without an intermediary. Automated funds distribution via smart contracts is a central part of the <a href="//twistedsister.io">twistedsister.io</a> project. It allows a thoughtful value chain design. In secondary market sales 20% ofa transaction will equally be distributed among the token holders, while 10% will be equally distributed among the artists – forever.</p>
+    			<p>Open blockchains facilitate permissionless, secure, near instant peer-to-peer value transactions without an intermediary. Automated funds distribution via smart contracts is a central part of the <a href="//twistedsister.io">twistedsister.io</a> project. It allows a fair-minded value chain design. In secondary market sales 20% ofa transaction will equally be distributed among the token holders, while 10% will be equally distributed among the artists – forever.</p>
     		</template>
     	</FAQContainer>
 
