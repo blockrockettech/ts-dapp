@@ -21,6 +21,7 @@
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "portal-vue": "^2.1.6",
+    "vconsole": "^3.3.4",
     "vue": "^2.6.10",
     "vue-class-component": "^7.1.0",
     "vue-property-decorator": "^8.2.2",
