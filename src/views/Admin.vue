@@ -190,7 +190,7 @@
 
         get highestBidder() {
             const noBid = {
-                param: 0,
+                param: 1,
                 address: 'No bid address'
             };
 
