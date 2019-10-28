@@ -1,4 +1,4 @@
-import TwistedAuctionMock from "@/truffleconf/auction/TwistedAuctionMock.json";
+import TwistedSisterAuction from "@/truffleconf/auction/TwistedSisterAuction.json";
 
 const options = {
     web3: {
@@ -10,7 +10,7 @@ const options = {
     },
 
     // The contracts to monitor
-    contracts: [TwistedAuctionMock],
+    contracts: [TwistedSisterAuction],
     events: {
         // monitor SimpleStorage.StorageSet events
         TwistedAuctionMock: [
