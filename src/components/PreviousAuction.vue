@@ -14,7 +14,7 @@
 
         <div class="auction-container container pt-4">
             <div class="mb-4">
-                <img :src="paramImgUrl" alt="" class="img-container d-block w-auto mw-100 h-auto mx-auto"/>
+                <img :src="ipfsImageUrl" alt="" class="img-container d-block w-auto mw-100 h-auto mx-auto"/>
             </div>
             <div class="details-container text-center">
                 <div class="mb-3">
@@ -40,8 +40,14 @@
                         {{highestBid}} ETH
                     </span>
                 </div>
-                <div class="small">
+                <div class="small mt-1">
                     <a :href="openSeaUrl" target="_blank">→ view token on OpenSea</a>
+                </div>
+                <div class="small mt-1">
+                    <a :href="etherscanTokenUrl" target="_blank">→ view token on Etherscan</a>
+                </div>
+                <div class="small mt-1">
+                    <a :href="ipfsTokenDataUrl" target="_blank">→ view token data on IPFS</a>
                 </div>
             </div>
         </div>
@@ -52,8 +58,12 @@
     import { Moment } from 'moment';
     import moment from 'moment';
     import _ from 'lodash';
+    import axios from 'axios';
+    import { ethers } from 'ethers';
     import { mapGetters } from 'vuex';
     import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
+
+    import TwistedSisterToken from '@/truffleconf/token/TwistedSisterToken.json';
 
     import { getEtherscanBaseUrl, getEventsByName, etherFromWei, getNetworkName } from '@blockrocket/vue-drizzle-utils';
 
@@ -84,6 +94,29 @@
         drizzleInstance: any;
         getContractData: any;
         contractInstances: any;
+
+        provider: any = null;
+        signer: any = null;
+
+        ipfsTokenDataUrl: string = '';
+        ipfsImageUrl: string = '';
+
+        async mounted() {
+            if (this.isDrizzleInitialized && this.tokenContractAddress(this.drizzleInstance) && !this.provider && !this.signer) {
+                this.provider = new ethers.providers.Web3Provider(this.drizzleInstance.web3.givenProvider);
+                this.signer = this.provider.getSigner();
+
+                const tokenContract = new ethers.Contract(
+                    this.tokenContractAddress(this.drizzleInstance),
+                    TwistedSisterToken.abi,
+                    this.signer,
+                );
+
+                this.ipfsTokenDataUrl = await tokenContract.tokenURI(Number(this.roundNo));
+                const ipfsTokenData: any = await axios.get(this.ipfsTokenDataUrl);
+                this.ipfsImageUrl = ipfsTokenData.data.image;
+            }
+        }
 
         get openSeaUrl(): string {
             if(!this.isDrizzleInitialized) return '';
@@ -134,23 +167,6 @@
             }
 
             return 'loading...';
-        }
-
-        get paramImgUrl() {
-            if (this.events.length === 1) {
-                const event = this.events[0];
-                const paramForImgStr = event.returnValues._param.toString();
-                const currentDayLetter = String.fromCharCode(64 + Number(this.roundNo));
-                const paramForImgLength = paramForImgStr.length;
-                let paddedParam = '';
-                for (let i = 0; i < 4 - paramForImgLength; i += 1) {
-                    paddedParam += '0';
-                }
-                paddedParam += paramForImgStr;
-                const fileName = currentDayLetter + paddedParam + '.png';
-                return `/images/${currentDayLetter}/${fileName}`;
-            }
-            return '';
         }
 
         get etherscanTokenUrl() {
