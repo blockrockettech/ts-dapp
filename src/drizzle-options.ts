@@ -13,7 +13,7 @@ const options = {
     contracts: [TwistedSisterAuction],
     events: {
         // monitor SimpleStorage.StorageSet events
-        TwistedAuctionMock: [
+        TwistedSisterAuction: [
             {
                 eventName: 'BidAccepted',
                 eventOptions: { fromBlock: 0 }
