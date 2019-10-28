@@ -30,7 +30,7 @@ export default new Vuex.Store({
     },
     getters: {
         contractName: () => {
-            return 'TwistedAuctionMock';
+            return 'TwistedSisterAuction';
         },
         tokenContractAddress: () => (drizzleInstance: any) => {
             return getContractAddressFromTruffleConf(drizzleInstance, TwistedSisterToken);
