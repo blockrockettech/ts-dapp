@@ -65,7 +65,7 @@
 
     @Component({
         computed: {
-            ...mapGetters(['getBaseUrls'])
+            ...mapGetters(['getBaseUrls', 'getContracts'])
         }
     })
     export default class PreviousAuction extends Vue {
@@ -76,6 +76,7 @@
         totalRounds!: number;
 
         getBaseUrls: any;
+        getContracts: any;
 
         isDrizzleInitialized!: boolean;
         contractName!: string;
@@ -88,23 +89,10 @@
         ipfsImageUrl: string = '';
 
         async mounted() {
-            /*console.log('given provider',this.drizzleInstance.web3.givenProvider);
-
-                this.provider = new ethers.providers.Web3Provider(this.drizzleInstance.web3.givenProvider);
-
-                console.log('ethers provider', this.provider);
-
-                this.signer = this.provider.getSigner();
-
-                const tokenContract = new ethers.Contract(
-                    this.tokenContractAddress(this.drizzleInstance),
-                    TwistedSisterToken.abi,
-                    this.signer,
-                );
-
-                this.ipfsTokenDataUrl = await tokenContract.tokenURI(Number(this.roundNo));
-                const ipfsTokenData: any = await axios.get(this.ipfsTokenDataUrl);
-                this.ipfsImageUrl = ipfsTokenData.data.image;*/
+            const {TwistedSisterToken} = this.getContracts;
+            this.ipfsTokenDataUrl = await TwistedSisterToken.tokenURI(Number(this.round._round));
+            const ipfsTokenData: any = await axios.get(this.ipfsTokenDataUrl);
+            this.ipfsImageUrl = ipfsTokenData.data.image;
         }
 
         get openSeaUrl(): string {

@@ -66,9 +66,6 @@ export default new Vuex.Store({
         },
     },
     actions: {
-        updateHighestBidInEth({ commit }, highestBidInEth) {
-            commit('updateHighestBidInEth', {highestBidInEth});
-        },
         updateParamFromHighestBidder({ commit }, param) {
             commit('updateParamFromHighestBidder', { param });
         },
@@ -139,6 +136,9 @@ export default new Vuex.Store({
                 }).reverse();
                 commit('updateRoundFinalisedEvents', {events: roundFinalisedEvents});
             }
+        },
+        updateHighestBidInEth({ commit }, highestBidInEth) {
+            commit('updateHighestBidInEth', {highestBidInEth});
         },
     },
     getters: {
