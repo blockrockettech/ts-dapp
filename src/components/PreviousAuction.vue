@@ -63,13 +63,19 @@
     import { mapGetters } from 'vuex';
     import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
 
-    @Component({})
+    @Component({
+        computed: {
+            ...mapGetters(['getBaseUrls'])
+        }
+    })
     export default class PreviousAuction extends Vue {
         @Prop({ required: true })
         round!: any;
 
         @Prop({ required: true })
         totalRounds!: number;
+
+        getBaseUrls: any;
 
         isDrizzleInitialized!: boolean;
         contractName!: string;
@@ -102,39 +108,16 @@
         }
 
         get openSeaUrl(): string {
-            /*if(!this.isDrizzleInitialized) return '';
-            const network = /!*getNetworkName(this.drizzleInstance)*!/ 'rinkeby';
-            const baseUrl = _.intersection([network], ['ropsten', 'rinkeby']).length > 0 ?
-                `https://${network}.opensea.io` : 'https://opensea.io';
-            return `${baseUrl}/assets/${this.tokenContractAddress(this.drizzleInstance)}/${this.roundNo}`;*/
-            return '';
-        }
-
-        get events(): any[] {
-            /*if (this.isDrizzleInitialized) {
-                const currentRound = this.roundNo;
-                return getEventsByName(this.contractInstances, this.contractName, 'RoundFinalised')
-                    .filter((event: any) => {
-                        return event.returnValues._round === currentRound.toString();
-                    }).reverse();
-            }*/
-            return [];
+            if (!this.getBaseUrls) return '';
+            return `${this.getBaseUrls.openSea}/${this.round._round}`;
         }
 
         get roundEndDay() {
-            if (this.events.length === 1) {
-                const event = this.events[0];
-                return moment.unix(event.returnValues._timestamp).utc(false).format('DD MMMM YYYY');
-            }
-            return 'loading...';
+            return moment.unix(this.round._timestamp).utc(false).format('DD MMMM YYYY');
         }
 
         get roundEndTime() {
-            if (this.events.length === 1) {
-                const event = this.events[0];
-                return moment.unix(event.returnValues._timestamp).utc(false).format('hh:mma');
-            }
-            return 'loading...';
+            return moment.unix(this.round._timestamp).utc(false).format('hh:mma');
         }
 
         get highestBidder() {
@@ -146,11 +129,8 @@
         }
 
         get etherscanTokenUrl() {
-            /*if(this.isDrizzleInitialized) {
-                const tokenAddress = this.tokenContractAddress(this.drizzleInstance);
-                return `${getEtherscanBaseUrl(this.drizzleInstance)}/token/${tokenAddress}?a=${this.roundNo}`;
-            }*/
-            return '';
+            if (!this.getBaseUrls) return '';
+            return `${this.getBaseUrls.etherScan}?a=${this.round._round}`;
         }
     }
 </script>

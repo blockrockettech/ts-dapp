@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import moment from 'moment';
 import {ethers, utils} from 'ethers';
 import {getNetworkName} from '@blockrocket/utils';
-import {getContractAddressFromTruffleConf} from '@/utils/utils';
+import {getContractAddressFromTruffleConf, getDomain} from '@/utils/utils';
 
 import TwistedSisterAuction from '@/truffleconf/auction/TwistedSisterAuction.json';
 import TwistedSisterToken from '@/truffleconf/token/TwistedSisterToken.json';
@@ -16,6 +16,7 @@ export default new Vuex.Store({
         signer: null,
         chainId: null,
         contracts: null,
+        baseUrls: null,
         auctionData: {
             currentRound: {
                 roundNumber: null,
@@ -32,11 +33,12 @@ export default new Vuex.Store({
         }
     },
     mutations: {
-        updateWeb3Objects(state, {provider, signer, chainId, contracts}) {
+        updateWeb3Objects(state, {provider, signer, chainId, contracts, baseUrls}) {
             Vue.set(state, 'provider', provider);
             Vue.set(state, 'signer', signer);
             Vue.set(state, 'chainId', chainId);
             Vue.set(state, 'contracts', contracts);
+            Vue.set(state, 'baseUrls', baseUrls);
         },
         updateCurrentRound(state, {currentRound}) {
             Vue.set(state.auctionData.currentRound, 'roundNumber', currentRound);
@@ -72,20 +74,30 @@ export default new Vuex.Store({
         },
 
         bootstrapWeb3({ commit, dispatch }, { provider, signer, chainId }) {
+            const auctionAddress = getContractAddressFromTruffleConf(TwistedSisterAuction, chainId);
+            const tokenAddress = getContractAddressFromTruffleConf(TwistedSisterToken, chainId);
             const contracts = {
                 TwistedSisterAuction: new ethers.Contract(
-                    getContractAddressFromTruffleConf(TwistedSisterAuction, chainId),
+                    auctionAddress,
                     TwistedSisterAuction.abi,
                     signer,
                 ),
                 TwistedSisterToken: new ethers.Contract(
-                    getContractAddressFromTruffleConf(TwistedSisterToken, chainId),
+                    tokenAddress,
                     TwistedSisterToken.abi,
                     signer,
                 ),
             };
 
-            commit('updateWeb3Objects', {provider, signer, chainId, contracts});
+            const network = getNetworkName(chainId);
+            const openSeaDomain = getDomain(network, 'opensea');
+            const etherscanDomain = getDomain(network, 'etherscan');
+            const baseUrls = {
+                openSea: `${openSeaDomain}/assets/${tokenAddress}`,
+                etherScan: `${etherscanDomain}/token/${tokenAddress}`
+            };
+
+            commit('updateWeb3Objects', {provider, signer, chainId, contracts, baseUrls});
             dispatch('fetchCoreData', {provider, contracts});
         },
         async fetchCoreData({ commit }, {provider, contracts}) {
@@ -147,14 +159,9 @@ export default new Vuex.Store({
         },
 
 
-        getNetworkName: state => {
-            return state.chainId ? getNetworkName(state.chainId): '';
-        },
-        getContracts: state => {
-            return state.contracts;
-        },
-        auctionData: state => {
-            return state.auctionData;
-        }
+        getNetworkName: state => state.chainId ? getNetworkName(state.chainId): '',
+        getContracts: state => state.contracts,
+        getBaseUrls: state => state.baseUrls,
+        auctionData: state => state.auctionData,
     }
 })
