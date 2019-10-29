@@ -4,12 +4,10 @@
                         :totalRounds="totalRounds"
                         :auctionStartTime="auctionStartTime"
                         :roundLengthInSeconds="roundLengthInSeconds" />
-        <!--<PreviousAuction v-for="roundNo in previousRoundNums"
-                         :roundNo="roundNo"
+        <PreviousAuction v-for="round in previousRounds"
+                         :round="round"
                          :totalRounds="totalRounds"
-                         :auctionStartTime="auctionStartTime"
-                         :roundLengthInSeconds="roundLengthInSeconds"
-                         :key="roundNo" />-->
+                         :key="round._round" />
     </div>
 </template>
 
@@ -39,7 +37,8 @@
         }
 
         get currentRound() {
-            return this.auctionData.currentRoundNumber ? this.auctionData.currentRoundNumber : 1;
+            return this.auctionData.currentRound.roundNumber ?
+                this.auctionData.currentRound.roundNumber : 1;
         }
 
         get auctionStartTime() {
@@ -47,12 +46,9 @@
                 : Math.floor( Date.now() / 1000 );
         }
 
-        get previousRoundNums() {
-            if (this.currentRound > 1) {
-                const arrayStartingFromZero = Array.from(Array(this.currentRound - 1).keys()).reverse();
-                return arrayStartingFromZero.map(el => {
-                    return el + 1;
-                });
+        get previousRounds() {
+            if (this.auctionData.events.roundFinalised && this.auctionData.events.roundFinalised.length) {
+                return this.auctionData.events.roundFinalised;
             } else {
                 return [];
             }

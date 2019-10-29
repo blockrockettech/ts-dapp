@@ -4,7 +4,7 @@
 			<div class="auction-header container mb-4">
 				<div class="row">
 					<span class="round-counter col h1 mb-0">
-						#{{roundNo}} / {{totalRounds}}
+						#{{round._round}} / {{totalRounds}}
 					</span>
 					<span class="col text-right">
 						Previous Auction
@@ -63,30 +63,17 @@
     import { mapGetters } from 'vuex';
     import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
 
-    @Component({
-        computed: {
-            ...mapGetters(['roundEnd']),
-        }
-    })
+    @Component({})
     export default class PreviousAuction extends Vue {
         @Prop({ required: true })
-        roundNo!: number;
+        round!: any;
 
         @Prop({ required: true })
         totalRounds!: number;
 
-        @Prop({ required: true })
-        auctionStartTime!: number;
-
-        @Prop({ required: true })
-        roundLengthInSeconds!: number;
-
-        roundEnd!: (round: number, auctionStartTime: number, roundLengthInSeconds: number) => Moment;
         isDrizzleInitialized!: boolean;
         contractName!: string;
         drizzleInstance: any;
-        getContractData: any;
-        contractInstances: any;
 
         provider: any = null;
         signer: any = null;
@@ -151,19 +138,11 @@
         }
 
         get highestBidder() {
-            if(this.events.length === 1) {
-                return this.events[0].returnValues._highestBidder;
-            }
-
-            return 'loading...';
+            return this.round._highestBidder;
         }
 
         get highestBid() {
-            /*if(this.events.length === 1) {
-                return etherFromWei(this.drizzleInstance, this.events[0].returnValues._highestBid);
-            }*/
-
-            return 'loading...';
+            return this.round._highestBid;
         }
 
         get etherscanTokenUrl() {

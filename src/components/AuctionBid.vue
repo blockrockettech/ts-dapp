@@ -56,12 +56,14 @@
     import { mapGetters } from 'vuex';
     import {Component, Watch, Vue, Prop} from 'vue-property-decorator';
 
+    import {utils} from 'ethers';
+
     const DEFAULT_MIN_BID = "0.02";
     const DEFAULT_MIN_INCREMENT_IN_WEI: number = 20000000000000000;
 
     @Component({
         computed: {
-            ...mapGetters(['highestBidInEth', 'paramFromHighestBidder'])
+            ...mapGetters(['auctionData', 'getContracts'])
         }
     })
     export default class AuctionBid extends Vue {
@@ -75,14 +77,13 @@
         receivedInput: boolean = false;
 
         // Custom mapped getters
-        contractName!: string;
-        highestBidInEth!: number;
-        paramFromHighestBidder!: number;
+        auctionData: any;
+        getContracts: any;
 
         // Drizzle mapped getters
         drizzleInstance: any;
         isDrizzleInitialized!: boolean;
-        getContractData: any;
+
 
         // -----------------
         // Component Methods
@@ -92,13 +93,18 @@
             this.receivedInput = true;
         }
 
-        submitBid() {
-            /*if(this.isDrizzleInitialized) {
-                const bidContractMethod = this.drizzleInstance.contracts[this.contractName].methods['bid'];
-                bidContractMethod.cacheSend(this.bidParameter, { value: this.bidInWei });
-            } else {
-                alert("Drizzle doesn't seem to be initialised / ready");
-            }*/
+        async submitBid() {
+            const {TwistedSisterAuction} = this.getContracts;
+            console.log(this.bidParameter.toString());
+            const tx = await TwistedSisterAuction.bid(
+                this.bidParameter.toString(),
+                {
+                    value: this.bidInWei
+                }
+            );
+
+            let receipt = await tx.wait(1);
+            console.log(`Rec: `, receipt);
         }
 
         // -----------------
@@ -131,22 +137,13 @@
         }
 
         get minBid() {
-            /*if (this.isDrizzleInitialized) {
-                const min = this.getContractData({
-                    contract: this.contractName,
-                    method: 'minBid'
-                });
+            if (this.auctionData.minBid) {
+                let minInEther: string = utils.formatEther(this.auctionData.minBid);
 
-                let minInEther: number = etherFromWei(this.drizzleInstance, min, DEFAULT_MIN_BID);
-
-                if (this.highestBidInEth >= minInEther) {
-                    minInEther = addWeiToEther(
-                        this.drizzleInstance,
-                        DEFAULT_MIN_INCREMENT_IN_WEI.toString(),
-                        this.highestBidInEth.toString()
-                    );
-
-                    minInEther = Number(Number(minInEther).toFixed(6));
+                if (Number(this.auctionData.currentRound.highestBidInEth) > Number(minInEther)) {
+                    const defaultIncrement = utils.bigNumberify(DEFAULT_MIN_INCREMENT_IN_WEI.toString());
+                    const newMinAsBN = defaultIncrement.add(utils.bigNumberify(this.auctionData.minBid));
+                    minInEther = utils.formatEther(newMinAsBN.toString());
 
                     if (!this.receivedInput) {
                         this.bid = minInEther;
@@ -154,13 +151,13 @@
                 }
 
                 return minInEther;
-            }*/
+            }
 
             return DEFAULT_MIN_BID;
         }
 
-        get bidInWei(): number {
-            return /*weiFromEther(this.drizzleInstance, this.bid.toString())*/ DEFAULT_MIN_INCREMENT_IN_WEI;
+        get bidInWei() {
+            return utils.parseEther(this.bid.toString());
         }
     }
 </script>
