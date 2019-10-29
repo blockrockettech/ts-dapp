@@ -39,23 +39,27 @@
 <script lang="ts">
     import { mapGetters } from 'vuex';
     import { Component, Vue } from 'vue-property-decorator';
-
-    import { getNetworkName } from '@blockrocket/vue-drizzle-utils';
+	import {ethers} from "ethers";
 
     @Component({
         computed: {
-            ...mapGetters('drizzle', ['drizzleInstance', 'isDrizzleInitialized']),
-            ...mapGetters('contracts', ['getContractData', 'contractInstances']),
-            ...mapGetters(['contractName'])
+            ...mapGetters(['getNetworkName'])
         }
     })
     export default class App extends Vue {
-        contractName!: string;
-        isDrizzleInitialized!: boolean;
-        drizzleInstance: any;
+		getNetworkName!: string;
 
-        created() {
-            this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
+        async created() {
+        	// @ts-ignore
+			const provider: any = new ethers.providers.Web3Provider(web3.currentProvider);
+			const signer = provider.getSigner();
+
+			const {chainId} = await provider.getNetwork();
+
+            await this.$store.dispatch('bootstrapWeb3', {provider, signer, chainId});
+
+
+            /*this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
                 contractName: this.contractName,
                 method: 'auctionStartTime',
                 methodArgs: []
@@ -65,33 +69,11 @@
                 contractName: this.contractName,
                 method: 'minBid',
                 methodArgs: []
-            });
-
-            this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
-                contractName: this.contractName,
-                method: 'currentRound',
-                methodArgs: []
-            });
-
-            this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
-                contractName: this.contractName,
-                method: 'numOfRounds',
-                methodArgs: []
-            });
-
-            this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
-                contractName: this.contractName,
-                method: 'roundLengthInSeconds',
-                methodArgs: []
-            });
+            });*/
         }
 
         get currentNetwork() {
-            if (this.isDrizzleInitialized) {
-                return getNetworkName(this.drizzleInstance).toUpperCase();
-            }
-
-            return null;
+            return this.getNetworkName.toUpperCase();
         }
     }
 </script>

@@ -63,15 +63,9 @@
     import { mapGetters } from 'vuex';
     import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
 
-    import TwistedSisterToken from '@/truffleconf/token/TwistedSisterToken.json';
-
-    import { getEtherscanBaseUrl, getEventsByName, etherFromWei, getNetworkName } from '@blockrocket/vue-drizzle-utils';
-
     @Component({
         computed: {
-            ...mapGetters('drizzle', ['drizzleInstance', 'isDrizzleInitialized']),
-            ...mapGetters('contracts', ['getContractData', 'contractInstances']),
-            ...mapGetters(['contractName', 'tokenContractAddress', 'roundEnd']),
+            ...mapGetters(['roundEnd']),
         }
     })
     export default class PreviousAuction extends Vue {
@@ -90,7 +84,6 @@
         roundEnd!: (round: number, auctionStartTime: number, roundLengthInSeconds: number) => Moment;
         isDrizzleInitialized!: boolean;
         contractName!: string;
-        tokenContractAddress: any;
         drizzleInstance: any;
         getContractData: any;
         contractInstances: any;
@@ -102,8 +95,12 @@
         ipfsImageUrl: string = '';
 
         async mounted() {
-            if (this.isDrizzleInitialized && this.tokenContractAddress(this.drizzleInstance) && !this.provider && !this.signer) {
+            /*console.log('given provider',this.drizzleInstance.web3.givenProvider);
+
                 this.provider = new ethers.providers.Web3Provider(this.drizzleInstance.web3.givenProvider);
+
+                console.log('ethers provider', this.provider);
+
                 this.signer = this.provider.getSigner();
 
                 const tokenContract = new ethers.Contract(
@@ -114,26 +111,26 @@
 
                 this.ipfsTokenDataUrl = await tokenContract.tokenURI(Number(this.roundNo));
                 const ipfsTokenData: any = await axios.get(this.ipfsTokenDataUrl);
-                this.ipfsImageUrl = ipfsTokenData.data.image;
-            }
+                this.ipfsImageUrl = ipfsTokenData.data.image;*/
         }
 
         get openSeaUrl(): string {
-            if(!this.isDrizzleInitialized) return '';
-            const network = getNetworkName(this.drizzleInstance);
+            /*if(!this.isDrizzleInitialized) return '';
+            const network = /!*getNetworkName(this.drizzleInstance)*!/ 'rinkeby';
             const baseUrl = _.intersection([network], ['ropsten', 'rinkeby']).length > 0 ?
                 `https://${network}.opensea.io` : 'https://opensea.io';
-            return `${baseUrl}/assets/${this.tokenContractAddress(this.drizzleInstance)}/${this.roundNo}`;
+            return `${baseUrl}/assets/${this.tokenContractAddress(this.drizzleInstance)}/${this.roundNo}`;*/
+            return '';
         }
 
-        get events() {
-            if (this.isDrizzleInitialized) {
+        get events(): any[] {
+            /*if (this.isDrizzleInitialized) {
                 const currentRound = this.roundNo;
                 return getEventsByName(this.contractInstances, this.contractName, 'RoundFinalised')
                     .filter((event: any) => {
                         return event.returnValues._round === currentRound.toString();
                     }).reverse();
-            }
+            }*/
             return [];
         }
 
@@ -162,18 +159,18 @@
         }
 
         get highestBid() {
-            if(this.events.length === 1) {
+            /*if(this.events.length === 1) {
                 return etherFromWei(this.drizzleInstance, this.events[0].returnValues._highestBid);
-            }
+            }*/
 
             return 'loading...';
         }
 
         get etherscanTokenUrl() {
-            if(this.isDrizzleInitialized) {
+            /*if(this.isDrizzleInitialized) {
                 const tokenAddress = this.tokenContractAddress(this.drizzleInstance);
                 return `${getEtherscanBaseUrl(this.drizzleInstance)}/token/${tokenAddress}?a=${this.roundNo}`;
-            }
+            }*/
             return '';
         }
     }

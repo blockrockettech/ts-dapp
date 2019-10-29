@@ -1,8 +1,11 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import moment from 'moment';
+import {ethers} from 'ethers';
+import {getNetworkName} from '@blockrocket/utils';
+import {getContractAddressFromTruffleConf} from '@/utils/utils';
 
-import { getContractAddressFromTruffleConf } from '@blockrocket/vue-drizzle-utils';
+import TwistedSisterAuction from '@/truffleconf/auction/TwistedSisterAuction.json';
 import TwistedSisterToken from '@/truffleconf/token/TwistedSisterToken.json';
 
 Vue.use(Vuex);
@@ -10,7 +13,17 @@ Vue.use(Vuex);
 export default new Vuex.Store({
     state: {
         highestBidInEth: 0,
-        paramFromHighestBidder: 1
+        paramFromHighestBidder: 1,
+        provider: null,
+        signer: null,
+        chainId: null,
+        contracts: null,
+        auctionData: {
+            currentRoundNumber: null,
+            totalRounds: null,
+            roundLengthInSeconds: null,
+            auctionStartTime: null,
+        }
     },
     mutations: {
         updateHighestBidInEth(state, {highestBidInEth}) {
@@ -18,6 +31,25 @@ export default new Vuex.Store({
         },
         updateParamFromHighestBidder(state, {param}) {
             Vue.set(state, 'paramFromHighestBidder', param);
+        },
+
+        updateWeb3Objects(state, {provider, signer, chainId, contracts}) {
+            Vue.set(state, 'provider', provider);
+            Vue.set(state, 'signer', signer);
+            Vue.set(state, 'chainId', chainId);
+            Vue.set(state, 'contracts', contracts);
+        },
+        updateCurrentRound(state, {currentRound}) {
+            Vue.set(state.auctionData, 'currentRoundNumber', currentRound);
+        },
+        updateTotalRounds(state, {totalRounds}) {
+            Vue.set(state.auctionData, 'totalRounds', totalRounds);
+        },
+        updateRoundLengthInSeconds(state, {roundLengthInSeconds}) {
+            Vue.set(state.auctionData, 'roundLengthInSeconds', roundLengthInSeconds);
+        },
+        updateAuctionStartTime(state, {auctionStartTime}) {
+            Vue.set(state.auctionData, 'auctionStartTime', auctionStartTime);
         }
     },
     actions: {
@@ -26,15 +58,42 @@ export default new Vuex.Store({
         },
         updateParamFromHighestBidder({ commit }, param) {
             commit('updateParamFromHighestBidder', { param });
-        }
+        },
+
+        bootstrapWeb3({ commit, dispatch }, { provider, signer, chainId }) {
+            const contracts = {
+                'TwistedSisterAuction': new ethers.Contract(
+                    getContractAddressFromTruffleConf(TwistedSisterAuction, chainId),
+                    TwistedSisterAuction.abi,
+                    signer,
+                ),
+                'TwistedSisterToken': new ethers.Contract(
+                    getContractAddressFromTruffleConf(TwistedSisterToken, chainId),
+                    TwistedSisterToken.abi,
+                    signer,
+                ),
+            };
+            commit('updateWeb3Objects', {provider, signer, chainId, contracts});
+            dispatch('fetchCoreData', {contracts});
+        },
+        async fetchCoreData({ commit }, {contracts}) {
+            const auctionContract = contracts['TwistedSisterAuction'];
+            if (auctionContract) {
+                const currentRound = await auctionContract.currentRound();
+                commit('updateCurrentRound', {currentRound: currentRound.toString()});
+
+                const numOfRounds = await auctionContract.numOfRounds();
+                commit('updateTotalRounds', {totalRounds: numOfRounds.toString()});
+
+                const roundLengthInSeconds = await auctionContract.roundLengthInSeconds();
+                commit('updateRoundLengthInSeconds', {roundLengthInSeconds: roundLengthInSeconds.toString()});
+
+                const auctionStartTime = await auctionContract.auctionStartTime();
+                commit('updateAuctionStartTime', {auctionStartTime: auctionStartTime.toString()});
+            }
+        },
     },
     getters: {
-        contractName: () => {
-            return 'TwistedSisterAuction';
-        },
-        tokenContractAddress: () => (drizzleInstance: any) => {
-            return getContractAddressFromTruffleConf(drizzleInstance, TwistedSisterToken);
-        },
         roundStart: () => (round: number, auctionStartTime: number) => {
             const result = moment.unix(auctionStartTime).utc(false);
 
@@ -55,6 +114,14 @@ export default new Vuex.Store({
         },
         paramFromHighestBidder: (state) => {
             return state.paramFromHighestBidder;
+        },
+
+
+        getNetworkName: state => {
+            return state.chainId ? getNetworkName(state.chainId): '';
+        },
+        auctionData: state => {
+            return state.auctionData;
         }
     }
 })

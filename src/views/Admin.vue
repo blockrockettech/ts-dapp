@@ -54,7 +54,6 @@
 <script lang="ts">
     import { Component, Vue } from 'vue-property-decorator';
     import { mapGetters } from "vuex";
-    import { getEventsByName } from '@blockrocket/vue-drizzle-utils';
     import SmallSpinner from '@/components/SmallSpinner.vue';
 
     import { Buffer } from 'buffer/';
@@ -67,9 +66,7 @@
 
     @Component({
         computed: {
-            ...mapGetters('drizzle', ['drizzleInstance', 'isDrizzleInitialized']),
-            ...mapGetters('contracts', ['getContractData', 'contractInstances']),
-            ...mapGetters(['contractName']),
+            /*...mapGetters(['contractName']),*/
         },
         components: {
             SmallSpinner,
@@ -160,6 +157,7 @@
         }
 
         async finaliseRound() {
+            return;
             this.saving = true;
 
             this.savingStatus = 'uploading image to IPFS...';
@@ -194,7 +192,7 @@
                 address: 'No bid address'
             };
 
-            if (this.isDrizzleInitialized) {
+            /*if (this.isDrizzleInitialized) {
                 const currentRound = this.currentRound;
                 const bidEvents = getEventsByName(this.contractInstances, this.contractName, 'BidAccepted')
                     .filter((event: any) => {
@@ -208,12 +206,12 @@
                     param: highestBidderEvent.returnValues._param,
                     address: highestBidderEvent.returnValues._bidder
                 };
-            }
+            }*/
             return noBid;
         }
 
         get params() {
-            if (this.isDrizzleInitialized) {
+            /*if (this.isDrizzleInitialized) {
                 const params = getEventsByName(this.contractInstances, this.contractName, 'RoundFinalised')
                     .map((event: any) => event.returnValues._param.toString());
                 if (params.length < 21) {
@@ -222,19 +220,19 @@
                     }
                 }
                 return params;
-            }
+            }*/
             return [];
         }
 
         get currentRound() {
-            const round = this.getContractData({
+            /*const round = this.getContractData({
                 contract: this.contractName,
                 method: 'currentRound'
             });
 
             if(round !== 'loading') {
                 return round;
-            }
+            }*/
 
             return 1;
         }

@@ -47,22 +47,26 @@
 	import moment from 'moment';
 	import AuctionBid from '@/components/AuctionBid.vue';
 	import BidHistory from '@/components/BidHistory.vue';
+
 	@Component({
 		components: {AuctionBid, BidHistory},
 		computed: {
-			...mapGetters('contracts', ['getContractData']),
-			...mapGetters(['contractName', 'roundStart', 'roundEnd']),
+			...mapGetters(['roundStart', 'roundEnd']),
 		}
 	})
 	export default class CurrentAuction extends Vue {
 		@Prop({ required: true })
 		currentRound!: number;
+
 		@Prop({ required: true })
 		auctionStartTime!: number;
+
 		@Prop({ required: true })
 		roundLengthInSeconds!: number;
+
 		@Prop({ required: true })
 		totalRounds!: number;
+
 		open: boolean = true;
 		roundEnd: any;
 		roundStart: any;
@@ -70,20 +74,24 @@
 		contractName!: string;
 		endingIn: string = '';
 		startingIn: string = '';
+
 		created() {
 			this.updateTimes();
 			setInterval( this.updateTimes, 1000);
 		}
+
 		updateTimes(){
 			this.updateEndingInTime();
 			this.updateStartingInTime();
 		}
+
 		updateStartingInTime(){
 			const now = moment().utc(false);
 			const roundStart = this.roundStart(this.currentRound, this.auctionStartTime);
 			const duration = moment.duration(roundStart.diff(now));
 			this.startingIn = `${Math.ceil(duration.get('hours'))}h ${Math.ceil(duration.get('minutes'))}m ${Math.ceil(duration.get('seconds'))}s`;
 		}
+
 		updateEndingInTime() {
 			const now = moment().utc(false);
 			const roundStart = this.roundStart(this.currentRound, this.auctionStartTime);

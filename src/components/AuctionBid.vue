@@ -56,16 +56,12 @@
     import { mapGetters } from 'vuex';
     import {Component, Watch, Vue, Prop} from 'vue-property-decorator';
 
-    import { etherFromWei, weiFromEther, addWeiToEther } from '@blockrocket/vue-drizzle-utils';
-
-    const DEFAULT_MIN_BID: number = 0.02;
+    const DEFAULT_MIN_BID = "0.02";
     const DEFAULT_MIN_INCREMENT_IN_WEI: number = 20000000000000000;
 
     @Component({
         computed: {
-            ...mapGetters('drizzle', ['drizzleInstance', 'isDrizzleInitialized']),
-            ...mapGetters('contracts', ['getContractData']),
-            ...mapGetters(['contractName', 'highestBidInEth', 'paramFromHighestBidder'])
+            ...mapGetters(['highestBidInEth', 'paramFromHighestBidder'])
         }
     })
     export default class AuctionBid extends Vue {
@@ -74,8 +70,8 @@
         currentRound!: number;
 
         // State
-        bidParameter: number = 1;
-        bid: number = DEFAULT_MIN_BID;
+        bidParameter = "1";
+        bid = DEFAULT_MIN_BID;
         receivedInput: boolean = false;
 
         // Custom mapped getters
@@ -97,12 +93,12 @@
         }
 
         submitBid() {
-            if(this.isDrizzleInitialized) {
+            /*if(this.isDrizzleInitialized) {
                 const bidContractMethod = this.drizzleInstance.contracts[this.contractName].methods['bid'];
                 bidContractMethod.cacheSend(this.bidParameter, { value: this.bidInWei });
             } else {
                 alert("Drizzle doesn't seem to be initialised / ready");
-            }
+            }*/
         }
 
         // -----------------
@@ -110,15 +106,15 @@
         // -----------------
 
         get paramForImg() {
-            if (!this.receivedInput && this.bidParameter !== this.paramFromHighestBidder) {
+            /*if (!this.receivedInput && this.bidParameter !== this.paramFromHighestBidder) {
                 this.bidParameter = this.paramFromHighestBidder;
-            }
+            }*/
 
             return this.bidParameter;
         }
 
         get paramImgUrl() {
-            return this.constructImgUrl( this.paramForImg );
+            return this.constructImgUrl( Number(this.paramForImg) );
         }
 
        	constructImgUrl( _param: number ) {
@@ -134,8 +130,8 @@
             return `/images/${currentDayLetter}/${fileName}`;
         }
 
-        get minBid(): number {
-            if (this.isDrizzleInitialized) {
+        get minBid() {
+            /*if (this.isDrizzleInitialized) {
                 const min = this.getContractData({
                     contract: this.contractName,
                     method: 'minBid'
@@ -158,22 +154,13 @@
                 }
 
                 return minInEther;
-            }
+            }*/
 
             return DEFAULT_MIN_BID;
         }
 
         get bidInWei(): number {
-            return weiFromEther(this.drizzleInstance, this.bid.toString());
-        }
-
-        // -----------------
-        // Watched Props
-        // -----------------
-
-        @Watch('bid')
-        onBidChanged(newVal: number) {
-            this.bid = Number(Number(newVal).toFixed(6));
+            return /*weiFromEther(this.drizzleInstance, this.bid.toString())*/ DEFAULT_MIN_INCREMENT_IN_WEI;
         }
     }
 </script>
@@ -231,6 +218,7 @@
     .slider-input {
         display: block;
         margin: 10px auto;
+        padding: 15px;
     }
 
     .reset-label {

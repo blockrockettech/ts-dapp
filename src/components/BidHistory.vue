@@ -8,8 +8,8 @@
                 <div class="small text-center pb-2 border-bottom">
                     <span>Highest Bid</span>
                 </div>
-                <div class="my-2 text-center text-success text-large"
-                     v-if="highestBidData.address === activeAccount">
+                <!-- Todo: add check against current account -->
+                <div class="my-2 text-center text-success text-large">
                     You made the highest offer!
                 </div>
                 <div class="highest-bid-row text-center my-2">
@@ -40,14 +40,9 @@
     import { mapGetters } from 'vuex';
     import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
 
-    import { getEventsByName, etherFromWei } from '@blockrocket/vue-drizzle-utils';
-
     @Component({
         computed: {
-            ...mapGetters('accounts', ['activeAccount', 'activeBalance']),
-            ...mapGetters('drizzle', ['drizzleInstance', 'isDrizzleInitialized']),
-            ...mapGetters('contracts', ['getContractData', 'contractInstances']),
-            ...mapGetters(['contractName'])
+            /*...mapGetters(['contractName'])*/
         }
     })
     export default class BidHistory extends Vue {
@@ -68,14 +63,14 @@
             return duration.humanize() + ' ago';
         }
 
-        get events() {
-            if (this.isDrizzleInitialized) {
+        get events(): any[] {
+            /*if (this.isDrizzleInitialized) {
                 const currentRound = this.currentRound;
                 return getEventsByName(this.contractInstances, this.contractName, 'BidAccepted')
                     .filter((event: any) => {
                         return event.returnValues._round === currentRound;
                     }).reverse();
-            }
+            }*/
             return [];
         }
 
@@ -84,7 +79,7 @@
         }
 
         get highestBidData(): any {
-            if (this.events.length > 0) {
+            /*if (this.events.length > 0) {
                 const bidEvent = this.events[0];
                 const highestBid = etherFromWei(this.drizzleInstance, bidEvent.returnValues._amount);
 
@@ -96,7 +91,7 @@
                     address: bidEvent.returnValues._bidder,
                     amount: highestBid
                 };
-            }
+            }*/
 
             return {
                 elapsedTime: 'Loading...',
@@ -110,7 +105,7 @@
                 return {
                     elapsedTime: this.humanisedTimeFromUnixTimestamp(event.returnValues._timeStamp),
                     address: event.returnValues._bidder,
-                    amount: etherFromWei(this.drizzleInstance, event.returnValues._amount)
+                    amount: /*etherFromWei(this.drizzleInstance, event.returnValues._amount)*/''
                 };
             });
         }
@@ -119,8 +114,9 @@
         onNewEvents(newValue: any[], oldValue: any[]) {
             if ((newValue.length - oldValue.length) === 1 && oldValue.length !== 0) {
                 const event = newValue[0];
-                const msg: string =
-                    `${etherFromWei(this.drizzleInstance, event.returnValues._amount)} ETH bid accepted from ${event.returnValues._bidder}`;
+                /*const msg: string =
+                    `${etherFromWei(this.drizzleInstance, event.returnValues._amount)} ETH bid accepted from ${event.returnValues._bidder}`;*/
+                const msg = 'new bid detected';
                 this.$toasted.show(msg, {
                     action : {
                         text : 'Close',
