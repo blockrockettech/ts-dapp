@@ -99,7 +99,8 @@
             const tx = await TwistedSisterAuction.bid(
                 this.bidParameter.toString(),
                 {
-                    value: this.bidInWei
+                    value: this.bidInWei,
+                    gasLimit: 7500000
                 }
             );
 
@@ -244,5 +245,20 @@
 
     .bid-input {
         text-align: right;
+    }
+
+    .custom-range::-webkit-slider-thumb {
+        height: 16px;
+        width: 16px;
+    }
+
+    .custom-range::-moz-range-thumb {
+        height: 16px;
+        width: 16px;
+    }
+
+    .custom-range::-ms-thumb {
+        height: 16px;
+        width: 16px;
     }
 </style>
