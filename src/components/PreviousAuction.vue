@@ -65,7 +65,7 @@
 
     @Component({
         computed: {
-            ...mapGetters(['getBaseUrls', 'getContracts'])
+            ...mapGetters(['baseUrls', 'contracts'])
         }
     })
     export default class PreviousAuction extends Vue {
@@ -75,8 +75,8 @@
         @Prop({ required: true })
         totalRounds!: number;
 
-        getBaseUrls: any;
-        getContracts: any;
+        baseUrls: any;
+        contracts: any;
 
         isDrizzleInitialized!: boolean;
         contractName!: string;
@@ -89,15 +89,15 @@
         ipfsImageUrl: string = '';
 
         async mounted() {
-            const {TwistedSisterToken} = this.getContracts;
+            const {TwistedSisterToken} = this.contracts;
             this.ipfsTokenDataUrl = await TwistedSisterToken.tokenURI(Number(this.round._round));
             const ipfsTokenData: any = await axios.get(this.ipfsTokenDataUrl);
             this.ipfsImageUrl = ipfsTokenData.data.image;
         }
 
         get openSeaUrl(): string {
-            if (!this.getBaseUrls) return '';
-            return `${this.getBaseUrls.openSea}/${this.round._round}`;
+            if (!this.baseUrls) return '';
+            return `${this.baseUrls.openSea}/${this.round._round}`;
         }
 
         get roundEndDay() {
@@ -117,8 +117,8 @@
         }
 
         get etherscanTokenUrl() {
-            if (!this.getBaseUrls) return '';
-            return `${this.getBaseUrls.etherScan}?a=${this.round._round}`;
+            if (!this.baseUrls) return '';
+            return `${this.baseUrls.etherScan}?a=${this.round._round}`;
         }
     }
 </script>

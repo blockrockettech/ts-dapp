@@ -63,7 +63,7 @@
 
     @Component({
         computed: {
-            ...mapGetters(['auctionData', 'getContracts'])
+            ...mapGetters(['auctionData', 'contracts'])
         }
     })
     export default class AuctionBid extends Vue {
@@ -78,7 +78,7 @@
 
         // Custom mapped getters
         auctionData: any;
-        getContracts: any;
+        contracts: any;
 
         // Drizzle mapped getters
         drizzleInstance: any;
@@ -94,7 +94,7 @@
         }
 
         async submitBid() {
-            const {TwistedSisterAuction} = this.getContracts;
+            const {TwistedSisterAuction} = this.contracts;
             console.log(this.bidParameter.toString());
             const tx = await TwistedSisterAuction.bid(
                 this.bidParameter.toString(),

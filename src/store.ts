@@ -1,9 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import moment from 'moment';
 import {ethers, utils} from 'ethers';
 import {getNetworkName} from '@blockrocket/utils';
-import {getContractAddressFromTruffleConf, getDomain} from '@/utils/utils';
+import {getContractAddressFromTruffleConf, getDomain, fetchEvents} from '@/utils/utils';
 
 import TwistedSisterAuction from '@/truffleconf/auction/TwistedSisterAuction.json';
 import TwistedSisterToken from '@/truffleconf/token/TwistedSisterToken.json';
@@ -17,11 +16,14 @@ export default new Vuex.Store({
         chainId: null,
         contracts: null,
         baseUrls: null,
+        accounts: null,
+        account: null,
         auctionData: {
             currentRound: {
                 roundNumber: null,
                 highestBidInEth: null,
-                paramFromHighestBidder: 1,
+                highestBidder: null,
+                paramFromHighestBidder: null,
             },
             totalRounds: null,
             roundLengthInSeconds: null,
@@ -29,16 +31,19 @@ export default new Vuex.Store({
             minBid: null,
             events: {
                 roundFinalised: null,
+                bidAcceptedForCurrentRound: null,
             }
         }
     },
     mutations: {
-        updateWeb3Objects(state, {provider, signer, chainId, contracts, baseUrls}) {
+        updateWeb3Objects(state, {provider, signer, chainId, contracts, baseUrls, accounts, account}) {
             Vue.set(state, 'provider', provider);
             Vue.set(state, 'signer', signer);
             Vue.set(state, 'chainId', chainId);
             Vue.set(state, 'contracts', contracts);
             Vue.set(state, 'baseUrls', baseUrls);
+            Vue.set(state, 'accounts', accounts);
+            Vue.set(state, 'account', account);
         },
         updateCurrentRound(state, {currentRound}) {
             Vue.set(state.auctionData.currentRound, 'roundNumber', currentRound);
@@ -64,13 +69,18 @@ export default new Vuex.Store({
         updateRoundFinalisedEvents(state, {events}) {
             Vue.set(state.auctionData.events, 'roundFinalised', events);
         },
+        updateBidAcceptedEvents(state, {events}) {
+            Vue.set(state.auctionData.events, 'bidAcceptedForCurrentRound', events);
+        },
+        updateHighestBidderFromRound(state, {highestBidderFromRound}) {
+            Vue.set(state.auctionData.currentRound, 'highestBidder', highestBidderFromRound);
+        },
     },
     actions: {
-        updateParamFromHighestBidder({ commit }, param) {
-            commit('updateParamFromHighestBidder', { param });
-        },
+        async bootstrapWeb3({ commit, dispatch }, { provider, signer, chainId }) {
+            const accounts = await provider.listAccounts();
+            const account = accounts && accounts.length ? accounts[0] : null;
 
-        bootstrapWeb3({ commit, dispatch }, { provider, signer, chainId }) {
             const auctionAddress = getContractAddressFromTruffleConf(TwistedSisterAuction, chainId);
             const tokenAddress = getContractAddressFromTruffleConf(TwistedSisterToken, chainId);
             const contracts = {
@@ -94,74 +104,103 @@ export default new Vuex.Store({
                 etherScan: `${etherscanDomain}/token/${tokenAddress}`
             };
 
-            commit('updateWeb3Objects', {provider, signer, chainId, contracts, baseUrls});
+            commit('updateWeb3Objects', {provider, signer, chainId, contracts, baseUrls, accounts, account});
             dispatch('fetchCoreData', {provider, contracts});
         },
-        async fetchCoreData({ commit }, {provider, contracts}) {
+        async fetchCoreData({ commit, dispatch }, {provider, contracts}) {
             const auctionContract = contracts['TwistedSisterAuction'];
             if (auctionContract) {
-                const currentRound = await auctionContract.currentRound();
-                commit('updateCurrentRound', {currentRound: currentRound.toString()});
+                dispatch('fetchCurrentRoundNumberAndAssociatedData', {auctionContract, provider});
+                dispatch('fetchNumberOfRounds', auctionContract);
+                dispatch('fetchRoundLength', auctionContract);
+                dispatch('fetchAuctionStartTime', auctionContract);
+                dispatch('fetchMinBid', auctionContract);
+                dispatch('fetchRoundFinalisedEvents', {auctionContract, provider});
+            }
+        },
+        async fetchCurrentRoundNumberAndAssociatedData({ commit, dispatch }, {auctionContract, provider}) {
+            const currentRound = await auctionContract.currentRound();
+            commit('updateCurrentRound', {currentRound: currentRound.toString()});
 
-                const numOfRounds = await auctionContract.numOfRounds();
-                commit('updateTotalRounds', {totalRounds: numOfRounds.toString()});
+            dispatch('fetchBidAcceptedEventsForCurrentRound', {
+                auctionContract,
+                provider,
+                roundNo: currentRound.toString()
+            });
 
-                const roundLengthInSeconds = await auctionContract.roundLengthInSeconds();
-                commit('updateRoundLengthInSeconds', {roundLengthInSeconds: roundLengthInSeconds.toString()});
-
-                const auctionStartTime = await auctionContract.auctionStartTime();
-                commit('updateAuctionStartTime', {auctionStartTime: auctionStartTime.toString()});
-
-                const minBid = await auctionContract.minBid();
-                commit('updateMinBid', {minBid: minBid.toString()});
-
-                const highestBidFromRound = await auctionContract.highestBidFromRound(currentRound);
-                commit('updateHighestBidInEth', {highestBidInEth: utils.formatEther(highestBidFromRound.toString())});
-
-                const roundFinalisedFilter = auctionContract.filters.RoundFinalised();
-                roundFinalisedFilter.fromBlock = 5340852;
-                roundFinalisedFilter.toBlock = "latest";
-                let roundFinalisedEvents = await provider.getLogs(roundFinalisedFilter);
-
-                roundFinalisedEvents = roundFinalisedEvents.map((event: any) => {
-                    const parsedEvent = auctionContract.interface.parseLog(event);
-                    return parsedEvent.values;
-                }).map((event: any) => {
+            dispatch('fetchHighestBidderInfo', {auctionContract, currentRoundNumber: currentRound});
+        },
+        async fetchHighestBidderInfo({ commit, dispatch }, context) {
+            dispatch('fetchHighestBidForRound', context);
+            dispatch('fetchHighestBidderForRound', context);
+            dispatch('fetchParamFromHighestBidder', context);
+        },
+        async fetchHighestBidForRound({ commit }, {auctionContract, currentRoundNumber}) {
+            const highestBidFromRound = await auctionContract.highestBidFromRound(currentRoundNumber);
+            commit('updateHighestBidInEth', {highestBidInEth: utils.formatEther(highestBidFromRound.toString())});
+        },
+        async fetchHighestBidderForRound({ commit }, {auctionContract, currentRoundNumber}) {
+            const highestBidderFromRound = await auctionContract.highestBidderFromRound(currentRoundNumber);
+            commit('updateHighestBidderFromRound', {highestBidderFromRound});
+        },
+        async fetchParamFromHighestBidder({ commit }, {auctionContract, currentRoundNumber}) {
+            const winningRoundParam = await auctionContract.winningRoundParameter(currentRoundNumber);
+            commit('updateParamFromHighestBidder', {param: winningRoundParam});
+        },
+        async fetchNumberOfRounds({ commit }, auctionContract) {
+            const numOfRounds = await auctionContract.numOfRounds();
+            commit('updateTotalRounds', {totalRounds: numOfRounds.toString()});
+        },
+        async fetchRoundLength({ commit }, auctionContract) {
+            const roundLengthInSeconds = await auctionContract.roundLengthInSeconds();
+            commit('updateRoundLengthInSeconds', {roundLengthInSeconds: roundLengthInSeconds.toString()});
+        },
+        async fetchAuctionStartTime({ commit }, auctionContract) {
+            const auctionStartTime = await auctionContract.auctionStartTime();
+            commit('updateAuctionStartTime', {auctionStartTime: auctionStartTime.toString()});
+        },
+        async fetchMinBid({ commit }, auctionContract) {
+            const minBid = await auctionContract.minBid();
+            commit('updateMinBid', {minBid: minBid.toString()});
+        },
+        async fetchRoundFinalisedEvents({ commit }, {auctionContract, provider}) {
+            const events = (await fetchEvents('RoundFinalised', auctionContract, provider, 5340850))
+                .map((event: any) => {
+                    // This is only a subset of all fields
                     return {
                         _highestBid: utils.formatEther(event._highestBid.toString()),
                         _highestBidder: event._highestBidder.toString(),
                         _round: event._round.toString(),
                         _timestamp: event._timestamp.toString(),
                     }
-                }).reverse();
-                commit('updateRoundFinalisedEvents', {events: roundFinalisedEvents});
-            }
+                })
+                .reverse();
+
+            commit('updateRoundFinalisedEvents', {events});
         },
-        updateHighestBidInEth({ commit }, highestBidInEth) {
-            commit('updateHighestBidInEth', {highestBidInEth});
+        async fetchBidAcceptedEventsForCurrentRound({ commit }, {auctionContract, provider, roundNo}) {
+            const events = (await fetchEvents('BidAccepted', auctionContract, provider, 5340850))
+                .map((event: any) => {
+                    // This is only a subset of all fields
+                    return {
+                        _timeStamp: event._timeStamp.toString(),
+                        _amount: utils.formatEther(event._amount.toString()),
+                        _bidder: event._bidder.toString(),
+                        _round: event._round.toString()
+                    };
+                })
+                .reverse()
+                .filter((event: any) => event._round === roundNo);
+
+            commit('updateBidAcceptedEvents', {events});
         },
     },
     getters: {
-        roundStart: () => (round: number, auctionStartTime: number) => {
-            const result = moment.unix(auctionStartTime).utc(false);
-
-            if (round > 1) {
-                const offset = round - 1;
-                result.add(offset, 'days');
-            }
-
-            return result;
-        },
-        roundEnd: (state, getters) => (round: number, auctionStartTime: number, roundLengthInSeconds: number) => {
-            const result = moment(getters.roundStart(round, auctionStartTime));
-            result.add(roundLengthInSeconds, 'seconds');
-            return result;
-        },
-
-
-        getNetworkName: state => state.chainId ? getNetworkName(state.chainId): '',
-        getContracts: state => state.contracts,
-        getBaseUrls: state => state.baseUrls,
+        networkName: state => state.chainId ? getNetworkName(state.chainId): '',
+        contracts: state => state.contracts,
+        baseUrls: state => state.baseUrls,
         auctionData: state => state.auctionData,
+        events: state => state.auctionData.events,
+        account: state => state.account,
     }
 })

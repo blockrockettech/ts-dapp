@@ -8,8 +8,7 @@
                 <div class="small text-center pb-2 border-bottom">
                     <span>Highest Bid</span>
                 </div>
-                <!-- Todo: add check against current account -->
-                <div class="my-2 text-center text-success text-large">
+                <div class="my-2 text-center text-success text-large" v-if="userIsHighestBidder">
                     You made the highest offer!
                 </div>
                 <div class="highest-bid-row text-center my-2">
@@ -42,19 +41,12 @@
 
     @Component({
         computed: {
-            /*...mapGetters(['contractName'])*/
+            ...mapGetters(['auctionData', 'account'])
         }
     })
     export default class BidHistory extends Vue {
-        @Prop({ required: true })
-        currentRound!: number;
-
-        drizzleInstance: any;
-        isDrizzleInitialized!: boolean;
-        getContractData: any;
-        contractInstances: any;
-        contractName!: string;
-        activeAccount!: string;
+        auctionData: any;
+        account!: string;
 
         humanisedTimeFromUnixTimestamp(timestamp: number) {
             const now = moment().utc(false);
@@ -63,35 +55,31 @@
             return duration.humanize() + ' ago';
         }
 
-        get events(): any[] {
-            /*if (this.isDrizzleInitialized) {
-                const currentRound = this.currentRound;
-                return getEventsByName(this.contractInstances, this.contractName, 'BidAccepted')
-                    .filter((event: any) => {
-                        return event.returnValues._round === currentRound;
-                    }).reverse();
-            }*/
-            return [];
+        get userIsHighestBidder() {
+            const {currentRound} = this.auctionData;
+
+            if (currentRound.highestBidder && this.account) {
+                return currentRound.highestBidder === this.account;
+            }
+
+            return false;
         }
 
         get anyBidReceived() {
-            return this.events.length > 0;
+            const {events} = this.auctionData;
+            return events.bidAcceptedForCurrentRound && events.bidAcceptedForCurrentRound.length;
         }
 
         get highestBidData(): any {
-            /*if (this.events.length > 0) {
-                const bidEvent = this.events[0];
-                const highestBid = etherFromWei(this.drizzleInstance, bidEvent.returnValues._amount);
-
-                this.$store.dispatch('updateHighestBidInEth', Number(highestBid));
-                this.$store.dispatch('updateParamFromHighestBidder', Number(bidEvent.returnValues._param));
-
+            if (this.anyBidReceived) {
+                const {events} = this.auctionData;
+                const bidEvent = events.bidAcceptedForCurrentRound[0];
                 return {
-                    elapsedTime: this.humanisedTimeFromUnixTimestamp(bidEvent.returnValues._timeStamp),
-                    address: bidEvent.returnValues._bidder,
-                    amount: highestBid
+                    elapsedTime: this.humanisedTimeFromUnixTimestamp(bidEvent._timeStamp),
+                    address: bidEvent._bidder,
+                    amount: bidEvent._amount
                 };
-            }*/
+            }
 
             return {
                 elapsedTime: 'Loading...',
@@ -101,21 +89,22 @@
         }
 
         get previousBids(): any[] {
-            return this.events.map((event: any) => {
+            const {events} = this.auctionData;
+            return events.bidAcceptedForCurrentRound.map((event: any) => {
                 return {
-                    elapsedTime: this.humanisedTimeFromUnixTimestamp(event.returnValues._timeStamp),
-                    address: event.returnValues._bidder,
-                    amount: /*etherFromWei(this.drizzleInstance, event.returnValues._amount)*/''
+                    elapsedTime: this.humanisedTimeFromUnixTimestamp(event._timeStamp),
+                    address: event._bidder,
+                    amount: event._amount
                 };
             });
         }
 
-        @Watch('events')
+        /*@Watch('events')
         onNewEvents(newValue: any[], oldValue: any[]) {
             if ((newValue.length - oldValue.length) === 1 && oldValue.length !== 0) {
                 const event = newValue[0];
-                /*const msg: string =
-                    `${etherFromWei(this.drizzleInstance, event.returnValues._amount)} ETH bid accepted from ${event.returnValues._bidder}`;*/
+                /!*const msg: string =
+                    `${etherFromWei(this.drizzleInstance, event.returnValues._amount)} ETH bid accepted from ${event.returnValues._bidder}`;*!/
                 const msg = 'new bid detected';
                 this.$toasted.show(msg, {
                     action : {
@@ -127,7 +116,7 @@
                     duration: 15000
                 });
             }
-        }
+        }*/
     }
 </script>
 

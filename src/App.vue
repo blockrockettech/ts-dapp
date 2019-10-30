@@ -43,13 +43,15 @@
 
     @Component({
         computed: {
-            ...mapGetters(['getNetworkName'])
+            ...mapGetters(['networkName'])
         }
     })
     export default class App extends Vue {
-		getNetworkName!: string;
+		networkName!: string;
 
         async created() {
+			// @ts-ignore
+			window.ethereum.enable();
         	// @ts-ignore
 			const provider: any = new ethers.providers.Web3Provider(web3.currentProvider);
 			const signer = provider.getSigner();
@@ -57,23 +59,10 @@
 			const {chainId} = await provider.getNetwork();
 
             await this.$store.dispatch('bootstrapWeb3', {provider, signer, chainId});
-
-
-            /*this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
-                contractName: this.contractName,
-                method: 'auctionStartTime',
-                methodArgs: []
-            });
-
-            this.$store.dispatch('drizzle/REGISTER_CONTRACT', {
-                contractName: this.contractName,
-                method: 'minBid',
-                methodArgs: []
-            });*/
         }
 
         get currentNetwork() {
-            return this.getNetworkName.toUpperCase();
+            return this.networkName.toUpperCase();
         }
     }
 </script>

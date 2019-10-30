@@ -23,7 +23,7 @@
 					</div>
 				</div>
 				<AuctionBid :currentRound="currentRound" />
-				<BidHistory :currentRound="currentRound" />
+				<BidHistory />
 			</div>
 
 
@@ -42,7 +42,6 @@
 </template>
 
 <script lang="ts">
-	import { mapGetters } from 'vuex';
 	import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
 	import moment from 'moment';
 	import AuctionBid from '@/components/AuctionBid.vue';
@@ -50,9 +49,6 @@
 
 	@Component({
 		components: {AuctionBid, BidHistory},
-		computed: {
-			...mapGetters(['roundStart', 'roundEnd']),
-		}
 	})
 	export default class CurrentAuction extends Vue {
 		@Prop({ required: true })
@@ -68,9 +64,6 @@
 		totalRounds!: number;
 
 		open: boolean = true;
-		roundEnd: any;
-		roundStart: any;
-		getContractData: any;
 		contractName!: string;
 		endingIn: string = '';
 		startingIn: string = '';
@@ -78,6 +71,23 @@
 		created() {
 			this.updateTimes();
 			setInterval( this.updateTimes, 1000);
+		}
+
+		roundStart(round: number, auctionStartTime: number) {
+			const result = moment.unix(auctionStartTime).utc(false);
+
+			if (round > 1) {
+				const offset = round - 1;
+				result.add(offset, 'days');
+			}
+
+			return result;
+		}
+
+		roundEnd(round: number, auctionStartTime: number, roundLengthInSeconds: number) {
+			const result = moment(this.roundStart(round, auctionStartTime));
+			result.add(roundLengthInSeconds, 'seconds');
+			return result;
 		}
 
 		updateTimes(){
