@@ -9,7 +9,7 @@
                          :totalRounds="totalRounds"
                          :key="round._round" />
     </div>
-    <div v-else class="container text-center text-danger">
+    <div v-else class="container text-center text-danger text-large">
         Please install and unlock a Web3 client such as <a href="https://metamask.io/">metamask.io</a> and refresh the page.
     </div>
 </template>
