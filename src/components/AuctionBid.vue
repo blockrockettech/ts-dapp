@@ -102,7 +102,9 @@
             const tx = await TwistedSisterAuction.bid(
                 utils.bigNumberify(this.bidParameter),
                 {
-                    value: this.bidInWei
+                    value: this.bidInWei,
+                    gasLimit: 750000,
+                    gasPrice: utils.parseUnits('9.0', 'gwei'),
                 }
             );
 

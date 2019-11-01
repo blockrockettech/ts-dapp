@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import auctionDeployment from '@/truffleconf/auction/deployment';
+import deployedBlock from '@/truffleconf/auction/deployment';
 import {ethers, utils} from 'ethers';
 import {getNetworkName} from '@blockrocket/utils';
 import {getContractAddressFromTruffleConf, getDomain, fetchEvents} from '@/utils/utils';
@@ -106,26 +106,27 @@ export default new Vuex.Store({
             };
 
             commit('updateWeb3Objects', {provider, signer, chainId, contracts, baseUrls, accounts, account});
-            dispatch('fetchCoreData', {provider, contracts});
+            dispatch('fetchCoreData', {provider, contracts, network});
         },
-        async fetchCoreData({ commit, dispatch }, {provider, contracts}) {
+        async fetchCoreData({ commit, dispatch }, {provider, contracts, network}) {
             const auctionContract = contracts['TwistedSisterAuction'];
             if (auctionContract) {
-                dispatch('fetchCurrentRoundNumberAndAssociatedData', {auctionContract, provider});
+                dispatch('fetchCurrentRoundNumberAndAssociatedData', {auctionContract, provider, network});
                 dispatch('fetchNumberOfRounds', auctionContract);
                 dispatch('fetchRoundLength', auctionContract);
                 dispatch('fetchAuctionStartTime', auctionContract);
                 dispatch('fetchMinBid', auctionContract);
-                dispatch('fetchRoundFinalisedEvents', {auctionContract, provider});
+                dispatch('fetchRoundFinalisedEvents', {auctionContract, provider, network});
             }
         },
-        async fetchCurrentRoundNumberAndAssociatedData({ commit, dispatch }, {auctionContract, provider}) {
+        async fetchCurrentRoundNumberAndAssociatedData({ commit, dispatch }, {auctionContract, provider, network}) {
             const currentRound = await auctionContract.currentRound();
             commit('updateCurrentRound', {currentRound: currentRound.toString()});
 
             dispatch('fetchBidAcceptedEventsForCurrentRound', {
                 auctionContract,
                 provider,
+                network,
                 roundNo: currentRound.toString()
             });
 
@@ -164,12 +165,12 @@ export default new Vuex.Store({
             const minBid = await auctionContract.minBid();
             commit('updateMinBid', {minBid: minBid.toString()});
         },
-        async fetchRoundFinalisedEvents({ commit }, {auctionContract, provider}) {
+        async fetchRoundFinalisedEvents({ commit }, {auctionContract, provider, network}) {
             const events = (await fetchEvents(
                     'RoundFinalised',
                     auctionContract,
                     provider,
-                    auctionDeployment.blockNumber)
+                    deployedBlock(network))
             ).map((event: any) => {
                 // This is only a subset of all fields
                 return {
@@ -182,12 +183,12 @@ export default new Vuex.Store({
 
             commit('updateRoundFinalisedEvents', {events});
         },
-        async fetchBidAcceptedEventsForCurrentRound({ commit }, {auctionContract, provider, roundNo}) {
+        async fetchBidAcceptedEventsForCurrentRound({ commit }, {auctionContract, provider, network, roundNo}) {
             const events = (await fetchEvents(
                     'BidAccepted',
                     auctionContract,
                     provider,
-                    auctionDeployment.blockNumber)
+                    deployedBlock(network))
             ).map((event: any) => {
                 // This is only a subset of all fields
                 return {
