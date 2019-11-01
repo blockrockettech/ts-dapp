@@ -106,7 +106,7 @@
 			const now = moment().utc(false);
 			const roundStart = this.roundStart(this.currentRound, this.auctionStartTime);
 			const roundEnd = this.roundEnd(this.currentRound, this.auctionStartTime, this.roundLengthInSeconds);
-			//this.open = now >= roundStart && now <= roundEnd;
+			this.open = now >= roundStart && now <= roundEnd;
 			const duration = moment.duration(roundEnd.diff(now));
 			this.endingIn = `${Math.ceil(duration.get('hours'))}h ${Math.ceil(duration.get('minutes'))}m ${Math.ceil(duration.get('seconds'))}s`;
 		}

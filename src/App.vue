@@ -4,8 +4,7 @@
             <div class="row ">
                 <div class="col-12 col-md-6 mt-3 text-center text-md-left">
                     <router-link to="/" exact>
-                        <!--<img src="./assets/TwistedSister_Logo.svg" class="PageLogo" alt=""/>-->
-                        Home.
+                        <img src="./assets/TwistedSister_Logo.svg" class="PageLogo" alt=""/>
                     </router-link>&nbsp;
                 </div>
                 <div class="col-12 col-md-6 mt-3 text-center text-md-right">

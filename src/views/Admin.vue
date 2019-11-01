@@ -23,7 +23,7 @@
 
             <div v-if="!saving">
                 <b-button variant="primary"
-                          :disabled="!file && !fileBuffer && isDrizzleInitialized"
+                          :disabled="!file && !fileBuffer && !auctionData"
                           @click="finaliseRound">
                     Finalise
                 </b-button>
@@ -57,6 +57,7 @@
     import SmallSpinner from '@/components/SmallSpinner.vue';
 
     import { Buffer } from 'buffer/';
+    import {utils} from 'ethers';
 
     // @ts-ignore
     import vue2Dropzone from 'vue2-dropzone';
@@ -66,7 +67,7 @@
 
     @Component({
         computed: {
-            /*...mapGetters(['contractName']),*/
+            ...mapGetters(['auctionData', 'contracts']),
         },
         components: {
             SmallSpinner,
@@ -74,11 +75,8 @@
         }
     })
     export default class Admin extends Vue {
-        contractName!: string;
-        isDrizzleInitialized!: boolean;
-        drizzleInstance: any;
-        contractInstances: any;
-        getContractData: any;
+        auctionData: any;
+        contracts: any;
 
         ipfs = ipfsHttpClient('ipfs.infura.io', '5001', { protocol: 'https' });
 
@@ -157,7 +155,12 @@
         }
 
         async finaliseRound() {
-            return;
+            const {TwistedSisterAuction} = this.contracts;
+            if (!TwistedSisterAuction) {
+               alert('Contract not yet ready...please try again');
+               return;
+            }
+
             this.saving = true;
 
             this.savingStatus = 'uploading image to IPFS...';
@@ -170,16 +173,23 @@
             this.savingStatus = 'uploading JSON to IPFS...';
             const imageIpfsUrl = `${this.baseIpfsUrl}${imageIpfsHash}`;
             const ipfsPayload = this.getIpfsPayload(imageIpfsUrl);
+            console.log('ipfsPayload', ipfsPayload);
             const ipfsHashForData = await this.pushJsonToIpfs(ipfsPayload);
             if(ipfsHashForData === 'unsuccessful') {
                 this.saving = false;
                 return;
             }
 
-            this.drizzleInstance
-                .contracts[this.contractName]
-                .methods['issueTwistAndPrepNextRound']
-                .cacheSend(ipfsHashForData);
+            const tx = await TwistedSisterAuction.issueTwistAndPrepNextRound(
+                ipfsHashForData,
+                {
+                    gasLimit: 750000,
+                    gasPrice: utils.parseUnits('9.0', 'gwei'),
+                }
+            );
+
+            let receipt = await tx.wait(1);
+            console.log(`Rec: `, receipt);
 
             this.saving = false;
             // @ts-ignore
@@ -192,47 +202,34 @@
                 address: 'No bid address'
             };
 
-            /*if (this.isDrizzleInitialized) {
-                const currentRound = this.currentRound;
-                const bidEvents = getEventsByName(this.contractInstances, this.contractName, 'BidAccepted')
-                    .filter((event: any) => {
-                        return event.returnValues._round === currentRound;
-                    }).reverse();
-
-                if (bidEvents.length === 0) return noBid;
-
-                const highestBidderEvent = bidEvents[0];
+            const {highestBidder, paramFromHighestBidder} = this.auctionData.currentRound;
+            if (highestBidder && paramFromHighestBidder && paramFromHighestBidder.toString() !== '0') {
                 return {
-                    param: highestBidderEvent.returnValues._param,
-                    address: highestBidderEvent.returnValues._bidder
+                    param: paramFromHighestBidder,
+                    address: highestBidder
                 };
-            }*/
+            }
+
             return noBid;
         }
 
         get params() {
-            /*if (this.isDrizzleInitialized) {
-                const params = getEventsByName(this.contractInstances, this.contractName, 'RoundFinalised')
-                    .map((event: any) => event.returnValues._param.toString());
-                if (params.length < 21) {
-                    for (let i = 0; i < 21 - params.length; i += 1) {
-                        params.push('0');
+            if (this.auctionData.events.roundFinalised) {
+                const events = Object.assign([], this.auctionData.events.roundFinalised).map((e: any) => e._param);
+                if(events.length < 21) {
+                    for (let i = 0; i < 21 - events.length; i += 1) {
+                        events.push('0');
                     }
                 }
-                return params;
-            }*/
+                return events;
+            }
             return [];
         }
 
         get currentRound() {
-            /*const round = this.getContractData({
-                contract: this.contractName,
-                method: 'currentRound'
-            });
-
-            if(round !== 'loading') {
-                return round;
-            }*/
+            if(this.auctionData.currentRound.roundNumber) {
+                return this.auctionData.currentRound.roundNumber.toString();
+            }
 
             return 1;
         }

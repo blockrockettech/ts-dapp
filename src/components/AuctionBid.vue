@@ -80,10 +80,6 @@
         auctionData: any;
         contracts: any;
 
-        // Drizzle mapped getters
-        drizzleInstance: any;
-        isDrizzleInitialized!: boolean;
-
 
         // -----------------
         // Component Methods
@@ -95,15 +91,11 @@
 
         async submitBid() {
             const {TwistedSisterAuction} = this.contracts;
-            console.log(this.bidParameter);
-            console.log(typeof this.bidParameter);
-            console.log(this.bidInWei);
-            console.log(typeof this.bidInWei);
             const tx = await TwistedSisterAuction.bid(
                 utils.bigNumberify(this.bidParameter),
                 {
                     value: this.bidInWei,
-                    gasLimit: 750000,
+                    gasLimit: 100000,
                     gasPrice: utils.parseUnits('9.0', 'gwei'),
                 }
             );
@@ -117,11 +109,13 @@
         // -----------------
 
         get paramForImg() {
-            /*if (!this.receivedInput && this.bidParameter !== this.paramFromHighestBidder) {
-                this.bidParameter = this.paramFromHighestBidder;
-            }*/
+            const paramFromHighestBidder = this.auctionData.currentRound.paramFromHighestBidder;
+            if (!this.receivedInput && paramFromHighestBidder && paramFromHighestBidder.toString() !== '0'
+                && this.bidParameter !== paramFromHighestBidder.toString()) {
+                this.bidParameter = paramFromHighestBidder.toString();
+            }
 
-            return this.bidParameter;
+            return this.bidParameter.toString();
         }
 
         get paramImgUrl() {
@@ -142,12 +136,13 @@
         }
 
         get minBid() {
-            if (this.auctionData.minBid) {
+            if (this.auctionData.minBid && this.auctionData.currentRound.highestBidInEth) {
                 let minInEther: string = utils.formatEther(this.auctionData.minBid);
+                const highestBidInEth = this.auctionData.currentRound.highestBidInEth;
 
-                if (Number(this.auctionData.currentRound.highestBidInEth) > Number(minInEther)) {
+                if (highestBidInEth && Number(highestBidInEth) > Number(minInEther)) {
                     const defaultIncrement = utils.bigNumberify(DEFAULT_MIN_INCREMENT_IN_WEI.toString());
-                    const newMinAsBN = defaultIncrement.add(utils.bigNumberify(this.auctionData.minBid));
+                    const newMinAsBN = defaultIncrement.add(utils.parseEther(highestBidInEth.toString()));
                     minInEther = utils.formatEther(newMinAsBN.toString());
 
                     if (!this.receivedInput) {

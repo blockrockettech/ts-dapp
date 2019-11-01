@@ -178,6 +178,7 @@ export default new Vuex.Store({
                     _highestBidder: event._highestBidder.toString(),
                     _round: event._round.toString(),
                     _timestamp: event._timestamp.toString(),
+                    _param: event._param.toString(),
                 }
             }).reverse();
 
