@@ -20,7 +20,7 @@
 
     export default class MyComponent extends Vue {
         startingIn: string = "";
-        expired: boolean = false;
+        expired: boolean = true;
 
         created(): void {
             this.updateStartingTime();

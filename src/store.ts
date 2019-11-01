@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import auctionDeployment from '@/truffleconf/auction/deployment';
 import {ethers, utils} from 'ethers';
 import {getNetworkName} from '@blockrocket/utils';
 import {getContractAddressFromTruffleConf, getDomain, fetchEvents} from '@/utils/utils';
@@ -164,33 +165,40 @@ export default new Vuex.Store({
             commit('updateMinBid', {minBid: minBid.toString()});
         },
         async fetchRoundFinalisedEvents({ commit }, {auctionContract, provider}) {
-            const events = (await fetchEvents('RoundFinalised', auctionContract, provider, 5340850))
-                .map((event: any) => {
-                    // This is only a subset of all fields
-                    return {
-                        _highestBid: utils.formatEther(event._highestBid.toString()),
-                        _highestBidder: event._highestBidder.toString(),
-                        _round: event._round.toString(),
-                        _timestamp: event._timestamp.toString(),
-                    }
-                })
-                .reverse();
+            const events = (await fetchEvents(
+                    'RoundFinalised',
+                    auctionContract,
+                    provider,
+                    auctionDeployment.blockNumber)
+            ).map((event: any) => {
+                // This is only a subset of all fields
+                return {
+                    _highestBid: utils.formatEther(event._highestBid.toString()),
+                    _highestBidder: event._highestBidder.toString(),
+                    _round: event._round.toString(),
+                    _timestamp: event._timestamp.toString(),
+                }
+            }).reverse();
 
             commit('updateRoundFinalisedEvents', {events});
         },
         async fetchBidAcceptedEventsForCurrentRound({ commit }, {auctionContract, provider, roundNo}) {
-            const events = (await fetchEvents('BidAccepted', auctionContract, provider, 5340850))
-                .map((event: any) => {
-                    // This is only a subset of all fields
-                    return {
-                        _timeStamp: event._timeStamp.toString(),
-                        _amount: utils.formatEther(event._amount.toString()),
-                        _bidder: event._bidder.toString(),
-                        _round: event._round.toString()
-                    };
-                })
-                .reverse()
-                .filter((event: any) => event._round === roundNo);
+            const events = (await fetchEvents(
+                    'BidAccepted',
+                    auctionContract,
+                    provider,
+                    auctionDeployment.blockNumber)
+            ).map((event: any) => {
+                // This is only a subset of all fields
+                return {
+                    _timeStamp: event._timeStamp.toString(),
+                    _amount: utils.formatEther(event._amount.toString()),
+                    _bidder: event._bidder.toString(),
+                    _round: event._round.toString()
+                };
+            })
+            .reverse()
+            .filter((event: any) => event._round === roundNo);
 
             commit('updateBidAcceptedEvents', {events});
         },

@@ -95,12 +95,14 @@
 
         async submitBid() {
             const {TwistedSisterAuction} = this.contracts;
-            console.log(this.bidParameter.toString());
+            console.log(this.bidParameter);
+            console.log(typeof this.bidParameter);
+            console.log(this.bidInWei);
+            console.log(typeof this.bidInWei);
             const tx = await TwistedSisterAuction.bid(
-                this.bidParameter.toString(),
+                utils.bigNumberify(this.bidParameter),
                 {
-                    value: this.bidInWei,
-                    gasLimit: 7500000
+                    value: this.bidInWei
                 }
             );
 
