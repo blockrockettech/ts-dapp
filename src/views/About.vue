@@ -32,18 +32,15 @@
     <div class="row mb-6">
 
     	<div class="col-12 col-md-3 offset-md-3 text-center mb-2">
-    		<span><a href="https://s3.eu-central-1.amazonaws.com/twistedsister.io/Pressetext_dt_final_web.pdf" target="_blank" class="btn btn-light w-100">Pressemitteilung</a></span>
+    		<span><a href="https://ipfs.globalupload.io/QmZHi11L4HzdP41L8KqSPvptmjsvkGqrHpXG9hJqg3JCsT" target="_blank" class="btn btn-light w-100">Pressemitteilung</a></span>
     	</div>
 
     	<div class="col-12 col-md-3 text-center mb-2">
-    		<span><a href="https://s3.eu-central-1.amazonaws.com/twistedsister.io/Pressetext_en_final_web.pdf" target="_blank" class="btn btn-light w-100">Press Release</a></span>
+    		<span><a href="https://ipfs.globalupload.io/QmXWSuMrqi6oBWsXadGSbiRGbFiZsertn43JQUB8mud8Z7" target="_blank" class="btn btn-light w-100">Press Release</a></span>
     	</div>
 
 
     </div>
-    
-
-
 
 
     <h6 class="text-center mb-3">Supported by</h6>

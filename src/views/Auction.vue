@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-if="account">
         <CurrentAuction :currentRound="currentRound"
                         :totalRounds="totalRounds"
                         :auctionStartTime="auctionStartTime"
@@ -8,6 +8,9 @@
                          :round="round"
                          :totalRounds="totalRounds"
                          :key="round._round" />
+    </div>
+    <div v-else class="container text-center text-danger text-large">
+        Please install and unlock a Web3 client such as <a href="https://metamask.io/">metamask.io</a> and refresh the page.
     </div>
 </template>
 
@@ -20,13 +23,14 @@
     @Component({
         components: {CurrentAuction, PreviousAuction},
         computed: {
-            ...mapGetters(['auctionData'])
+            ...mapGetters(['auctionData','contracts','account'])
         }
     })
     export default class Auction extends Vue {
 
         // Mapped Getters
         auctionData: any;
+        account: any;
 
         get totalRounds() {
             return this.auctionData.totalRounds ? this.auctionData.totalRounds : 21;
