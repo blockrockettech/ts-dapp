@@ -216,11 +216,15 @@
         get params() {
             if (this.auctionData.events.roundFinalised) {
                 const events = Object.assign([], this.auctionData.events.roundFinalised).map((e: any) => e._param);
-                if(events.length < 21) {
-                    for (let i = 0; i < 21 - events.length; i += 1) {
+
+                if (events.length < 21) {
+                    const eventLen = events.length;
+                    for (let i = 0; i < 21 - eventLen; i++) {
+                        console.log('events', i);
                         events.push('0');
                     }
                 }
+
                 return events;
             }
             return [];
