@@ -90,7 +90,8 @@
     }
 
     .PageLogo {
-        max-width: 400px;
+        max-width: 100%;
+        width: 400px;
     }
 
     .footer {
