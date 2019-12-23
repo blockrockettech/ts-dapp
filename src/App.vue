@@ -10,6 +10,7 @@
                 <div class="col-12 col-md-6 mt-3 text-center text-md-right">
                     <div id="nav" class="d-block ml-auto text-medium">
                         <router-link to="/genesis-auction" exact>Genesis Auction</router-link>&nbsp;
+                        <router-link to="/marketplace" exact>Market</router-link>&nbsp;
                         <router-link to="/faq">FAQ</router-link>
                         <router-link to="/about">About</router-link>
                     </div>
