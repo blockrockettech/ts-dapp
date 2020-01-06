@@ -1,9 +1,6 @@
 <template>
     <div v-if="account">
-        <CurrentAuction :currentRound="currentRound"
-                        :totalRounds="totalRounds"
-                        :auctionStartTime="auctionStartTime"
-                        :roundLengthInSeconds="roundLengthInSeconds" />
+
         <PreviousAuction v-for="round in previousRounds"
                          :round="round"
                          :totalRounds="totalRounds"

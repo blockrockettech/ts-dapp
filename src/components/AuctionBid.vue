@@ -131,7 +131,7 @@
                 paddedParam += '0';
             }
             paddedParam += paramForImgStr;
-            const fileName = currentDayLetter + paddedParam + '.jpg';
+            const fileName = currentDayLetter + paddedParam + '.png';
             return `/images/${currentDayLetter}/${fileName}`;
         }
 

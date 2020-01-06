@@ -4,6 +4,7 @@ import Auction from './views/Auction.vue'
 import Countdown from './views/Countdown.vue'
 import FAQ from './views/FAQ.vue'
 import Disclaimer from './views/Disclaimer.vue'
+import Marketplace from './views/Marketplace.vue'
 
 Vue.use(Router);
 
@@ -41,6 +42,11 @@ export default new Router({
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
+    },
+    {
+      path: '/marketplace',
+      name: 'marketplace',
+      component: Marketplace
     },
     {
       path: '/twisted-admin',
