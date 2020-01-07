@@ -1,25 +1,46 @@
 <template>
     <div class="col-12 col-sm-6 col-lg-4 MarketItem text-center">
         <div v-if="!loading">
-            <img src="https://ipfs.infura.io/ipfs/QmVwaos28xfw5j5J5bB8WAfszmGMF3PFZiZW1u3BghbBNT" alt="" class=""/>
+            <img :src="metadata.ipfsImageUrl" alt=""/>
             <div class="mt-2">
                 <h4>Token #{{tokenId}}</h4>
 
                 <div class="mb-2">
-                    <div class="mb-1">Token owner: </div>
+                    <div class="mb-1">Token owner:</div>
                     <div v-if="account !== metadata.owner">{{metadata.owner}}</div>
                     <div class="text-success text-medium text-bold" v-else>You</div>
                 </div>
 
                 <div class="mb-3 pt-2">
-                    Price: <br><span class="text-large">2.56 ETH</span><br>
-                    <b-button variant="dark">buy token</b-button>
+                    <div v-if="metadata.listing.listed">
+                        <div>Price:</div>
+                        <div>
+                            <span class="text-large">{{metadata.listing.listPrice}} ETH</span>
+                        </div>
+                        <b-button variant="dark" @click="buyToken">
+                            Buy Token
+                        </b-button>
+                    </div>
+                    <div v-else>
+                        <div class="mt-2" v-if="account === metadata.owner">
+                            <label class="text-center" for="listPriceInput">
+                                List for:
+                            </label>
+                            <input id="listPriceInput" class="form-control" v-model="metadata.listing.listPrice"/>
+                            <b-button variant="dark" @click="listToken">
+                                List Token
+                            </b-button>
+                        </div>
+                        <div v-else>
+                            <span class="text-large">Not for sale</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="py-2">
-                    Transfer Token to adress:<br>
-                    <b-form-input type="text" step="0.02" class="w-100"/>
-                    <b-button variant="dark" class="mt-2">→ Transfer</b-button>
-                </div>
+<!--                <div class="py-2">-->
+<!--                    Transfer Token to adress:<br>-->
+<!--                    <b-form-input type="text" step="0.02" class="w-100"/>-->
+<!--                    <b-button variant="dark" class="mt-2">→ Transfer</b-button>-->
+<!--                </div>-->
             </div>
         </div>
         <div v-else>
@@ -29,43 +50,94 @@
 </template>
 
 <script>
-    import { mapGetters } from 'vuex';
     import SmallSpinner from "@/components/SmallSpinner";
+
+    import {mapGetters} from 'vuex';
+    import axios from 'axios';
+    import {utils} from 'ethers';
 
     export default {
         name: "Token",
         props: ["tokenId"],
         components: {SmallSpinner},
         computed: {
-          ...mapGetters(['contracts', 'account'])
+            ...mapGetters(['contracts', 'account'])
         },
         data() {
-          return {
-              loading: true,
-              metadata: {
-                  owner: null,
-                  listPrice: 0
-              }
-          }
+            return {
+                loading: true,
+                metadata: {
+                    owner: null,
+                    ipfsImageUrl: null,
+                    listing: {
+                        listed: false,
+                        listPrice: 0
+                    }
+                }
+            }
         },
         methods: {
-          async fetchTokenOwner() {
-              const {TwistedSisterToken} = this.contracts;
-              this.metadata.owner = await TwistedSisterToken.ownerOf(this.tokenId);
-          }
+            async fetchTokenOwner() {
+                const {TwistedSisterToken} = this.contracts;
+                this.metadata.owner = await TwistedSisterToken.ownerOf(this.tokenId);
+            },
+            async fetchIPFSImage() {
+                try {
+                    // Fallback incase IPFS call fails
+                    this.metadata.ipfsImageUrl = `https://robohash.org/${this.tokenId}.png`;
+
+                    const {TwistedSisterToken} = this.contracts;
+                    const ipfsTokenDataUrl = await TwistedSisterToken.tokenURI(Number(this.tokenId));
+
+                    const ipfsTokenData = await axios.get(ipfsTokenDataUrl);
+                    this.metadata.ipfsImageUrl = ipfsTokenData.data.image;
+                } catch(e) {
+                    console.log(`Failed to fetch IPFS image for ${this.tokenId}`)
+                }
+            },
+            async fetchListPrice() {
+                const {BuyNowNFTMarketplace} = this.contracts;
+                const listedTokenPriceInWei = await BuyNowNFTMarketplace.listedTokenPrice(this.tokenId);
+
+                if(Number(listedTokenPriceInWei.toString())) {
+                    const listedTokenPriceInEth = utils.formatEther(listedTokenPriceInWei);
+                    this.metadata.listing.listed = true;
+                    this.metadata.listing.listPrice = Number(listedTokenPriceInEth);
+                } else {
+                    this.metadata.listing.listed = false;
+                    this.metadata.listing.listPrice = 0;
+                }
+            },
+            async fetchTokenData() {
+                await this.fetchTokenOwner();
+                await this.fetchIPFSImage();
+                await this.fetchListPrice();
+            },
+            async listToken() {
+                const {BuyNowNFTMarketplace} = this.contracts;
+                const tx = await BuyNowNFTMarketplace.listToken(this.tokenId, this.metadata.listing.listPrice.toString());
+                let receipt = await tx.wait(1);
+                console.log(`Rec: `, receipt);
+            },
+            async buyToken() {
+                const {BuyNowNFTMarketplace} = this.contracts;
+                const ethPrice = this.metadata.listing.listPrice.toString();
+                const tx = await BuyNowNFTMarketplace.buyNow(this.tokenId, {value: utils.parseEther(ethPrice)});
+                let receipt = await tx.wait(1);
+                console.log(`Rec: `, receipt);
+            }
         },
-        mounted() {
-            if(this.contracts) {
-                this.fetchTokenOwner();
+        async mounted() {
+            if (this.contracts) {
+                await this.fetchTokenData();
                 this.loading = false;
             }
         },
         watch: {
             contracts: async function (newVal, oldVal) {
                 // Should only run once
-                if(newVal && !oldVal) {
-                    console.log(`Fetching token owner of ${this.tokenId}`);
-                    this.fetchTokenOwner();
+                if (newVal && !oldVal) {
+                    await this.fetchTokenData();
                     this.loading = false;
                 }
             }
