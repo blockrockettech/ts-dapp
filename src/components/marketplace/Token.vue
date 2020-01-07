@@ -26,8 +26,10 @@
                             <label class="text-center" for="listPriceInput">
                                 List for:
                             </label>
-                            <input id="listPriceInput" class="form-control" v-model="metadata.listing.listPrice"/>
-                            <b-button variant="dark" @click="listToken">
+                            <div>
+                                <input id="listPriceInput" class="form-control d-inline-block" v-model="metadata.listing.listPrice"/> ETH
+                            </div>
+                            <b-button variant="dark" @click="listToken" class="mt-2">
                                 List Token
                             </b-button>
                         </div>
@@ -114,17 +116,24 @@
                 await this.fetchListPrice();
             },
             async listToken() {
-                const {BuyNowNFTMarketplace} = this.contracts;
-                const tx = await BuyNowNFTMarketplace.listToken(this.tokenId, this.metadata.listing.listPrice.toString());
+                const {TwistedSisterToken, BuyNowNFTMarketplace} = this.contracts;
+                let tx = await TwistedSisterToken.approve(BuyNowNFTMarketplace.address, this.tokenId);
                 let receipt = await tx.wait(1);
-                console.log(`Rec: `, receipt);
+                console.log(`Approve receipt: `, receipt);
+
+                const listPriceEth = this.metadata.listing.listPrice.toString();
+                tx = await BuyNowNFTMarketplace.listToken(this.tokenId, utils.parseEther(listPriceEth));
+                receipt = await tx.wait(1);
+                console.log(`List token receipt: `, receipt);
             },
             async buyToken() {
                 const {BuyNowNFTMarketplace} = this.contracts;
                 const ethPrice = this.metadata.listing.listPrice.toString();
-                const tx = await BuyNowNFTMarketplace.buyNow(this.tokenId, {value: utils.parseEther(ethPrice)});
+                const tx = await BuyNowNFTMarketplace.buyNow(this.tokenId, {
+                    value: utils.parseEther(ethPrice),
+                });
                 let receipt = await tx.wait(1);
-                console.log(`Rec: `, receipt);
+                console.log(`Buy now TX receipt: `, receipt);
             }
         },
         async mounted() {
