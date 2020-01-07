@@ -125,6 +125,7 @@
                 tx = await BuyNowNFTMarketplace.listToken(this.tokenId, utils.parseEther(listPriceEth));
                 receipt = await tx.wait(1);
                 console.log(`List token receipt: `, receipt);
+                document.location.reload();
             },
             async buyToken() {
                 const {BuyNowNFTMarketplace} = this.contracts;
@@ -134,6 +135,7 @@
                 });
                 let receipt = await tx.wait(1);
                 console.log(`Buy now TX receipt: `, receipt);
+                document.location.reload();
             }
         },
         async mounted() {
