@@ -17,9 +17,18 @@
                         <div>
                             <span class="text-large">{{metadata.listing.listPrice}} ETH</span>
                         </div>
-                        <b-button variant="dark" @click="buyToken">
-                            Buy Token
-                        </b-button>
+                        <div class="mt-2" v-if="account === metadata.owner">
+                            <b-button variant="dark" @click="delist">
+                                <span v-if="!delisting">De-list</span>
+                                <SmallSpinner v-else/>
+                            </b-button>
+                        </div>
+                        <div class="mt-2" v-else>
+                            <b-button variant="dark" @click="buyToken">
+                                <span v-if="!buying">Buy Token</span>
+                                <SmallSpinner v-else/>
+                            </b-button>
+                        </div>
                     </div>
                     <div v-else>
                         <div class="mt-2" v-if="account === metadata.owner">
@@ -30,7 +39,8 @@
                                 <input id="listPriceInput" class="form-control d-inline-block" v-model="metadata.listing.listPrice"/> ETH
                             </div>
                             <b-button variant="dark" @click="listToken" class="mt-2">
-                                List Token
+                                <span v-if="!listing">List Token</span>
+                                <SmallSpinner v-else/>
                             </b-button>
                         </div>
                         <div v-else>
@@ -38,11 +48,14 @@
                         </div>
                     </div>
                 </div>
-<!--                <div class="py-2">-->
-<!--                    Transfer Token to adress:<br>-->
-<!--                    <b-form-input type="text" step="0.02" class="w-100"/>-->
-<!--                    <b-button variant="dark" class="mt-2">→ Transfer</b-button>-->
-<!--                </div>-->
+                <div class="py-2" v-if="account === metadata.owner">
+                    Transfer Token to address:<br>
+                    <b-form-input type="text" class="w-100" v-model="transferAddress"/>
+                    <b-button variant="dark" class="mt-2" @click="transfer">
+                        <span v-if="!transferring">→ Transfer</span>
+                        <SmallSpinner v-else />
+                    </b-button>
+                </div>
             </div>
         </div>
         <div v-else>
@@ -68,6 +81,11 @@
         data() {
             return {
                 loading: true,
+                listing: false,
+                buying: false,
+                transferring: false,
+                delisting: false,
+                transferAddress: "",
                 metadata: {
                     owner: null,
                     ipfsImageUrl: null,
@@ -116,6 +134,7 @@
                 await this.fetchListPrice();
             },
             async listToken() {
+                this.listing = true;
                 const {TwistedSisterToken, BuyNowNFTMarketplace} = this.contracts;
                 let tx = await TwistedSisterToken.approve(BuyNowNFTMarketplace.address, this.tokenId);
                 let receipt = await tx.wait(1);
@@ -125,9 +144,11 @@
                 tx = await BuyNowNFTMarketplace.listToken(this.tokenId, utils.parseEther(listPriceEth));
                 receipt = await tx.wait(1);
                 console.log(`List token receipt: `, receipt);
+                this.listing = false;
                 document.location.reload();
             },
             async buyToken() {
+                this.buying = true;
                 const {BuyNowNFTMarketplace} = this.contracts;
                 const ethPrice = this.metadata.listing.listPrice.toString();
                 const tx = await BuyNowNFTMarketplace.buyNow(this.tokenId, {
@@ -135,6 +156,32 @@
                 });
                 let receipt = await tx.wait(1);
                 console.log(`Buy now TX receipt: `, receipt);
+                this.buying = false;
+                document.location.reload();
+            },
+            async transfer() {
+                this.transferring = true;
+                const {TwistedSisterToken, BuyNowNFTMarketplace} = this.contracts;
+
+                if (this.metadata.listing.listed) {
+                    const delistTx = await BuyNowNFTMarketplace.delistToken(this.tokenId);
+                    const delistReceipt = await delistTx.wait(1);
+                    console.log(`Delist receipt: `, delistReceipt);
+                }
+
+                const tx = await TwistedSisterToken.transferFrom(this.account, this.transferAddress, this.tokenId);
+                const receipt = await tx.wait(1);
+                console.log(`Transfer receipt: `, receipt);
+                this.transferring = false;
+                document.location.reload();
+            },
+            async delist() {
+                this.delisting = true;
+                const {BuyNowNFTMarketplace} = this.contracts;
+                const tx = await BuyNowNFTMarketplace.delistToken(this.tokenId);
+                const receipt = await tx.wait(1);
+                console.log(`Delist receipt: `, receipt);
+                this.delisting = false;
                 document.location.reload();
             }
         },
