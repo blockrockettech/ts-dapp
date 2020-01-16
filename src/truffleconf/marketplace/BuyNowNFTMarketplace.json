@@ -6664,6 +6664,85 @@
     "version": "0.5.12+commit.7709ece9.Emscripten.clang"
   },
   "networks": {
+    "1": {
+      "events": {
+        "0x9c74d776e5765f64303c82b9dceb594cdf4d4e054e6530a839715a276532e0ab": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "_seller",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "uint256",
+              "name": "_tokenId",
+              "type": "uint256"
+            }
+          ],
+          "name": "Delisting",
+          "type": "event",
+          "signature": "0x9c74d776e5765f64303c82b9dceb594cdf4d4e054e6530a839715a276532e0ab"
+        },
+        "0x6935191bc626032d8c74ced321b2d6a62df2578bf60599625cb4f59d51e3849f": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "_seller",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "uint256",
+              "name": "_tokenId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "_priceInWei",
+              "type": "uint256"
+            }
+          ],
+          "name": "Listing",
+          "type": "event",
+          "signature": "0x6935191bc626032d8c74ced321b2d6a62df2578bf60599625cb4f59d51e3849f"
+        },
+        "0x12cb4648cf3058b17ceeb33e579f8b0bc269fe0843f3900b8e24b6c54871703c": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "_buyer",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "_tokenId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "_priceInWei",
+              "type": "uint256"
+            }
+          ],
+          "name": "Purchase",
+          "type": "event",
+          "signature": "0x12cb4648cf3058b17ceeb33e579f8b0bc269fe0843f3900b8e24b6c54871703c"
+        }
+      },
+      "links": {},
+      "address": "0xaf6D892177BBabCD71623f55728eb7bc1E919B8e",
+      "transactionHash": "0x43a29ab13c1f2f8d5364269bd289641b63c95608410579ac764cafda2643bae7"
+    },
     "4": {
       "events": {
         "0x9c74d776e5765f64303c82b9dceb594cdf4d4e054e6530a839715a276532e0ab": {
@@ -6745,7 +6824,7 @@
     }
   },
   "schemaVersion": "3.0.19",
-  "updatedAt": "2020-01-07T14:44:12.066Z",
+  "updatedAt": "2020-01-16T15:45:58.615Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}
