@@ -7,6 +7,7 @@ import {getContractAddressFromTruffleConf, getDomain, fetchEvents} from '@/utils
 
 import TwistedSisterAuction from '@/truffleconf/auction/TwistedSisterAuction.json';
 import TwistedSisterToken from '@/truffleconf/token/TwistedSisterToken.json';
+import BuyNowNFTMarketplace from '@/truffleconf/marketplace/BuyNowNFTMarketplace.json';
 
 Vue.use(Vuex);
 
@@ -84,6 +85,7 @@ export default new Vuex.Store({
 
             const auctionAddress = getContractAddressFromTruffleConf(TwistedSisterAuction, chainId);
             const tokenAddress = getContractAddressFromTruffleConf(TwistedSisterToken, chainId);
+            const marketplaceAddress = getContractAddressFromTruffleConf(BuyNowNFTMarketplace, chainId);
             const contracts = {
                 TwistedSisterAuction: new ethers.Contract(
                     auctionAddress,
@@ -95,6 +97,11 @@ export default new Vuex.Store({
                     TwistedSisterToken.abi,
                     signer,
                 ),
+                BuyNowNFTMarketplace: new ethers.Contract(
+                    marketplaceAddress,
+                    BuyNowNFTMarketplace.abi,
+                    signer
+                )
             };
 
             const network = getNetworkName(chainId);
