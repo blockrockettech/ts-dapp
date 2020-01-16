@@ -21,7 +21,7 @@
         data() {
             return {
                 tokenIds: [
-                    ...Array(21).keys()
+                    ...Array(22).keys()
                 ].map(id => id + 1)
             }
         }

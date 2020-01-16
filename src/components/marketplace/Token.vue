@@ -2,23 +2,23 @@
     <div class="col-12 col-sm-6 col-lg-4 MarketItem text-center">
         <div v-if="!loading">
             <img :src="metadata.ipfsImageUrl" alt=""/>
-            <div class="mt-2">
-                <h4>Token #{{tokenId}}</h4>
+            <div class="mt-2 mb-4">
+                <h4 class="mb-2">Token #{{tokenId}}</h4>
 
-                <div class="mb-2">
-                    <div class="mb-1">Token owner:</div>
-                    <div v-if="account !== metadata.owner">{{metadata.owner}}</div>
-                    <div class="text-success text-medium text-bold" v-else>You</div>
+                <div class="mb-4">
+                    <span class="mb-1 text-muted">Token owner:</span>
+                    <span v-if="account !== metadata.owner" class="ml-2 small"><br/>{{metadata.owner}}</span>
+                    <span class="text-medium text-bold ml-2" v-else>You</span>
                 </div>
 
-                <div class="mb-3 pt-2">
+                <div class="mb-4">
                     <div v-if="metadata.listing.listed">
-                        <div>Price:</div>
+                        <div class="text-muted">Price:</div>
                         <div>
                             <span class="text-large">{{metadata.listing.listPrice}} ETH</span>
                         </div>
                         <div class="mt-2" v-if="account === metadata.owner">
-                            <b-button variant="dark" @click="delist">
+                            <b-button variant="outline-dark" @click="delist">
                                 <span v-if="!delisting">De-list</span>
                                 <SmallSpinner v-else/>
                             </b-button>
@@ -48,14 +48,17 @@
                         </div>
                     </div>
                 </div>
-                <div class="py-2" v-if="account === metadata.owner">
-                    Transfer Token to address:<br>
-                    <b-form-input type="text" class="w-100" v-model="transferAddress"/>
-                    <b-button variant="dark" class="mt-2" @click="transfer">
-                        <span v-if="!transferring">→ Transfer</span>
-                        <SmallSpinner v-else />
-                    </b-button>
-                </div>
+            </div>
+            <div class="" v-if="account === metadata.owner">
+                <hr/>
+                <label class="text-center">
+                    Transfer Token to address:
+                </label>
+                <b-form-input type="text" class="w-100" v-model="transferAddress"/>
+                <b-button variant="outline-dark" class="mt-2" @click="transfer">
+                    <span v-if="!transferring">→ Transfer</span>
+                    <SmallSpinner v-else />
+                </b-button>
             </div>
         </div>
         <div v-else>
