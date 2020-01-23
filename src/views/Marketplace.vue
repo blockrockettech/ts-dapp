@@ -4,7 +4,7 @@
 
             <div class="row">
                 <div class="col"><h1 class="mb-4">Marketplace</h1></div>
-                <!--<div class="col text-right"><a href="https://twistedsister.io/3dmodel/TS3D-FINAL_QR.stl">Download 3D Model</a></div>-->
+                <div class="col text-right"><a href="https://ipfs.infura.io/ipfs/QmbRqakXKPWn1Z8yznr3GkMeWgsdbHZuZSBymEk262ssVn">Download 3D Model (IPFS)</a></div>
             </div>
 
             <hr/>
