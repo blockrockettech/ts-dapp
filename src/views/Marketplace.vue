@@ -1,31 +1,42 @@
 <template>
-    <div class="Market container">
+    <div>
+        <div class="Market container" v-if="account">
 
-        <h1 class="mb-4">Marketplace</h1>
+            <div class="row">
+                <div class="col"><h1 class="mb-4">Marketplace</h1></div>
+                <!--<div class="col text-right"><a href="https://twistedsister.io/3dmodel/TS3D-FINAL_QR.stl">Download 3D Model</a></div>-->
+            </div>
 
-        <p class="text-large mb-6">Buy and sell twistedsister.io tokens.</p>
+            <hr/>
 
-        <h2>All Tokens</h2>
-        <div class="row mt-3 mb-6">
-            <Token :key="idx" :tokenId="tokenId" v-for="(tokenId, idx) in tokenIds"/>
+            <div class="row mt-3 mb-6">
+                <Token :key="idx" :tokenId="tokenId" v-for="(tokenId, idx) in tokenIds"/>
+            </div>
+        </div>
+        <div v-else class="container text-center text-danger text-large">
+            Please install and unlock a Web3 client such as <a href="https://metamask.io/">metamask.io</a> and refresh the page.
         </div>
     </div>
 </template>
 
 <script>
     import Token from "@/components/marketplace/Token";
+    import {mapGetters} from "vuex";
 
     export default {
         name: "Marketplace",
         components: {Token},
+        computed: {
+            ...mapGetters(['account'])
+        },
         data() {
             return {
                 tokenIds: [
                     ...Array(21).keys()
                 ].map(id => id + 1)
-            }
+            };
         }
-    }
+    };
 </script>
 
 <style scoped>
