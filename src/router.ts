@@ -5,6 +5,7 @@ import Countdown from './views/Countdown.vue'
 import FAQ from './views/FAQ.vue'
 import Disclaimer from './views/Disclaimer.vue'
 import Marketplace from './views/Marketplace.vue'
+import Download from './views/Download.vue'
 
 Vue.use(Router);
 
@@ -47,6 +48,11 @@ export default new Router({
       path: '/marketplace',
       name: 'marketplace',
       component: Marketplace
+    },
+    {
+      path: '/download',
+      name: 'download',
+      component: Download
     },
     {
       path: '/twisted-admin',
