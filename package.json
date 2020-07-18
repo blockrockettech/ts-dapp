@@ -17,7 +17,7 @@
     "core-js": "^2.6.5",
     "ethers": "4.0.37",
     "ipfs-http-client": "^38.2.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "moment": "^2.24.0",
     "portal-vue": "^2.1.6",
     "vconsole": "^3.3.4",
