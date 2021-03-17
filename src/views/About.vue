@@ -1,5 +1,17 @@
 <template>
   <div class="about container">
+
+    <div class="embed-responsive embed-responsive-16by9 mb-5">
+      <iframe
+          src="https://player.vimeo.com/video/383586346"
+          width="640"
+          height="360"
+          frameborder="0"
+          allow="autoplay;
+                    fullscreen"
+          allowfullscreen
+      />
+    </div>
     
     <h1 class="mb-4">About</h1>
     <p class="text-large mb-6">Twistedsister is the eponymous name of a Switzerland-based temporary collective of artists and designers investigating the potentials of digital technologies and their cultural impact. Twistedsister is <a target="_blank" href="https://studio.arminblasbichler.com">Armin Blasbichler</a>, <a target="_blank" href="https://www.brigittefaessler.com">Brigitte Fässler</a>, <a target="_blank" href="https://www.schreibtgenau.ch">Martina Graf</a>, <a target="_blank" href="https://julianhumm.com">Julian Humm</a> and <a target="_blank" href="http://www.deixis.ch">Matthias Pfäffli</a>.</p>
