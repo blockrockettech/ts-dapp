@@ -112,7 +112,11 @@
                     const {TwistedSisterToken} = this.contracts;
                     const ipfsTokenDataUrl = await TwistedSisterToken.tokenURI(Number(this.tokenId));
 
-                    const ipfsTokenData = await axios.get(ipfsTokenDataUrl);
+                    const ipfsTokenData = await axios.get(ipfsTokenDataUrl, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    });
                     this.metadata.ipfsImageUrl = ipfsTokenData.data.image;
                 } catch(e) {
                     console.log(`Failed to fetch IPFS image for ${this.tokenId}`)
