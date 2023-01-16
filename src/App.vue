@@ -54,9 +54,9 @@
 
         async created() {
             // @ts-ignore
-            await window.ethereum.enable();
+            await window.ethereum.send('eth_requestAccounts');
             // @ts-ignore
-            const provider: any = new ethers.providers.Web3Provider(web3.currentProvider);
+            const provider: any = new ethers.providers.Web3Provider(window.ethereum);
             const signer = provider.getSigner();
 
             const {chainId} = await provider.getNetwork();
