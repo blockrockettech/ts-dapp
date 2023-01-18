@@ -78,7 +78,7 @@
         auctionData: any;
         contracts: any;
 
-        ipfs = ipfsHttpClient('ipfs.infura.io', '5001', { protocol: 'https' });
+        ipfs = ipfsHttpClient('ipfs.io', '5001', { protocol: 'https' });
 
         dropzoneOptions: any = {
             url: 'https://',
@@ -93,7 +93,7 @@
         file: any = null;
         fileBuffer: any = null;
 
-        baseIpfsUrl: string = 'https://ipfs.infura.io/ipfs/';
+        baseIpfsUrl: string = 'https://ipfs.io/ipfs/';
 
         saving: boolean = false;
         savingStatus: string = '';

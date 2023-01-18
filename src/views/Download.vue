@@ -8,7 +8,7 @@
         </div>
 
         <div>
-            <p class="text-medium"><a href="https://ipfs.infura.io/ipfs/QmbRqakXKPWn1Z8yznr3GkMeWgsdbHZuZSBymEk262ssVn">Download 3D Model (IPFS)</a></p>
+            <p class="text-medium"><a href="https://ipfs.io/ipfs/QmbRqakXKPWn1Z8yznr3GkMeWgsdbHZuZSBymEk262ssVn">Download 3D Model (IPFS)</a></p>
             <p>After downloading, rename the file to "<i>TS3D.stl</i>". You are free to 3D print the model yourself.</p>
         </div>
 
