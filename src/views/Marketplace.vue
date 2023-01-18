@@ -1,20 +1,25 @@
 <template>
     <div>
-        <div class="Market container" v-if="account">
-
-            <div class="row">
-                <div class="col"><h1 class="mb-4">Marketplace</h1></div>
-                <div class="col text-right"><a href="https://ipfs.io/ipfs/QmbRqakXKPWn1Z8yznr3GkMeWgsdbHZuZSBymEk262ssVn">Download 3D Model (IPFS)</a></div>
+        <div v-if="account">
+            <div class="Market-Header container mb-4">
+                <div class="row">
+                    <span class="round-counter col-12 col-md-6 h1 mb-0">
+                        Marketplace
+                    </span>
+                    <span class="col-12 col-md-6 text-md-right">
+                        <router-link to="/download" exact>View and Download 3D Model</router-link>&nbsp;
+                    </span>
+                </div>
             </div>
-
-            <hr/>
-
-            <div class="row mt-3 mb-6">
-                <Token :key="idx" :tokenId="tokenId" v-for="(tokenId, idx) in tokenIds"/>
+            <div class="Market container">
+                <div class="row mt-4 mb-6">
+                    <Token :key="idx" :tokenId="tokenId" v-for="(tokenId, idx) in tokenIds"/>
+                </div>
             </div>
         </div>
         <div v-else class="container text-center text-danger text-large">
-            Please install and unlock a Web3 client such as <a href="https://metamask.io/">metamask.io</a> and refresh the page.
+            Please install and unlock a Web3 client such as <a href="https://metamask.io/">metamask.io</a> and refresh
+            the page.
         </div>
     </div>
 </template>
@@ -40,5 +45,8 @@
 </script>
 
 <style scoped>
+    .Market{
+        border-top: 1px solid #DDD;
+    }
 
 </style>
