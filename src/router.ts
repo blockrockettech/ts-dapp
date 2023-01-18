@@ -5,6 +5,7 @@ import Countdown from './views/Countdown.vue'
 import FAQ from './views/FAQ.vue'
 import Disclaimer from './views/Disclaimer.vue'
 import Marketplace from './views/Marketplace.vue'
+import Download from './views/Download.vue'
 
 Vue.use(Router);
 
@@ -19,6 +20,14 @@ export default new Router({
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import(/* webpackChunkName: "about" */ './views/Concept.vue')
+    },
+    {
+      path: '/documentation',
+      name: 'documentation',
+      // route level code-splitting
+      // this generates a separate chunk (about.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import(/* webpackChunkName: "about" */ './views/Documentation.vue')
     },
     {
       path: '/genesis-auction',
@@ -47,6 +56,11 @@ export default new Router({
       path: '/marketplace',
       name: 'marketplace',
       component: Marketplace
+    },
+    {
+      path: '/download',
+      name: 'download',
+      component: Download
     },
     {
       path: '/twisted-admin',
